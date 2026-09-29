@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<canvas ref="{{ ref }}" width="290" height="290" style="width:100%;height:100%;display:block;image-rendering:pixelated"></canvas>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:200,&quot;height&quot;:200},&quot;seed&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;TX-1&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;color&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1A1A2E&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  ref = React.createRef();
+  componentDidMount() { this.draw(); }
+  componentDidUpdate() { this.draw(); }
+  draw() {
+    const c = this.ref.current; if (!c) return;
+    const N = 29, s = 10, x = c.getContext('2d');
+    const col = this.props.color || '#1A1A2E';
+    let seed = 0; for (const ch of String(this.props.seed || 'TX-1')) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    x.fillStyle = '#fff'; x.fillRect(0, 0, 290, 290); x.fillStyle = col;
+    const inF = (i, j) => (i < 8 && j < 8) || (i > N - 9 && j < 8) || (i < 8 && j > N - 9);
+    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if (!inF(i, j) && rnd() > 0.52) x.fillRect(i * s, j * s, s, s);
+    const f = (i, j) => { x.fillStyle = col; x.fillRect(i * s, j * s, 7 * s, 7 * s); x.fillStyle = '#fff'; x.fillRect((i + 1) * s, (j + 1) * s, 5 * s, 5 * s); x.fillStyle = col; x.fillRect((i + 2) * s, (j + 2) * s, 3 * s, 3 * s); };
+    f(0, 0); f(N - 7, 0); f(0, N - 7);
+  }
+  renderVals() { return { ref: this.ref }; }
+}
+</script>
+</body>
+</html>

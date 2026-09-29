@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><script src="data.js"></script><style>body{margin:0;background:#E9E8EE;font-family:Inter,sans-serif;color:#1A1A2E}a{color:#5B2EE0}a:hover{color:#4A22C4}</style></helmet>
+<dc-import name="DocNav" current="06" hint-size="100%,58px"></dc-import>
+<div style="padding:48px;display:flex;gap:48px;align-items:flex-start;width:max-content">
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">CUSTOMER ACCOUNT · DESKTOP 1280 — tabs &amp; “Show QR” are live (WooCommerce My Account endpoints)</span>
+<div style="width:1280px;min-height:1100px;background:#F7F7F9;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" hint-size="100%,72px"></dc-import>
+  <div style="background:#fff;border-bottom:1px solid #ECECF2"><div style="max-width:1280px;margin:0 auto;padding:32px 32px 0;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:center;gap:16px"><span style="width:64px;height:64px;border-radius:999px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font:800 22px 'Plus Jakarta Sans'">JL</span><div><h1 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans';letter-spacing:-.02em">Hi, Jordan</h1><span style="font-size:14px;color:#4B4B63">3 upcoming events · Member since 2024</span></div></div>
+    <div style="display:flex;gap:4px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <sc-if value="{{ t.on }}"><span style="padding:14px 18px;font:700 15px Inter;color:#5B2EE0;box-shadow:inset 0 -3px 0 #5B2EE0;display:flex;gap:8px;align-items:center;cursor:pointer"><i class="{{ t.icon }}"></i>{{ t.label }}</span></sc-if>
+        <sc-if value="{{ t.off }}"><span onClick="{{ t.go }}" style="padding:14px 18px;font:600 15px Inter;color:#4B4B63;display:flex;gap:8px;align-items:center;cursor:pointer" style-hover="color:#1A1A2E"><i class="{{ t.icon }}"></i>{{ t.label }}</span></sc-if>
+      </sc-for>
+    </div>
+  </div></div>
+  <div style="max-width:1280px;margin:0 auto;padding:32px;box-sizing:border-box">
+    <sc-if value="{{ isUp }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ upcoming }}" as="k" hint-placeholder-count="3">
+          <article style="background:#fff;border-radius:16px;border:1px solid #ECECF2;overflow:hidden">
+            <div style="display:flex">
+              <div style="position:relative;width:220px;flex:none;background:repeating-linear-gradient(135deg,#2B2542 0 12px,#332C50 12px 24px)"><div style="position:absolute;top:12px;left:12px;width:48px;padding:6px 0 5px;background:#fff;border-radius:10px;text-align:center"><div style="font:700 10px/1 Inter;letter-spacing:.1em;color:#5B2EE0">{{ k.mon }}</div><div style="font:800 20px/1.15 'Plus Jakarta Sans'">{{ k.day }}</div></div></div>
+              <div style="flex:1;padding:22px 24px;display:flex;flex-direction:column;gap:6px;min-width:0">
+                <span style="font:700 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:#12805C">{{ k.countdown }}</span>
+                <b style="font:700 20px/26px 'Plus Jakarta Sans'">{{ k.title }}</b>
+                <span style="font-size:14px;color:#4B4B63">{{ k.when }} · {{ k.venue }}</span>
+                <span style="margin-top:6px;display:flex;gap:8px"><span style="height:28px;padding:0 10px;border-radius:999px;background:#F1ECFF;color:#4A22C4;font:700 12px Inter;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-ticket"></i>{{ k.tix }}</span><span style="height:28px;padding:0 10px;border-radius:999px;background:#F7F7F9;font:600 12px Inter;display:flex;align-items:center">Order {{ k.order }}</span></span>
+              </div>
+              <div style="padding:22px 24px;display:flex;flex-direction:column;justify-content:center;gap:10px;border-left:1px solid #F0F0F4;width:210px;flex:none">
+                <span onClick="{{ k.toggle }}" style="height:44px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 14px Inter;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><i class="fa-solid fa-qrcode"></i>{{ k.qrLabel }}</span>
+                <span style="height:44px;border-radius:10px;border:1.5px solid #D5D5E0;font:600 14px Inter;display:flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-file-pdf"></i>Download PDF</span>
+                <span style="font:600 13px Inter;color:#5B2EE0;text-align:center">Transfer · Add to calendar</span>
+              </div>
+            </div>
+            <sc-if value="{{ k.open }}">
+              <div style="border-top:2px dashed #E4E4EB;background:#FBFBFD;padding:24px;display:flex;gap:24px;overflow-x:auto">
+                <sc-for list="{{ k.codes }}" as="c">
+                  <div style="flex:none;display:flex;gap:18px;align-items:center;background:#fff;border:1px solid #ECECF2;border-radius:14px;padding:16px">
+                    <div style="width:132px;height:132px"><dc-import name="QRCode" seed="{{ c.id }}" hint-size="100%,100%"></dc-import></div>
+                    <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Attendee</span><b style="font-size:15px">{{ c.name }}</b><span style="font-size:13px;color:#4B4B63">{{ c.type }}</span><span style="font:600 12px ui-monospace,monospace;margin-top:4px">{{ c.id }}</span><span style="align-self:flex-start;height:24px;padding:0 8px;border-radius:999px;background:#E6F6EF;color:#0B5C42;font:700 11px Inter;display:flex;align-items:center">Valid · not scanned</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isPast }}">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+        <sc-for list="{{ past }}" as="e">
+          <div style="background:#fff;border-radius:16px;border:1px solid #ECECF2;overflow:hidden;display:flex;flex-direction:column">
+            <div style="height:150px;background:repeating-linear-gradient(135deg,#8C88A0 0 12px,#9591A8 12px 24px);position:relative"><span style="position:absolute;top:12px;left:12px;height:26px;padding:0 10px;border-radius:999px;background:#fff;font:700 12px Inter;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-circle-check" style="color:#12805C"></i>Attended</span></div>
+            <div style="padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:700 17px/23px 'Plus Jakarta Sans'">{{ e.title }}</b><span style="font-size:14px;color:#4B4B63">{{ e.when }}</span><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="display:flex;gap:3px;color:#D5D5E0"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span><span style="font:600 14px Inter;color:#5B2EE0">Rate event</span></div></div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isOrders }}">
+      <div style="background:#fff;border:1px solid #ECECF2;border-radius:16px;overflow:hidden;font-size:14px">
+        <div style="display:grid;grid-template-columns:1fr 2.4fr 1.2fr 1fr 1fr 110px;padding:14px 24px;background:#F7F7F9;font:600 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:#6B6B80"><span>Order</span><span>Event</span><span>Date</span><span>Total</span><span>Status</span><span></span></div>
+        <sc-for list="{{ orders }}" as="o">
+          <div style="display:grid;grid-template-columns:1fr 2.4fr 1.2fr 1fr 1fr 110px;padding:16px 24px;border-top:1px solid #ECECF2;align-items:center"><span style="font-family:ui-monospace,monospace">{{ o.id }}</span><b>{{ o.ev }}</b><span style="color:#4B4B63">{{ o.date }}</span><b>{{ o.total }}</b><span style="justify-self:start;height:24px;padding:0 10px;border-radius:999px;background:#E6F6EF;color:#0B5C42;font:700 12px Inter;display:flex;align-items:center">{{ o.status }}</span><span style="font:600 14px Inter;color:#5B2EE0;text-align:right">View <i class="fa-solid fa-chevron-right" style="font-size:10px"></i></span></div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isSet }}">
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start">
+        <div style="background:#fff;border:1px solid #ECECF2;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:18px">
+          <h2 style="margin:0;font:700 20px 'Plus Jakarta Sans'">Account details</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">First name</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Jordan</span></label>
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Last name</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Lee</span></label>
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Email</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">jordan.lee@mail.com</span></label>
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Phone</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">(555) 012-3456</span></label>
+          </div>
+          <h2 style="margin:12px 0 0;font:700 20px 'Plus Jakarta Sans'">Change password</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">Current password</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">New password</span></div>
+          <span style="align-self:flex-start;height:48px;padding:0 24px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 15px Inter;display:flex;align-items:center">Save changes</span>
+        </div>
+        <div style="background:#fff;border:1px solid #ECECF2;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <h2 style="margin:0;font:700 18px 'Plus Jakarta Sans'">Notifications</h2>
+          <span style="display:flex;justify-content:space-between;align-items:center;font-size:14px">Event reminders<span style="width:44px;height:26px;border-radius:999px;background:#5B2EE0;position:relative"><span style="position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:999px;background:#fff"></span></span></span>
+          <span style="display:flex;justify-content:space-between;align-items:center;font-size:14px">New events from followed organizers<span style="width:44px;height:26px;border-radius:999px;background:#5B2EE0;position:relative"><span style="position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:999px;background:#fff"></span></span></span>
+          <span style="display:flex;justify-content:space-between;align-items:center;font-size:14px">Weekly newsletter<span style="width:44px;height:26px;border-radius:999px;background:#D5D5E0;position:relative"><span style="position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:999px;background:#fff"></span></span></span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">MOBILE 375 · MY TICKETS</span>
+<div style="width:375px;height:812px;background:#F7F7F9;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" mobile="{{ true }}" hint-size="100%,60px"></dc-import>
+  <div style="background:#fff;padding:16px 16px 0;border-bottom:1px solid #ECECF2"><h1 style="margin:0 0 8px;font:800 26px/34px 'Plus Jakarta Sans'">My tickets</h1><div style="display:flex;gap:2px;overflow-x:auto"><span style="padding:12px;font:700 14px Inter;color:#5B2EE0;box-shadow:inset 0 -3px 0 #5B2EE0;white-space:nowrap">Upcoming</span><span style="padding:12px;font:600 14px Inter;color:#4B4B63;white-space:nowrap">Past</span><span style="padding:12px;font:600 14px Inter;color:#4B4B63;white-space:nowrap">Orders</span><span style="padding:12px;font:600 14px Inter;color:#4B4B63;white-space:nowrap">Settings</span></div></div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ upcoming }}" as="k" hint-placeholder-count="3">
+      <div style="background:#fff;border-radius:16px;border:1px solid #ECECF2;padding:14px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:12px"><div style="width:64px;height:64px;flex:none;border-radius:10px;background:repeating-linear-gradient(135deg,#2B2542 0 10px,#332C50 10px 20px)"></div><div style="min-width:0"><span style="font:700 11px Inter;letter-spacing:.06em;text-transform:uppercase;color:#12805C">{{ k.countdown }}</span><b style="display:block;font:700 15px/20px 'Plus Jakarta Sans'">{{ k.title }}</b><span style="font-size:13px;color:#4B4B63">{{ k.when }}</span></div></div>
+        <div style="display:flex;gap:8px"><span style="flex:1;height:44px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 14px Inter;display:flex;align-items:center;justify-content:center;gap:8px"><i class="fa-solid fa-qrcode"></i>{{ k.tix }}</span><span style="width:44px;height:44px;border-radius:10px;border:1.5px solid #D5D5E0;display:grid;place-items:center;box-sizing:border-box"><i class="fa-solid fa-download"></i></span></div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">MOBILE 375 · QR TICKET VIEW (swipe between tickets)</span>
+<div style="width:375px;height:812px;background:#1A1A2E;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12);display:flex;flex-direction:column">
+  <div style="height:60px;padding:0 8px;display:flex;align-items:center;color:#fff"><span style="width:44px;height:44px;display:grid;place-items:center"><i class="fa-solid fa-xmark" style="font-size:18px"></i></span><b style="flex:1;text-align:center;font:700 15px Inter">Ticket 1 of 2</b><span style="width:44px;height:44px;display:grid;place-items:center"><i class="fa-solid fa-ellipsis"></i></span></div>
+  <div style="flex:1;padding:8px 20px 20px;display:flex;flex-direction:column;gap:16px">
+    <div style="background:#fff;border-radius:24px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="padding:20px 22px 16px;display:flex;flex-direction:column;gap:6px"><span style="font:600 12px Inter;letter-spacing:.08em;text-transform:uppercase;color:#5B2EE0">Sat, Oct 3 · 8:00 PM</span><b style="font:800 20px/26px 'Plus Jakarta Sans'">Neon Tides Live — Summer Tour Finale</b><span style="font-size:13px;color:#4B4B63">Harbor Hall, Brooklyn</span></div>
+      <div style="position:relative;height:20px;display:flex;align-items:center"><span style="position:absolute;left:-10px;width:20px;height:20px;border-radius:999px;background:#1A1A2E"></span><span style="position:absolute;right:-10px;width:20px;height:20px;border-radius:999px;background:#1A1A2E"></span><span style="flex:1;margin:0 18px;border-top:2px dashed #E4E4EB"></span></div>
+      <div style="padding:16px 22px 22px;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="width:240px;height:240px"><dc-import name="QRCode" seed="TX-2026-004821" hint-size="100%,100%"></dc-import></div><span style="font:600 14px ui-monospace,monospace;letter-spacing:.08em">TX-2026-004821</span>
+        <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:12px;border-top:1px solid #ECECF2"><div><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Attendee</div><b style="font-size:14px">Jordan Lee</b></div><div><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Ticket</div><b style="font-size:14px">General Admission</b></div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;justify-content:center"><span style="width:20px;height:6px;border-radius:999px;background:#fff"></span><span style="width:6px;height:6px;border-radius:999px;background:#4B4B63"></span></div>
+    <div style="display:flex;gap:10px;margin-top:auto"><span style="flex:1;height:52px;border-radius:12px;background:#fff;color:#1A1A2E;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:8px"><i class="fa-brands fa-apple"></i>Add to Wallet</span><span style="flex:1;height:52px;border-radius:12px;border:1.5px solid #4B4B63;color:#fff;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-file-pdf"></i>PDF</span></div>
+  </div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'up', open: 0 };
+  renderVals() {
+    const tab = this.state.tab;
+    const T = [['up', 'Upcoming tickets', 'fa-solid fa-ticket'], ['past', 'Past events', 'fa-solid fa-clock-rotate-left'], ['orders', 'Orders', 'fa-solid fa-receipt'], ['set', 'Account settings', 'fa-solid fa-gear']];
+    const up = [
+      { mon: 'OCT', day: '03', title: 'Neon Tides Live — Summer Tour Finale', when: 'Sat, Oct 3 · 8:00 PM', venue: 'Harbor Hall, Brooklyn', countdown: 'In 4 days', tix: '2 × General Admission', order: '#10482', codes: [{ id: 'TX-2026-004821', name: 'Jordan Lee', type: 'General Admission' }, { id: 'TX-2026-004822', name: 'Sam Ortiz', type: 'General Admission' }] },
+      { mon: 'OCT', day: '10', title: 'Stand-Up Saturdays with Priya Rao', when: 'Sat, Oct 10 · 7:30 PM', venue: 'The Laugh Cellar, Austin', countdown: 'In 11 days', tix: '1 × Front Row', order: '#10311', codes: [{ id: 'TX-2026-003977', name: 'Jordan Lee', type: 'Front Row' }] },
+      { mon: 'OCT', day: '17', title: 'Harbourlight Music Festival 2026', when: 'Oct 17–18 · 12:00 PM', venue: 'Bayfront Park, Miami', countdown: 'In 18 days', tix: '1 × Weekend Pass', order: '#10206', codes: [{ id: 'TX-2026-002540', name: 'Jordan Lee', type: 'Weekend Pass' }] }
+    ].map((k, i) => ({ ...k, open: this.state.open === i, qrLabel: this.state.open === i ? 'Hide QR' : 'Show QR', toggle: () => this.setState(s => ({ open: s.open === i ? -1 : i })) }));
+    return {
+      tabs: T.map(([id, label, icon]) => ({ label, icon, on: id === tab, off: id !== tab, go: () => this.setState({ tab: id }) })),
+      isUp: tab === 'up', isPast: tab === 'past', isOrders: tab === 'orders', isSet: tab === 'set',
+      upcoming: up,
+      past: [{ title: 'Summer Block Party Vol. 4', when: 'Aug 22, 2026 · Brooklyn' }, { title: 'Intro to Screen Printing', when: 'Jul 11, 2026 · Queens' }, { title: 'Riverside FC vs. Harbor City', when: 'Jun 6, 2026 · Chicago' }],
+      orders: [{ id: '#10482', ev: 'Neon Tides Live — Summer Tour Finale', date: 'Sep 29, 2026', total: '$101.18', status: 'Completed' }, { id: '#10311', ev: 'Stand-Up Saturdays with Priya Rao', date: 'Sep 14, 2026', total: '$21.40', status: 'Completed' }, { id: '#10206', ev: 'Harbourlight Music Festival 2026', date: 'Aug 30, 2026', total: '$96.12', status: 'Completed' }, { id: '#09874', ev: 'Summer Block Party Vol. 4', date: 'Aug 1, 2026', total: '$0.00', status: 'Completed' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

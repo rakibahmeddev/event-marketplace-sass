@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><script src="data.js"></script><style>body{margin:0;background:#E9E8EE;font-family:Inter,sans-serif;color:#1A1A2E}a{color:#5B2EE0}a:hover{color:#4A22C4}</style></helmet>
+<dc-import name="DocNav" current="08" hint-size="100%,58px"></dc-import>
+<div style="padding:48px;display:flex;gap:48px;align-items:flex-start;width:max-content">
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">BECOME AN ORGANIZER · DESKTOP 1280 — form steps are live (Dokan vendor registration)</span>
+<div style="width:1280px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" hint-size="100%,72px"></dc-import>
+  <section style="background:#1A1A2E;color:#fff">
+    <div style="max-width:1280px;margin:0 auto;padding:88px 32px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <span style="font:700 13px Inter;letter-spacing:.1em;text-transform:uppercase;color:#FF8E73">For event organizers</span>
+        <h1 style="margin:0;font:800 60px/66px 'Plus Jakarta Sans';letter-spacing:-.035em;text-wrap:pretty">Sell out your next event. Keep the crowd coming back.</h1>
+        <p style="margin:0;font-size:19px;line-height:30px;color:#C9C9D6;max-width:560px">Create your event page, sell tickets and scan guests in with your phone — all from one dashboard. Free to start.</p>
+        <div style="display:flex;gap:12px;margin-top:6px"><a href="#register" style="height:56px;padding:0 28px;border-radius:12px;background:#FF6B4A;color:#1A1A2E;font:700 16px Inter;display:flex;align-items:center;text-decoration:none">Start selling — it’s free</a><span style="height:56px;padding:0 24px;border-radius:12px;border:1.5px solid #4B4B63;color:#fff;font:600 16px Inter;display:flex;align-items:center;gap:10px;box-sizing:border-box"><i class="fa-regular fa-circle-play"></i>Watch 2-min demo</span></div>
+        <div style="display:flex;gap:40px;margin-top:20px"><div><b style="font:800 30px 'Plus Jakarta Sans'">12,400+</b><div style="font-size:14px;color:#C9C9D6">organizers</div></div><div><b style="font:800 30px 'Plus Jakarta Sans'">3.2M</b><div style="font-size:14px;color:#C9C9D6">tickets sold</div></div><div><b style="font:800 30px 'Plus Jakarta Sans'">3 days</b><div style="font-size:14px;color:#C9C9D6">to payout</div></div></div>
+      </div>
+      <div style="height:440px;border-radius:24px;background:repeating-linear-gradient(135deg,#2B2542 0 14px,#332C50 14px 28px);display:grid;place-items:center"><span style="font:500 11px ui-monospace,Menlo,monospace;color:#9C94BF">[ organizer dashboard + scanner screenshot ]</span></div>
+    </div>
+  </section>
+  <section style="max-width:1280px;margin:0 auto;padding:88px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
+    <h2 style="margin:0;font:800 40px/48px 'Plus Jakarta Sans';letter-spacing:-.02em;text-align:center">Everything you need to run the door</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+      <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="6">
+        <div style="padding:28px;border-radius:16px;border:1px solid #ECECF2;display:flex;flex-direction:column;gap:12px"><span style="width:52px;height:52px;border-radius:14px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="{{ b.icon }}"></i></span><b style="font:700 19px 'Plus Jakarta Sans'">{{ b.t }}</b><span style="font-size:15px;line-height:24px;color:#4B4B63">{{ b.d }}</span></div>
+      </sc-for>
+    </div>
+  </section>
+  <section style="background:#F7F7F9">
+    <div style="max-width:1280px;margin:0 auto;padding:88px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
+      <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><h2 style="margin:0;font:800 40px/48px 'Plus Jakarta Sans';letter-spacing:-.02em">Simple, transparent pricing</h2><span style="font-size:17px;color:#4B4B63">No monthly fees. We only earn when you sell.</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch">
+        <div style="background:#fff;border-radius:20px;border:1px solid #ECECF2;padding:32px;display:flex;flex-direction:column;gap:16px"><b style="font:700 18px 'Plus Jakarta Sans'">Free events</b><div style="font:800 48px/1 'Plus Jakarta Sans'">$0</div><span style="font-size:15px;color:#4B4B63">No fees on free tickets, ever.</span><div style="display:flex;flex-direction:column;gap:10px;font-size:15px;margin-top:8px"><span><i class="fa-solid fa-check" style="color:#12805C;margin-right:10px"></i>Unlimited events</span><span><i class="fa-solid fa-check" style="color:#12805C;margin-right:10px"></i>QR check-in app</span><span><i class="fa-solid fa-check" style="color:#12805C;margin-right:10px"></i>Attendee list export</span></div></div>
+        <div style="background:#5B2EE0;color:#fff;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:16px;position:relative;box-shadow:0 20px 40px rgba(91,46,224,.3)"><span style="position:absolute;top:20px;right:20px;height:26px;padding:0 10px;border-radius:999px;background:#FF6B4A;color:#1A1A2E;font:700 12px Inter;display:flex;align-items:center">Most popular</span><b style="font:700 18px 'Plus Jakarta Sans'">Paid events</b><div style="font:800 48px/1 'Plus Jakarta Sans'">3.5%<span style="font-size:22px"> + $0.99</span></div><span style="font-size:15px;color:#E2D8FF">Per paid ticket. Pass the fee to buyers or absorb it — your call.</span><div style="display:flex;flex-direction:column;gap:10px;font-size:15px;margin-top:8px"><span><i class="fa-solid fa-check" style="margin-right:10px"></i>Everything in Free</span><span><i class="fa-solid fa-check" style="margin-right:10px"></i>Stripe &amp; PayPal payouts</span><span><i class="fa-solid fa-check" style="margin-right:10px"></i>Promo codes &amp; early bird tiers</span><span><i class="fa-solid fa-check" style="margin-right:10px"></i>Unlimited check-in staff</span></div></div>
+        <div style="background:#fff;border-radius:20px;border:1px solid #ECECF2;padding:32px;display:flex;flex-direction:column;gap:16px"><b style="font:700 18px 'Plus Jakarta Sans'">Pro &amp; venues</b><div style="font:800 48px/1 'Plus Jakarta Sans'">Custom</div><span style="font-size:15px;color:#4B4B63">For 10k+ tickets/year and multi-room venues.</span><div style="display:flex;flex-direction:column;gap:10px;font-size:15px;margin-top:8px"><span><i class="fa-solid fa-check" style="color:#12805C;margin-right:10px"></i>Reduced commission</span><span><i class="fa-solid fa-check" style="color:#12805C;margin-right:10px"></i>Dedicated manager</span><span><i class="fa-solid fa-check" style="color:#12805C;margin-right:10px"></i>Seating charts</span></div><span style="margin-top:auto;height:48px;border-radius:10px;border:1.5px solid #D5D5E0;font:600 15px Inter;display:grid;place-items:center;box-sizing:border-box">Talk to sales</span></div>
+      </div>
+      <div style="align-self:center;display:flex;align-items:center;gap:16px;padding:16px 24px;border-radius:14px;background:#fff;border:1px solid #ECECF2;font-size:15px"><i class="fa-solid fa-calculator" style="color:#5B2EE0"></i>Example: a <b>$40</b> ticket → buyer pays <b>$42.39</b>, you receive <b>$40.00</b></div>
+    </div>
+  </section>
+  <section id="register" style="max-width:1280px;margin:0 auto;padding:88px 32px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:18px;position:sticky;top:96px">
+      <h2 style="margin:0;font:800 40px/48px 'Plus Jakarta Sans';letter-spacing:-.02em">Create your organizer account</h2>
+      <p style="margin:0;font-size:17px;line-height:27px;color:#4B4B63">Takes about 3 minutes. You can publish events right after step 2 — payout details are only needed before your first payout.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <div onClick="{{ s.go }}" style="display:flex;align-items:center;gap:14px;cursor:pointer">
+            <sc-if value="{{ s.done }}"><span style="width:36px;height:36px;border-radius:999px;background:#12805C;color:#fff;display:grid;place-items:center"><i class="fa-solid fa-check"></i></span></sc-if>
+            <sc-if value="{{ s.cur }}"><span style="width:36px;height:36px;border-radius:999px;background:#5B2EE0;color:#fff;display:grid;place-items:center;font:700 15px Inter;box-shadow:0 0 0 5px #E2D8FF">{{ s.n }}</span></sc-if>
+            <sc-if value="{{ s.todo }}"><span style="width:36px;height:36px;border-radius:999px;border:1.5px solid #B5B5C5;color:#6B6B80;display:grid;place-items:center;font:700 15px Inter;box-sizing:border-box">{{ s.n }}</span></sc-if>
+            <div><b style="font-size:16px">{{ s.t }}</b><div style="font-size:13px;color:#6B6B80">{{ s.d }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:20px;border:1px solid #ECECF2;box-shadow:0 12px 40px rgba(26,26,46,.08);padding:36px;display:flex;flex-direction:column;gap:20px">
+      <div style="height:6px;border-radius:999px;background:#ECECF2;overflow:hidden"><div style="{{ bar }}"></div></div>
+      <sc-if value="{{ s1 }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <b style="font:800 24px 'Plus Jakarta Sans'">Step 1 · Your account</b>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">First name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Marcus</span></label>
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Last name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Bell</span></label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Work email *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">marcus@pulselive.co</span></label>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Phone *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">+1 (555) 204-8890</span></label>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Password *</span><span style="height:48px;border-radius:10px;border:1.5px solid #5B2EE0;box-shadow:0 0 0 4px #E2D8FF;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px">••••••••••<i class="fa-regular fa-eye" style="color:#6B6B80"></i></span><div style="display:flex;gap:4px"><span style="flex:1;height:4px;border-radius:4px;background:#12805C"></span><span style="flex:1;height:4px;border-radius:4px;background:#12805C"></span><span style="flex:1;height:4px;border-radius:4px;background:#12805C"></span><span style="flex:1;height:4px;border-radius:4px;background:#E4E4EB"></span></div><span style="font-size:12px;color:#0B5C42">Strong password</span></label>
+        </div>
+      </sc-if>
+      <sc-if value="{{ s2 }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <b style="font:800 24px 'Plus Jakarta Sans'">Step 2 · Your organization</b>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Organization name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Pulse Live</span></label>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Profile URL *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;display:flex;align-items:center;font-size:15px;overflow:hidden"><span style="height:100%;padding:0 12px;background:#F7F7F9;border-right:1.5px solid #D5D5E0;display:flex;align-items:center;color:#6B6B80">brandname.com/o/</span><span style="padding:0 12px">pulse-live</span></span><span style="font-size:12px;color:#0B5C42"><i class="fa-solid fa-check"></i> Available</span></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Main category</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px">Music Concerts<i class="fa-solid fa-chevron-down" style="font-size:12px;color:#6B6B80"></i></span></label>
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">City</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Brooklyn, NY</span></label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Logo</span><span style="height:96px;border-radius:12px;border:1.5px dashed #B5B5C5;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;color:#4B4B63"><i class="fa-solid fa-cloud-arrow-up" style="color:#5B2EE0;font-size:20px"></i>Drop a square image or <b style="color:#5B2EE0">browse</b></span></label>
+        </div>
+      </sc-if>
+      <sc-if value="{{ s3 }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <b style="font:800 24px 'Plus Jakarta Sans'">Step 3 · Payout details</b>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="padding:18px;border-radius:14px;border:1.5px solid #5B2EE0;background:#F1ECFF;display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><i class="fa-brands fa-stripe" style="font-size:30px;color:#635BFF"></i><span style="width:20px;height:20px;border-radius:999px;border:6px solid #5B2EE0;box-sizing:border-box"></span></div><b style="font-size:15px">Stripe Connect</b><span style="font-size:13px;color:#4B4B63">Bank transfer · 3 days after event</span></div>
+            <div style="padding:18px;border-radius:14px;border:1.5px solid #E4E4EB;display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><i class="fa-brands fa-paypal" style="font-size:26px;color:#003087"></i><span style="width:20px;height:20px;border-radius:999px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span></div><b style="font-size:15px">PayPal</b><span style="font-size:13px;color:#4B4B63">To your PayPal balance</span></div>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Account holder name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Pulse Live LLC</span></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Routing number *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">021000021</span></label>
+            <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Account number *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">•••• •••• 4410</span></label>
+          </div>
+          <span style="display:flex;gap:10px;font-size:13px;line-height:20px;color:#4B4B63;padding:14px;border-radius:12px;background:#F7F7F9"><i class="fa-solid fa-lock" style="color:#12805C;margin-top:3px"></i>Bank details are verified and stored by Stripe. You can skip this and add it later from Payouts.</span>
+        </div>
+      </sc-if>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid #ECECF2">
+        <span onClick="{{ back }}" style="height:48px;padding:0 18px;display:flex;align-items:center;gap:8px;font:600 15px Inter;color:#4B4B63;cursor:pointer"><i class="fa-solid fa-arrow-left" style="font-size:13px"></i>Back</span>
+        <span onClick="{{ next }}" style="height:52px;padding:0 28px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 16px Inter;display:flex;align-items:center;gap:10px;cursor:pointer">{{ nextLabel }}<i class="fa-solid fa-arrow-right" style="font-size:13px"></i></span>
+      </div>
+      <span style="font-size:13px;color:#6B6B80;text-align:center">By continuing you agree to the Organizer Terms and 3.5% + $0.99 commission on paid tickets.</span>
+    </div>
+  </section>
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">MOBILE 375</span>
+<div style="width:375px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" mobile="{{ true }}" hint-size="100%,60px"></dc-import>
+  <section style="background:#1A1A2E;color:#fff;padding:40px 16px;display:flex;flex-direction:column;gap:16px">
+    <span style="font:700 12px Inter;letter-spacing:.1em;text-transform:uppercase;color:#FF8E73">For event organizers</span>
+    <h1 style="margin:0;font:800 34px/42px 'Plus Jakarta Sans';letter-spacing:-.03em">Sell out your next event.</h1>
+    <p style="margin:0;font-size:16px;line-height:24px;color:#C9C9D6">Event page, ticket sales and phone check-in — one dashboard. Free to start.</p>
+    <span style="height:52px;border-radius:12px;background:#FF6B4A;color:#1A1A2E;font:700 16px Inter;display:grid;place-items:center">Start selling — it’s free</span>
+    <div style="height:200px;border-radius:16px;background:repeating-linear-gradient(135deg,#2B2542 0 12px,#332C50 12px 24px);margin-top:8px"></div>
+  </section>
+  <section style="padding:40px 16px;display:flex;flex-direction:column;gap:12px">
+    <h2 style="margin:0 0 8px;font:800 26px/34px 'Plus Jakarta Sans'">Why organizers switch</h2>
+    <sc-for list="{{ benefitsM }}" as="b" hint-placeholder-count="3"><div style="display:flex;gap:14px;padding:16px;border-radius:14px;border:1px solid #ECECF2"><span style="width:44px;height:44px;flex:none;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center"><i class="{{ b.icon }}"></i></span><div><b style="font:700 16px 'Plus Jakarta Sans'">{{ b.t }}</b><div style="font-size:14px;line-height:20px;color:#4B4B63;margin-top:2px">{{ b.d }}</div></div></div></sc-for>
+  </section>
+  <section style="padding:0 16px 40px"><div style="background:#5B2EE0;color:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px"><b style="font:700 16px 'Plus Jakarta Sans'">Paid events</b><div style="font:800 40px/1 'Plus Jakarta Sans'">3.5%<span style="font-size:18px"> + $0.99</span></div><span style="font-size:14px;color:#E2D8FF">per ticket · free events always $0</span></div></section>
+  <section style="background:#F7F7F9;padding:32px 16px 40px;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;gap:6px"><span style="flex:1;height:5px;border-radius:9px;background:#5B2EE0"></span><span style="flex:1;height:5px;border-radius:9px;background:#D5D5E0"></span><span style="flex:1;height:5px;border-radius:9px;background:#D5D5E0"></span></div>
+    <span style="font:600 13px Inter;color:#5B2EE0">Step 1 of 3</span>
+    <b style="font:800 22px 'Plus Jakarta Sans'">Your account</b>
+    <span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;background:#fff;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">Organization name</span>
+    <span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;background:#fff;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">Work email</span>
+    <span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;background:#fff;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">Phone</span>
+    <span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;background:#fff;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">Password</span>
+    <span style="height:52px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 16px Inter;display:grid;place-items:center">Continue</span>
+  </section>
+  <dc-import name="SiteFooter" mobile="{{ true }}" hint-size="100%,520px"></dc-import>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 1 };
+  renderVals() {
+    const st = this.state.step;
+    const B = [
+      { icon: 'fa-solid fa-wand-magic-sparkles', t: 'Event page in minutes', d: 'Photos, lineup, venue map and FAQ — a page that sells, without a designer.' },
+      { icon: 'fa-solid fa-layer-group', t: 'Flexible ticket tiers', d: 'Early bird, GA, VIP, group deals and promo codes with limits and end dates.' },
+      { icon: 'fa-solid fa-qrcode', t: 'QR check-in app', d: 'Give door staff their own login. Scan on any phone, even offline.' },
+      { icon: 'fa-solid fa-bolt', t: 'Fast payouts', d: 'Funds sent to your bank or PayPal 3 business days after each event.' },
+      { icon: 'fa-solid fa-chart-line', t: 'Live sales reports', d: 'Track revenue, sell-through and check-ins as they happen.' },
+      { icon: 'fa-solid fa-users', t: 'Build your following', d: 'Followers get notified the moment you publish a new event.' }
+    ];
+    const S = [['Your account', 'Name, email, password'], ['Your organization', 'Public profile & category'], ['Payout details', 'Stripe or PayPal — can skip']];
+    return {
+      benefits: B, benefitsM: [B[0], B[2], B[3]],
+      steps: S.map(([t, d], i) => ({ n: i + 1, t, d, done: i + 1 < st, cur: i + 1 === st, todo: i + 1 > st, go: () => this.setState({ step: i + 1 }) })),
+      s1: st === 1, s2: st === 2, s3: st === 3,
+      bar: { width: (st / 3 * 100) + '%', height: '100%', background: '#5B2EE0', borderRadius: 999, transition: 'width .3s' },
+      nextLabel: st === 3 ? 'Create account' : 'Continue',
+      next: () => this.setState(s => ({ step: Math.min(3, s.step + 1) })),
+      back: () => this.setState(s => ({ step: Math.max(1, s.step - 1) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

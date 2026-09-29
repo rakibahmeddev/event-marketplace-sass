@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><script src="data.js"></script><style>body{margin:0;background:#E9E8EE;font-family:Inter,sans-serif;color:#1A1A2E}a{color:#5B2EE0}a:hover{color:#4A22C4}</style></helmet>
+<dc-import name="DocNav" current="05" hint-size="100%,58px"></dc-import>
+<div style="padding:48px;display:flex;flex-direction:column;gap:64px;width:max-content">
+
+<div style="display:flex;gap:48px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">CART &amp; CHECKOUT · DESKTOP 1280 — WooCommerce: billing (left) + order review (right). Timer is live.</span>
+<div style="width:1280px;background:#F7F7F9;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <header style="background:#fff;border-bottom:1px solid #ECECF2"><div style="max-width:1280px;margin:0 auto;height:72px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:9px"><span style="width:34px;height:34px;border-radius:10px;background:#5B2EE0;display:grid;place-items:center;color:#fff"><i class="fa-solid fa-ticket" style="font-size:15px;transform:rotate(-25deg)"></i></span><span style="font:800 21px/1 'Plus Jakarta Sans';letter-spacing:-.03em">brandname<span style="color:#FF6B4A">.</span></span></div>
+    <div style="display:flex;align-items:center;gap:28px;font:600 14px Inter"><span style="display:flex;align-items:center;gap:8px;color:#5B2EE0"><span style="width:24px;height:24px;border-radius:999px;background:#5B2EE0;color:#fff;display:grid;place-items:center;font-size:11px"><i class="fa-solid fa-check"></i></span>Tickets</span><span style="width:40px;height:2px;background:#5B2EE0"></span><span style="display:flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:999px;background:#1A1A2E;color:#fff;display:grid;place-items:center;font-size:12px">2</span>Details &amp; payment</span><span style="width:40px;height:2px;background:#E4E4EB"></span><span style="display:flex;align-items:center;gap:8px;color:#6B6B80"><span style="width:24px;height:24px;border-radius:999px;border:1.5px solid #B5B5C5;display:grid;place-items:center;font-size:12px;box-sizing:border-box">3</span>Confirmation</span></div>
+    <span style="font-size:14px;color:#4B4B63;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-lock" style="color:#12805C"></i>Secure checkout</span>
+  </div></header>
+  <div style="background:#FFF1DE;border-bottom:1px solid #F6DDB8"><div style="max-width:1280px;margin:0 auto;padding:12px 32px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:15px;color:#8A4B00;box-sizing:border-box"><i class="fa-regular fa-clock"></i>Tickets reserved for <b style="font:800 18px ui-monospace,Menlo,monospace;color:#1A1A2E;background:#fff;padding:3px 10px;border-radius:8px">{{ timer }}</b> — complete checkout before time runs out</div></div>
+  <div style="max-width:1280px;margin:0 auto;padding:40px 32px 80px;box-sizing:border-box;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:start">
+    <div style="grid-column:span 7;display:flex;flex-direction:column;gap:24px">
+      <h1 style="margin:0;font:800 36px/44px 'Plus Jakarta Sans';letter-spacing:-.02em">Checkout</h1>
+      <section style="background:#fff;border-radius:16px;border:1px solid #ECECF2;padding:28px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font:700 20px 'Plus Jakarta Sans'">1. Your details</h2><span style="font-size:14px;color:#4B4B63">Have an account? <a href="11%20Supporting%20Pages.dc.html" style="font-weight:600">Log in</a></span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">First name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px;background:#fff">Jordan</span></label>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Last name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Lee</span></label>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Email *</span><span style="height:48px;border-radius:10px;border:1.5px solid #5B2EE0;box-shadow:0 0 0 4px #E2D8FF;padding:0 14px;display:flex;align-items:center;font-size:15px">jordan.lee@mail.com</span><span style="font-size:12px;color:#6B6B80">Tickets will be sent here</span></label>
+          <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Phone *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;gap:10px;font-size:15px"><span style="color:#4B4B63">US +1</span>(555) 012-3456</span></label>
+        </div>
+      </section>
+      <section style="background:#fff;border-radius:16px;border:1px solid #ECECF2;padding:28px;display:flex;flex-direction:column;gap:20px">
+        <h2 style="margin:0;font:700 20px 'Plus Jakarta Sans'">2. Attendee details</h2>
+        <div style="border:1px solid #ECECF2;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><b style="font:700 15px Inter;display:flex;gap:10px;align-items:center"><span style="height:26px;padding:0 10px;border-radius:999px;background:#F1ECFF;color:#4A22C4;font:700 12px Inter;display:flex;align-items:center">Ticket 1</span>General Admission</b><span style="display:flex;align-items:center;gap:8px;font-size:14px"><span style="width:20px;height:20px;border-radius:6px;background:#5B2EE0;color:#fff;display:grid;place-items:center;font-size:11px"><i class="fa-solid fa-check"></i></span>Same as buyer</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><span style="height:44px;border-radius:10px;border:1.5px solid #ECECF2;background:#F7F7F9;padding:0 12px;display:flex;align-items:center;font-size:14px;color:#4B4B63">Jordan Lee</span><span style="height:44px;border-radius:10px;border:1.5px solid #ECECF2;background:#F7F7F9;padding:0 12px;display:flex;align-items:center;font-size:14px;color:#4B4B63">jordan.lee@mail.com</span><span style="height:44px;border-radius:10px;border:1.5px solid #ECECF2;background:#F7F7F9;padding:0 12px;display:flex;align-items:center;font-size:14px;color:#4B4B63">(555) 012-3456</span></div>
+        </div>
+        <div style="border:1px solid #ECECF2;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><b style="font:700 15px Inter;display:flex;gap:10px;align-items:center"><span style="height:26px;padding:0 10px;border-radius:999px;background:#F1ECFF;color:#4A22C4;font:700 12px Inter;display:flex;align-items:center">Ticket 2</span>General Admission</b><span style="display:flex;align-items:center;gap:8px;font-size:14px"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span>Same as buyer</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Full name *</span><span style="height:44px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 12px;display:flex;align-items:center;font-size:14px">Sam Ortiz</span></label><label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Email *</span><span style="height:44px;border-radius:10px;border:1.5px solid #C8281E;padding:0 12px;display:flex;align-items:center;font-size:14px">sam.ortiz@</span><span style="font-size:12px;color:#C8281E">Enter a valid email</span></label><label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Phone</span><span style="height:44px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 12px;display:flex;align-items:center;font-size:14px;color:#8A8AA0">Optional</span></label></div>
+        </div>
+      </section>
+      <section style="background:#fff;border-radius:16px;border:1px solid #ECECF2;padding:28px;display:flex;flex-direction:column;gap:16px">
+        <h2 style="margin:0;font:700 20px 'Plus Jakarta Sans'">3. Payment</h2>
+        <div style="border:1.5px solid #5B2EE0;border-radius:14px;overflow:hidden">
+          <div style="padding:16px 20px;display:flex;align-items:center;gap:12px;background:#F1ECFF"><span style="width:20px;height:20px;border-radius:999px;border:6px solid #5B2EE0;box-sizing:border-box"></span><b style="flex:1;font-size:15px">Credit or debit card</b><span style="display:flex;gap:6px;font-size:24px;color:#1A1A2E"><i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i><i class="fa-brands fa-cc-amex"></i><i class="fa-brands fa-cc-apple-pay"></i></span></div>
+          <div style="padding:20px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px">
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Card number</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font:15px ui-monospace,monospace">4242 4242 4242 4242<i class="fa-brands fa-cc-visa" style="font-size:20px;color:#1A1F71"></i></span></label>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Expiry</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">08 / 29</span></label>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">CVC</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">•••</span></label>
+            <span style="grid-column:1/-1;font-size:12px;color:#6B6B80;display:flex;align-items:center;gap:6px"><i class="fa-brands fa-stripe" style="font-size:22px;color:#635BFF"></i>Payments are processed securely by Stripe. We never store your card details.</span>
+          </div>
+        </div>
+        <div style="border:1.5px solid #E4E4EB;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px"><span style="width:20px;height:20px;border-radius:999px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span><b style="flex:1;font-size:15px">PayPal</b><i class="fa-brands fa-paypal" style="font-size:22px;color:#003087"></i></div>
+        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:20px;color:#4B4B63;margin-top:4px"><span style="width:20px;height:20px;flex:none;border-radius:6px;background:#5B2EE0;color:#fff;display:grid;place-items:center;font-size:11px"><i class="fa-solid fa-check"></i></span>I agree to the Terms of Service and the organizer’s refund policy.</span>
+        <a href="#confirm" style="height:56px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 17px Inter;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none"><i class="fa-solid fa-lock"></i>Place order · $101.18</a>
+      </section>
+    </div>
+    <aside style="grid-column:span 5;position:sticky;top:24px;margin-top:68px;background:#fff;border-radius:16px;border:1px solid #ECECF2;overflow:hidden">
+      <div style="display:flex;gap:14px;padding:20px;border-bottom:1px solid #ECECF2"><div style="width:96px;height:72px;border-radius:10px;flex:none;background:repeating-linear-gradient(135deg,#2B2542 0 10px,#332C50 10px 20px)"></div><div style="display:flex;flex-direction:column;gap:4px"><b style="font:700 16px/22px 'Plus Jakarta Sans'">Neon Tides Live — Summer Tour Finale</b><span style="font-size:13px;color:#4B4B63">Sat, Oct 3 · 8:00 PM · Harbor Hall</span></div></div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid #ECECF2">
+        <b style="font:700 16px 'Plus Jakarta Sans'">Order summary</b>
+        <div style="display:flex;justify-content:space-between;font-size:15px"><span>2 × General Admission</span><span>$90.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:#4B4B63"><span>Service fee</span><span>$9.18</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:#4B4B63"><span>Processing fee</span><span>$2.00</span></div>
+        <div style="display:flex;gap:10px"><span style="flex:1;height:44px;border-radius:10px;border:1.5px dashed #D5D5E0;padding:0 12px;display:flex;align-items:center;gap:10px;font-size:14px;color:#6B6B80"><i class="fa-solid fa-tag"></i>Promo code</span><span style="height:44px;padding:0 16px;border-radius:10px;border:1.5px solid #D5D5E0;display:flex;align-items:center;font:600 14px Inter;box-sizing:border-box">Apply</span></div>
+      </div>
+      <div style="padding:20px;display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:16px">Total (USD)</b><b style="font:800 28px 'Plus Jakarta Sans'">$101.18</b></div>
+      <div style="padding:14px 20px;background:#E6F6EF;color:#0B5C42;font-size:13px;display:flex;gap:10px;align-items:center"><i class="fa-solid fa-shield-halved"></i>Transferable anytime · Buyer protection included</div>
+    </aside>
+  </div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">CHECKOUT · MOBILE 375</span>
+<div style="width:375px;background:#F7F7F9;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <div style="height:60px;background:#fff;padding:0 8px;display:flex;align-items:center;border-bottom:1px solid #ECECF2"><span style="width:44px;height:44px;display:grid;place-items:center"><i class="fa-solid fa-arrow-left"></i></span><b style="flex:1;text-align:center;font:700 16px 'Plus Jakarta Sans'">Checkout</b><span style="width:44px;height:44px;display:grid;place-items:center;color:#12805C"><i class="fa-solid fa-lock"></i></span></div>
+  <div style="background:#FFF1DE;padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;color:#8A4B00;position:sticky;top:0"><i class="fa-regular fa-clock"></i>Reserved for<b style="font:800 16px ui-monospace,monospace;color:#1A1A2E">{{ timer }}</b></div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+    <div style="background:#fff;border-radius:14px;border:1px solid #ECECF2;padding:16px;display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:15px">2 × General Admission</b><div style="font-size:13px;color:#4B4B63">Neon Tides Live · Oct 3</div></div><div style="text-align:right"><b style="font:800 18px 'Plus Jakarta Sans'">$101.18</b><div style="font:600 13px Inter;color:#5B2EE0">Details <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></div></div></div>
+    <div style="background:#fff;border-radius:14px;border:1px solid #ECECF2;padding:18px;display:flex;flex-direction:column;gap:14px">
+      <b style="font:700 17px 'Plus Jakarta Sans'">Your details</b>
+      <label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Full name *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">Jordan Lee</span></label>
+      <label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Email *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">jordan.lee@mail.com</span></label>
+      <label style="display:flex;flex-direction:column;gap:6px"><span style="font:600 13px Inter">Phone *</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px">(555) 012-3456</span></label>
+    </div>
+    <div style="background:#fff;border-radius:14px;border:1px solid #ECECF2;padding:18px;display:flex;flex-direction:column;gap:12px">
+      <b style="font:700 17px 'Plus Jakarta Sans'">Attendees</b>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:#F7F7F9"><span style="height:24px;padding:0 8px;border-radius:999px;background:#F1ECFF;color:#4A22C4;font:700 11px Inter;display:flex;align-items:center">1</span><span style="flex:1;font-size:14px">Jordan Lee <span style="color:#6B6B80">· you</span></span><i class="fa-solid fa-pen" style="font-size:13px;color:#5B2EE0"></i></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;border:1.5px dashed #D5D5E0"><span style="height:24px;padding:0 8px;border-radius:999px;background:#F1ECFF;color:#4A22C4;font:700 11px Inter;display:flex;align-items:center">2</span><span style="flex:1;font-size:14px;color:#6B6B80">Add attendee name &amp; email</span><i class="fa-solid fa-chevron-right" style="font-size:12px"></i></div>
+    </div>
+    <div style="background:#fff;border-radius:14px;border:1px solid #ECECF2;padding:18px;display:flex;flex-direction:column;gap:12px">
+      <b style="font:700 17px 'Plus Jakarta Sans'">Payment</b>
+      <div style="height:52px;border-radius:12px;border:1.5px solid #5B2EE0;background:#F1ECFF;padding:0 14px;display:flex;align-items:center;gap:12px"><span style="width:20px;height:20px;border-radius:999px;border:6px solid #5B2EE0;box-sizing:border-box"></span><b style="flex:1;font-size:15px">Card</b><i class="fa-brands fa-cc-visa" style="font-size:22px"></i></div>
+      <div style="height:52px;border-radius:12px;border:1.5px solid #E4E4EB;padding:0 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:999px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span><b style="flex:1;font-size:15px">PayPal</b><i class="fa-brands fa-paypal" style="font-size:20px;color:#003087"></i></div>
+      <span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">4242 4242 4242 4242</span>
+      <div style="display:flex;gap:10px"><span style="flex:1;height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">08/29</span><span style="flex:1;height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font:15px ui-monospace,monospace">•••</span></div>
+    </div>
+    <span style="height:56px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 16px Inter;display:flex;align-items:center;justify-content:center;gap:10px"><i class="fa-solid fa-lock"></i>Place order · $101.18</span>
+  </div>
+</div>
+</div>
+</div>
+
+<div id="confirm" style="display:flex;gap:48px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">ORDER CONFIRMATION + DIGITAL TICKET · DESKTOP 1280 (WooCommerce thank-you endpoint)</span>
+<div style="width:1280px;background:#F7F7F9;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" hint-size="100%,72px"></dc-import>
+  <div style="max-width:1280px;margin:0 auto;padding:56px 32px 80px;box-sizing:border-box;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:start">
+    <div style="grid-column:span 7;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span style="width:64px;height:64px;border-radius:999px;background:#12805C;color:#fff;display:grid;place-items:center;font-size:28px;box-shadow:0 0 0 8px #E6F6EF"><i class="fa-solid fa-check"></i></span>
+        <h1 style="margin:8px 0 0;font:800 48px/56px 'Plus Jakarta Sans';letter-spacing:-.03em">You’re going, Jordan!</h1>
+        <p style="margin:0;font-size:17px;line-height:27px;color:#4B4B63;max-width:560px">Your 2 tickets are confirmed. We’ve emailed them to <b style="color:#1A1A2E">jordan.lee@mail.com</b> — you can also find them anytime in My Tickets.</p>
+        <div style="display:flex;gap:12px;margin-top:4px"><a href="06%20My%20Tickets.dc.html" style="height:52px;padding:0 24px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 16px Inter;display:flex;align-items:center;gap:10px;text-decoration:none"><i class="fa-solid fa-ticket"></i>View my tickets</a><span style="height:52px;padding:0 20px;border-radius:12px;border:1.5px solid #D5D5E0;background:#fff;font:600 16px Inter;display:flex;align-items:center;gap:10px;box-sizing:border-box"><i class="fa-solid fa-download"></i>Download PDF</span><span style="height:52px;padding:0 20px;border-radius:12px;border:1.5px solid #D5D5E0;background:#fff;font:600 16px Inter;display:flex;align-items:center;gap:10px;box-sizing:border-box"><i class="fa-solid fa-calendar-plus"></i>Add to calendar</span></div>
+      </div>
+      <div style="background:#fff;border-radius:16px;border:1px solid #ECECF2;overflow:hidden">
+        <div style="padding:18px 24px;border-bottom:1px solid #ECECF2;display:flex;justify-content:space-between"><b style="font:700 17px 'Plus Jakarta Sans'">Order #10482</b><span style="font-size:14px;color:#4B4B63">Sep 29, 2026 · Visa •• 4242</span></div>
+        <div style="padding:18px 24px;display:flex;flex-direction:column;gap:12px;font-size:15px">
+          <div style="display:flex;justify-content:space-between"><span>2 × General Admission</span><span>$90.00</span></div>
+          <div style="display:flex;justify-content:space-between;color:#4B4B63;font-size:14px"><span>Fees</span><span>$11.18</span></div>
+          <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid #ECECF2"><b>Total paid</b><b style="font:800 20px 'Plus Jakarta Sans'">$101.18</b></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;padding:18px 20px;border-radius:14px;background:#F1ECFF;font-size:14px;line-height:21px;color:#33334A"><i class="fa-solid fa-circle-info" style="color:#5B2EE0;margin-top:3px"></i><span>Show the QR code on your phone at the door — no printing needed. Each ticket can be scanned once. Ticket 2 was also emailed to Sam Ortiz.</span></div>
+    </div>
+    <div style="grid-column:span 5;display:flex;justify-content:center">
+      <article style="width:380px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 20px 50px rgba(26,26,46,.15);font-family:Inter">
+        <div style="position:relative;height:150px;background:repeating-linear-gradient(135deg,#2B2542 0 12px,#332C50 12px 24px);display:grid;place-items:center"><span style="font:500 10px ui-monospace,Menlo,monospace;color:#B9B1D9">[ event image ]</span><span style="position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;color:#fff;font:800 14px 'Plus Jakarta Sans'"><i class="fa-solid fa-ticket" style="transform:rotate(-25deg)"></i>brandname.</span></div>
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+          <b style="font:800 20px/26px 'Plus Jakarta Sans'">Neon Tides Live — Summer Tour Finale</b>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 16px">
+            <div><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Date</div><b style="font-size:14px">Sat, Oct 3, 2026</b></div>
+            <div><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Time</div><b style="font-size:14px">8:00 PM · Doors 7</b></div>
+            <div><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Attendee</div><b style="font-size:14px">Jordan Lee</b></div>
+            <div><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Ticket</div><b style="font-size:14px">General Admission</b></div>
+            <div style="grid-column:1/-1"><div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Venue</div><b style="font-size:14px">Harbor Hall · 210 Kent Ave, Brooklyn</b></div>
+          </div>
+        </div>
+        <div style="position:relative;height:24px;display:flex;align-items:center"><span style="position:absolute;left:-12px;width:24px;height:24px;border-radius:999px;background:#F7F7F9"></span><span style="position:absolute;right:-12px;width:24px;height:24px;border-radius:999px;background:#F7F7F9"></span><span style="flex:1;margin:0 20px;border-top:2px dashed #E4E4EB"></span></div>
+        <div style="padding:16px 24px 24px;display:flex;flex-direction:column;align-items:center;gap:12px">
+          <div style="width:200px;height:200px;padding:10px;border-radius:14px;border:1px solid #ECECF2;box-sizing:border-box"><dc-import name="QRCode" seed="TX-2026-004821" hint-size="100%,100%"></dc-import></div>
+          <span style="font:600 14px ui-monospace,Menlo,monospace;letter-spacing:.08em">TX-2026-004821</span>
+          <span style="font-size:12px;color:#6B6B80">Ticket 1 of 2 · Order #10482</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">EMAIL TICKET · 600px (WooCommerce email template)</span>
+<div style="width:600px;background:#F7F7F9;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12);padding:32px 0;font-family:Inter,Arial,sans-serif">
+  <table role="presentation" style="width:536px;margin:0 auto;border-collapse:collapse">
+    <tbody>
+    <tr><td style="padding:0 0 24px"><span style="display:flex;align-items:center;gap:8px;font:800 20px 'Plus Jakarta Sans',Arial"><span style="width:30px;height:30px;border-radius:9px;background:#5B2EE0;display:grid;place-items:center;color:#fff;font-size:13px"><i class="fa-solid fa-ticket" style="transform:rotate(-25deg)"></i></span>brandname<span style="color:#FF6B4A;margin-left:-8px">.</span></span></td></tr>
+    <tr><td style="background:#fff;border-radius:16px;overflow:hidden;padding:0">
+      <div style="height:180px;background:repeating-linear-gradient(135deg,#2B2542 0 12px,#332C50 12px 24px);display:grid;place-items:center;border-radius:16px 16px 0 0"><span style="font:500 10px ui-monospace,Menlo,monospace;color:#B9B1D9">[ event image 600×180 ]</span></div>
+      <div style="padding:28px 32px;display:flex;flex-direction:column;gap:12px">
+        <span style="font:700 12px Arial;letter-spacing:.1em;text-transform:uppercase;color:#12805C">Order confirmed · #10482</span>
+        <b style="font:800 26px/32px 'Plus Jakarta Sans',Arial">Your tickets for Neon Tides Live</b>
+        <p style="margin:0;font-size:15px;line-height:23px;color:#4B4B63">Hi Jordan, you’re all set. Show the QR code below at the entrance. Each ticket can be scanned once.</p>
+      </div>
+      <div style="margin:0 32px;border:1px solid #ECECF2;border-radius:14px;display:flex">
+        <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;border-right:2px dashed #E4E4EB">
+          <div><div style="font:600 11px Arial;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">When</div><b style="font-size:14px">Sat, Oct 3, 2026 · 8:00 PM</b></div>
+          <div><div style="font:600 11px Arial;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Where</div><b style="font-size:14px">Harbor Hall, Brooklyn</b></div>
+          <div><div style="font:600 11px Arial;letter-spacing:.08em;text-transform:uppercase;color:#6B6B80">Attendee · Ticket</div><b style="font-size:14px">Jordan Lee · General Admission</b></div>
+        </div>
+        <div style="width:170px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:138px;height:138px"><dc-import name="QRCode" seed="TX-2026-004821" hint-size="100%,100%"></dc-import></div><span style="font:600 11px ui-monospace,monospace">TX-2026-004821</span></div>
+      </div>
+      <div style="padding:24px 32px 32px;display:flex;gap:10px">
+        <span style="height:48px;padding:0 22px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 15px Arial;display:flex;align-items:center">View tickets online</span>
+        <span style="height:48px;padding:0 18px;border-radius:10px;border:1.5px solid #D5D5E0;font:600 15px Arial;display:flex;align-items:center;box-sizing:border-box">Add to calendar</span>
+      </div>
+      <div style="padding:20px 32px;border-top:1px solid #ECECF2;font-size:13px;line-height:20px;color:#4B4B63">PDF tickets are attached to this email. Need help? Reply to this email or contact <b>Pulse Live</b>.</div>
+    </td></tr>
+    <tr><td style="padding:24px 0 0;text-align:center;font-size:12px;line-height:18px;color:#6B6B80">© 2026 brandname Inc. · 123 Market St, New York, NY<br>Manage email preferences</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { left: 600 };
+  componentDidMount() { this._i = setInterval(() => this.setState(s => ({ left: s.left > 0 ? s.left - 1 : 600 })), 1000); }
+  componentWillUnmount() { clearInterval(this._i); }
+  renderVals() {
+    const l = this.state.left;
+    return { timer: String(Math.floor(l / 60)).padStart(2, '0') + ':' + String(l % 60).padStart(2, '0') };
+  }
+}
+</script>
+</body>
+</html>

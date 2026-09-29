@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><script src="data.js"></script><style>body{margin:0;background:#E9E8EE;font-family:Inter,sans-serif;color:#1A1A2E}a{color:#5B2EE0}a:hover{color:#4A22C4}</style></helmet>
+<dc-import name="DocNav" current="01" hint-size="100%,58px"></dc-import>
+<div style="padding:48px;display:flex;width:max-content">
+<main style="width:1280px;flex:none;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(26,26,46,.12);overflow:hidden">
+  <section style="padding:64px 64px 48px;background:#1A1A2E;color:#fff;display:flex;justify-content:space-between;align-items:flex-end;gap:40px">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <span style="font:600 13px Inter;letter-spacing:.12em;text-transform:uppercase;color:#FF8E73">Design system v1.0 · Elementor global styles</span>
+      <h1 style="margin:0;font:800 64px/68px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em">brandname<span style="color:#FF6B4A">.</span> style guide</h1>
+      <p style="margin:0;font-size:18px;line-height:28px;color:#C9C9D6;max-width:640px">One violet for action, one coral for urgency, and lots of calm neutrals so event photography does the talking. Every token below maps 1:1 to an Elementor Site Setting (Global Colors, Global Fonts) or a saved template.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;font:500 13px ui-monospace,Menlo,monospace;color:#C9C9D6;text-align:right;flex:none"><span>Container 1280 · 12 col · 24 gutter</span><span>Base unit 8px</span><span>Breakpoints 1280 / 768 / 375</span></div>
+  </section>
+
+  <section style="padding:56px 64px;display:flex;flex-direction:column;gap:28px;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">01</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Color palette</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px">
+      <div style="border-radius:16px;overflow:hidden;border:1px solid #ECECF2"><div style="height:120px;background:#5B2EE0;padding:16px;box-sizing:border-box;color:#fff;font:700 13px Inter">Aa 7.1:1</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:2px"><b style="font:700 15px 'Plus Jakarta Sans'">Primary · Violet</b><span style="font:500 13px ui-monospace,monospace;color:#4B4B63">#5B2EE0</span><span style="font-size:12px;color:#6B6B80">Buttons, links, active states</span></div></div>
+      <div style="border-radius:16px;overflow:hidden;border:1px solid #ECECF2"><div style="height:120px;background:#FF6B4A;padding:16px;box-sizing:border-box;color:#1A1A2E;font:700 13px Inter">Aa 6.6:1 (ink)</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:2px"><b style="font:700 15px 'Plus Jakarta Sans'">Accent · Coral</b><span style="font:500 13px ui-monospace,monospace;color:#4B4B63">#FF6B4A</span><span style="font-size:12px;color:#6B6B80">Badges, urgency, highlights</span></div></div>
+      <div style="border-radius:16px;overflow:hidden;border:1px solid #ECECF2"><div style="height:120px;background:#1A1A2E;padding:16px;box-sizing:border-box;color:#fff;font:700 13px Inter">Aa 17:1</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:2px"><b style="font:700 15px 'Plus Jakarta Sans'">Text · Ink</b><span style="font:500 13px ui-monospace,monospace;color:#4B4B63">#1A1A2E</span><span style="font-size:12px;color:#6B6B80">Headings, body, footer</span></div></div>
+      <div style="border-radius:16px;overflow:hidden;border:1px solid #ECECF2"><div style="height:120px;background:#F7F7F9;padding:16px;box-sizing:border-box;color:#1A1A2E;font:700 13px Inter">Aa</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:2px"><b style="font:700 15px 'Plus Jakarta Sans'">Surface · Mist</b><span style="font:500 13px ui-monospace,monospace;color:#4B4B63">#F7F7F9</span><span style="font-size:12px;color:#6B6B80">Page & section backgrounds</span></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px">
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#4A22C4"></div><b style="font-size:13px">Violet 700</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#4A22C4 hover</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#E2D8FF"></div><b style="font-size:13px">Violet 100</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#E2D8FF</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#F1ECFF"></div><b style="font-size:13px">Violet 50</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#F1ECFF</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#FFE3DB"></div><b style="font-size:13px">Coral 100</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#FFE3DB</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#4B4B63"></div><b style="font-size:13px">Slate 600</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#4B4B63 body-2</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#6B6B80"></div><b style="font-size:13px">Slate 500</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#6B6B80 meta</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#E4E4EB"></div><b style="font-size:13px">Line</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#E4E4EB</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><div style="height:64px;border-radius:12px;background:#fff;border:1px solid #E4E4EB;box-sizing:border-box"></div><b style="font-size:13px">White</b><span style="font:12px ui-monospace,monospace;color:#6B6B80">#FFFFFF cards</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;background:#E6F6EF"><span style="width:40px;height:40px;border-radius:10px;background:#12805C;flex:none"></span><div><b style="font-size:14px;color:#0B5C42">Success</b><div style="font:12px ui-monospace,monospace;color:#0B5C42">#12805C / #E6F6EF · Valid ticket</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;background:#FFF1DE"><span style="width:40px;height:40px;border-radius:10px;background:#D97706;flex:none"></span><div><b style="font-size:14px;color:#8A4B00">Warning</b><div style="font:12px ui-monospace,monospace;color:#8A4B00">#D97706 / #FFF1DE · Already used</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;background:#FDECEA"><span style="width:40px;height:40px;border-radius:10px;background:#C8281E;flex:none"></span><div><b style="font-size:14px;color:#8F1A13">Danger</b><div style="font:12px ui-monospace,monospace;color:#8F1A13">#C8281E / #FDECEA · Invalid, errors</div></div></div>
+    </div>
+  </section>
+
+  <section style="padding:56px 64px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">02</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Typography</h2></div>
+      <div style="display:flex;flex-direction:column;border-top:1px solid #ECECF2">
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">H1 56/64 · 800</span><span style="font:800 56px/64px 'Plus Jakarta Sans';letter-spacing:-.03em">Live it loud</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">H2 40/48 · 800</span><span style="font:800 40px/48px 'Plus Jakarta Sans';letter-spacing:-.02em">Trending this week</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">H3 32/40 · 700</span><span style="font:700 32px/40px 'Plus Jakarta Sans';letter-spacing:-.02em">Browse by city</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">H4 24/32 · 700</span><span style="font:700 24px/32px 'Plus Jakarta Sans'">About this event</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">H5 20/28 · 700</span><span style="font:700 20px/28px 'Plus Jakarta Sans'">General Admission</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">H6 16/24 · 700</span><span style="font:700 16px/24px 'Plus Jakarta Sans'">Refund policy</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Body L 18/28</span><span style="font:400 18px/28px Inter;color:#4B4B63">Discover concerts, workshops and nights out happening near you.</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Body 16/24</span><span style="font:400 16px/24px Inter">Doors open at 7:00 PM. Bring a valid photo ID for 21+ entry.</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Small 14/20</span><span style="font:400 14px/20px Inter;color:#4B4B63">Sat, Oct 3 · 8:00 PM · Harbor Hall, Brooklyn</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Caption 12/16</span><span style="font:600 12px/16px Inter;letter-spacing:.06em;text-transform:uppercase;color:#5B2EE0">Music concerts</span></div>
+        <div style="display:grid;grid-template-columns:120px 1fr;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #ECECF2"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Button 15/20 · 600</span><span style="font:600 15px/20px Inter">Get tickets</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:64px">
+      <div style="padding:28px;border-radius:16px;background:#F7F7F9;display:flex;flex-direction:column;gap:8px"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Headings</span><span style="font:800 44px/1 'Plus Jakarta Sans';letter-spacing:-.03em">Plus Jakarta Sans</span><span style="font-size:14px;color:#4B4B63">600 · 700 · 800 — tight tracking (-2 to -3%) at H1–H3</span></div>
+      <div style="padding:28px;border-radius:16px;background:#F7F7F9;display:flex;flex-direction:column;gap:8px"><span style="font:12px ui-monospace,monospace;color:#6B6B80">Body & UI</span><span style="font:600 44px/1 Inter;letter-spacing:-.02em">Inter</span><span style="font-size:14px;color:#4B4B63">400 · 500 · 600 · 700 — all body, labels, buttons, tables</span></div>
+      <div style="padding:20px 28px;border-radius:16px;border:1px solid #ECECF2;display:flex;flex-direction:column;gap:10px;font-size:14px"><b style="font:700 14px 'Plus Jakarta Sans'">Mobile scale (≤767px)</b><span style="color:#4B4B63">H1 36/44 · H2 28/36 · H3 24/32 · H4 20/28 · H5 18/26 · Body 16/24</span></div>
+    </div>
+  </section>
+
+  <section style="padding:56px 64px;display:flex;flex-direction:column;gap:28px;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">03</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Buttons</h2></div>
+    <div style="display:grid;grid-template-columns:140px repeat(5,minmax(0,1fr));gap:16px 20px;align-items:center">
+      <span></span><span style="font:12px ui-monospace,monospace;color:#6B6B80">Default</span><span style="font:12px ui-monospace,monospace;color:#6B6B80">Hover</span><span style="font:12px ui-monospace,monospace;color:#6B6B80">Focus</span><span style="font:12px ui-monospace,monospace;color:#6B6B80">Disabled</span><span style="font:12px ui-monospace,monospace;color:#6B6B80">Loading</span>
+      <b style="font-size:14px">Primary</b>
+      <span style="height:48px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 15px Inter;display:flex;align-items:center;justify-content:center">Get tickets</span>
+      <span style="height:48px;border-radius:10px;background:#4A22C4;color:#fff;font:600 15px Inter;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(91,46,224,.35)">Get tickets</span>
+      <span style="height:48px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 15px Inter;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px #fff,0 0 0 5px #5B2EE0">Get tickets</span>
+      <span style="height:48px;border-radius:10px;background:#E4E4EB;color:#8A8AA0;font:600 15px Inter;display:flex;align-items:center;justify-content:center">Get tickets</span>
+      <span style="height:48px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:10px;opacity:.85"><i class="fa-solid fa-circle-notch fa-spin"></i>Processing</span>
+      <b style="font-size:14px">Secondary</b>
+      <span style="height:48px;border-radius:10px;background:#fff;border:1.5px solid #D5D5E0;color:#1A1A2E;font:600 15px Inter;display:flex;align-items:center;justify-content:center;box-sizing:border-box">Follow</span>
+      <span style="height:48px;border-radius:10px;background:#F7F7F9;border:1.5px solid #1A1A2E;color:#1A1A2E;font:600 15px Inter;display:flex;align-items:center;justify-content:center;box-sizing:border-box">Follow</span>
+      <span style="height:48px;border-radius:10px;background:#fff;border:1.5px solid #D5D5E0;color:#1A1A2E;font:600 15px Inter;display:flex;align-items:center;justify-content:center;box-sizing:border-box;box-shadow:0 0 0 3px #fff,0 0 0 5px #5B2EE0">Follow</span>
+      <span style="height:48px;border-radius:10px;background:#fff;border:1.5px solid #ECECF2;color:#A5A5B5;font:600 15px Inter;display:flex;align-items:center;justify-content:center;box-sizing:border-box">Follow</span>
+      <span style="height:48px;border-radius:10px;background:#fff;border:1.5px solid #D5D5E0;color:#1A1A2E;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:10px;box-sizing:border-box"><i class="fa-solid fa-circle-notch fa-spin"></i>Saving</span>
+      <b style="font-size:14px">Accent</b>
+      <span style="height:48px;border-radius:10px;background:#FF6B4A;color:#1A1A2E;font:700 15px Inter;display:flex;align-items:center;justify-content:center">Create event</span>
+      <span style="height:48px;border-radius:10px;background:#F2552F;color:#1A1A2E;font:700 15px Inter;display:flex;align-items:center;justify-content:center">Create event</span>
+      <span style="height:48px;border-radius:10px;background:#FF6B4A;color:#1A1A2E;font:700 15px Inter;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px #fff,0 0 0 5px #1A1A2E">Create event</span>
+      <span style="height:48px;border-radius:10px;background:#FFE3DB;color:#C79A8F;font:700 15px Inter;display:flex;align-items:center;justify-content:center">Create event</span>
+      <span style="font-size:12px;color:#6B6B80">Coral only for organizer CTAs</span>
+      <b style="font-size:14px">Ghost / link</b>
+      <span style="height:48px;border-radius:10px;color:#5B2EE0;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:8px">View all<i class="fa-solid fa-arrow-right" style="font-size:13px"></i></span>
+      <span style="height:48px;border-radius:10px;background:#F1ECFF;color:#4A22C4;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:8px">View all<i class="fa-solid fa-arrow-right" style="font-size:13px"></i></span>
+      <span style="height:48px;border-radius:10px;color:#5B2EE0;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 0 0 2px #5B2EE0">View all<i class="fa-solid fa-arrow-right" style="font-size:13px"></i></span>
+      <span style="height:48px;border-radius:10px;color:#A5A5B5;font:600 15px Inter;display:flex;align-items:center;justify-content:center;gap:8px">View all<i class="fa-solid fa-arrow-right" style="font-size:13px"></i></span>
+      <span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;padding-top:8px">
+      <span style="font:12px ui-monospace,monospace;color:#6B6B80;width:124px">Sizes</span>
+      <span style="height:56px;padding:0 28px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 16px Inter;display:flex;align-items:center">Large · 56</span>
+      <span style="height:48px;padding:0 24px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 15px Inter;display:flex;align-items:center">Medium · 48</span>
+      <span style="height:40px;padding:0 18px;border-radius:10px;background:#5B2EE0;color:#fff;font:600 14px Inter;display:flex;align-items:center">Small · 40</span>
+      <span style="width:44px;height:44px;border-radius:999px;border:1.5px solid #D5D5E0;display:grid;place-items:center;box-sizing:border-box"><i class="fa-regular fa-heart"></i></span>
+      <span style="width:44px;height:44px;border-radius:999px;border:1.5px solid #D5D5E0;display:grid;place-items:center;box-sizing:border-box"><i class="fa-solid fa-share-nodes"></i></span>
+      <span style="font-size:13px;color:#6B6B80">Icon buttons · 44 min touch target</span>
+    </div>
+  </section>
+
+  <section style="padding:56px 64px;display:flex;flex-direction:column;gap:28px;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">04</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Form inputs</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+      <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Full name</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">e.g. Jordan Lee</span><span style="font-size:12px;color:#6B6B80">Default</span></label>
+      <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Email</span><span style="height:48px;border-radius:10px;border:1.5px solid #5B2EE0;box-shadow:0 0 0 4px #E2D8FF;padding:0 14px;display:flex;align-items:center;font-size:15px">jordan@mail.com<span style="width:1px;height:20px;background:#1A1A2E;margin-left:1px"></span></span><span style="font-size:12px;color:#6B6B80">Focus</span></label>
+      <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Phone</span><span style="height:48px;border-radius:10px;border:1.5px solid #C8281E;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px">+1 555 01<i class="fa-solid fa-circle-exclamation" style="color:#C8281E"></i></span><span style="font-size:12px;color:#C8281E">Enter a valid phone number</span></label>
+      <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Category</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px">Music Concerts<i class="fa-solid fa-chevron-down" style="font-size:12px;color:#6B6B80"></i></span></label>
+      <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter">Event date</span><span style="height:48px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 14px;display:flex;align-items:center;gap:10px;font-size:15px"><i class="fa-regular fa-calendar" style="color:#6B6B80"></i>Oct 3, 2026</span></label>
+      <label style="display:flex;flex-direction:column;gap:8px"><span style="font:600 14px Inter;color:#8A8AA0">Ticket ID</span><span style="height:48px;border-radius:10px;border:1.5px solid #ECECF2;background:#F7F7F9;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A8AA0">TX-2026-004821</span><span style="font-size:12px;color:#6B6B80">Disabled</span></label>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:36px;padding-top:8px">
+      <span style="display:flex;align-items:center;gap:10px;font-size:15px"><span style="width:22px;height:22px;border-radius:6px;background:#5B2EE0;display:grid;place-items:center;color:#fff;font-size:12px"><i class="fa-solid fa-check"></i></span>Checkbox on</span>
+      <span style="display:flex;align-items:center;gap:10px;font-size:15px"><span style="width:22px;height:22px;border-radius:6px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span>Checkbox off</span>
+      <span style="display:flex;align-items:center;gap:10px;font-size:15px"><span style="width:22px;height:22px;border-radius:999px;border:6px solid #5B2EE0;box-sizing:border-box"></span>Radio on</span>
+      <span style="display:flex;align-items:center;gap:10px;font-size:15px"><span style="width:44px;height:26px;border-radius:999px;background:#5B2EE0;position:relative"><span style="position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:999px;background:#fff"></span></span>Toggle</span>
+      <span style="display:flex;align-items:center;border:1.5px solid #D5D5E0;border-radius:10px;height:44px;overflow:hidden"><span style="width:44px;display:grid;place-items:center;color:#5B2EE0"><i class="fa-solid fa-minus"></i></span><span style="width:40px;text-align:center;font:700 16px Inter">2</span><span style="width:44px;display:grid;place-items:center;color:#5B2EE0"><i class="fa-solid fa-plus"></i></span></span>
+      <span style="font-size:13px;color:#6B6B80">Quantity stepper</span>
+    </div>
+  </section>
+
+  <section style="padding:56px 64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">05</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Badges</h2></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#FF6B4A;color:#1A1A2E;font:700 12px Inter;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-fire"></i>Selling fast</span>
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#1A1A2E;color:#fff;font:700 12px Inter;display:flex;align-items:center">Sold out</span>
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#E6F6EF;color:#0B5C42;font:700 12px Inter;display:flex;align-items:center">Free</span>
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#F1ECFF;color:#4A22C4;font:700 12px Inter;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-video"></i>Online</span>
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#FFF1DE;color:#8A4B00;font:700 12px Inter;display:flex;align-items:center">Only 12 left</span>
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#5B2EE0;color:#fff;font:700 12px Inter;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-circle-check"></i>Verified</span>
+        <span style="height:28px;padding:0 12px;border-radius:999px;background:#FDECEA;color:#8F1A13;font:700 12px Inter;display:flex;align-items:center">Cancelled</span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div style="width:56px;padding:8px 0 6px;background:#fff;border-radius:12px;text-align:center;box-shadow:0 2px 10px rgba(26,26,46,.12)"><div style="font:700 11px/1 Inter;letter-spacing:.1em;color:#5B2EE0">OCT</div><div style="font:800 24px/1.15 'Plus Jakarta Sans'">03</div></div>
+        <div style="width:56px;padding:8px 0 6px;background:#5B2EE0;border-radius:12px;text-align:center;color:#fff"><div style="font:700 11px/1 Inter;letter-spacing:.1em;color:#E2D8FF">OCT</div><div style="font:800 24px/1.15 'Plus Jakarta Sans'">17</div></div>
+        <span style="font-size:13px;color:#6B6B80">Date badges — light (on photos), filled (on white)</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">06</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Category chips</h2></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <span style="height:40px;padding:0 16px;border-radius:999px;background:#1A1A2E;color:#fff;font:600 14px Inter;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-music"></i>Music</span>
+        <span style="height:40px;padding:0 16px;border-radius:999px;background:#fff;border:1.5px solid #E4E4EB;color:#1A1A2E;font:600 14px Inter;display:flex;align-items:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-futbol" style="color:#5B2EE0"></i>Sports</span>
+        <span style="height:40px;padding:0 16px;border-radius:999px;background:#fff;border:1.5px solid #E4E4EB;color:#1A1A2E;font:600 14px Inter;display:flex;align-items:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-screwdriver-wrench" style="color:#5B2EE0"></i>Workshops</span>
+        <span style="height:40px;padding:0 16px;border-radius:999px;background:#F1ECFF;border:1.5px solid #5B2EE0;color:#4A22C4;font:600 14px Inter;display:flex;align-items:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-face-laugh-beam"></i>Comedy<i class="fa-solid fa-xmark" style="font-size:12px"></i></span>
+      </div>
+      <span style="font-size:13px;color:#6B6B80">Selected (ink) · Default (outline) · Active filter (violet, removable)</span>
+    </div>
+  </section>
+
+  <section style="padding:56px 64px;display:flex;flex-direction:column;gap:28px;background:#F7F7F9;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">07</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Event card variants</h2><span style="font-size:14px;color:#6B6B80">Saved as Elementor Loop Item templates</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+      <sc-for list="{{ cards }}" as="e" hint-placeholder-count="3"><dc-import name="EventCard" ev="{{ e }}" hint-size="100%,360px"></dc-import></sc-for>
+    </div>
+    <dc-import name="EventCard" layout="list" ev="{{ listEv }}" hint-size="100%,180px"></dc-import>
+  </section>
+
+  <section style="padding:56px 64px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;border-bottom:1px solid #ECECF2">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">08</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Tables</h2></div>
+      <div style="border:1px solid #ECECF2;border-radius:16px;overflow:hidden;font-size:14px">
+        <div style="display:grid;grid-template-columns:1.2fr 1.6fr 1fr .8fr 1fr;padding:12px 20px;background:#F7F7F9;font:600 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:#6B6B80"><span>Order</span><span>Attendee</span><span>Ticket</span><span>Total</span><span>Status</span></div>
+        <div style="display:grid;grid-template-columns:1.2fr 1.6fr 1fr .8fr 1fr;padding:14px 20px;border-top:1px solid #ECECF2;align-items:center"><span style="font-family:ui-monospace,monospace">#10482</span><span>Jordan Lee</span><span>VIP × 2</span><b>$240.00</b><span style="justify-self:start;height:24px;padding:0 10px;border-radius:999px;background:#E6F6EF;color:#0B5C42;font:700 12px Inter;display:flex;align-items:center">Paid</span></div>
+        <div style="display:grid;grid-template-columns:1.2fr 1.6fr 1fr .8fr 1fr;padding:14px 20px;border-top:1px solid #ECECF2;align-items:center;background:#FBFBFD"><span style="font-family:ui-monospace,monospace">#10481</span><span>Sam Ortiz</span><span>General × 1</span><b>$45.00</b><span style="justify-self:start;height:24px;padding:0 10px;border-radius:999px;background:#FFF1DE;color:#8A4B00;font:700 12px Inter;display:flex;align-items:center">Pending</span></div>
+        <div style="display:grid;grid-template-columns:1.2fr 1.6fr 1fr .8fr 1fr;padding:14px 20px;border-top:1px solid #ECECF2;align-items:center"><span style="font-family:ui-monospace,monospace">#10480</span><span>Aisha Khan</span><span>Early Bird × 3</span><b>$105.00</b><span style="justify-self:start;height:24px;padding:0 10px;border-radius:999px;background:#FDECEA;color:#8F1A13;font:700 12px Inter;display:flex;align-items:center">Refunded</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">09</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Icons</h2></div>
+      <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">
+        <span style="aspect-ratio:1;border-radius:12px;background:#F7F7F9;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-ticket"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F7F7F9;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-qrcode"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F7F7F9;display:grid;place-items:center;font-size:20px"><i class="fa-regular fa-calendar"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F7F7F9;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-location-dot"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F7F7F9;display:grid;place-items:center;font-size:20px"><i class="fa-regular fa-heart"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F7F7F9;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-cart-shopping"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-music"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-futbol"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-campground"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-microphone-lines"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-martini-glass-citrus"></i></span>
+        <span style="aspect-ratio:1;border-radius:12px;background:#F1ECFF;color:#5B2EE0;display:grid;place-items:center;font-size:20px"><i class="fa-solid fa-palette"></i></span>
+      </div>
+      <span style="font-size:13px;color:#6B6B80;line-height:20px">Font Awesome 6 Free — Solid for UI & categories, Regular for outline states (calendar, heart). 16–20px inline, 24px in tiles.</span>
+    </div>
+  </section>
+
+  <section style="padding:56px 64px 64px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">10</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Spacing (8px base)</h2></div>
+      <div style="display:flex;flex-direction:column;gap:10px;font:13px ui-monospace,monospace;color:#4B4B63">
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">4</span><span style="width:4px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">icon–label</span></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">8</span><span style="width:8px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">tight stacks</span></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">16</span><span style="width:16px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">card padding (mobile)</span></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">24</span><span style="width:24px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">grid gutter, card padding</span></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">32</span><span style="width:32px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">container side padding</span></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">48</span><span style="width:48px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">heading → content</span></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="width:60px">80</span><span style="width:80px;height:16px;background:#5B2EE0;border-radius:2px"></span><span style="font-family:Inter;color:#6B6B80">section padding (desktop) · 56 mobile</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 13px ui-monospace,Menlo,monospace;color:#5B2EE0">11</span><h2 style="margin:0;font:800 32px/40px 'Plus Jakarta Sans',sans-serif">Radius, shadow &amp; grid</h2></div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+        <div style="height:88px;border-radius:10px;border:1.5px solid #D5D5E0;display:grid;place-items:center;font-size:12px;color:#4B4B63">10 · inputs</div>
+        <div style="height:88px;border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(26,26,46,.06),0 0 0 1px #ECECF2;display:grid;place-items:center;font-size:12px;color:#4B4B63">16 · card</div>
+        <div style="height:88px;border-radius:16px;background:#fff;box-shadow:0 12px 32px rgba(26,26,46,.12);display:grid;place-items:center;font-size:12px;color:#4B4B63">hover lift</div>
+        <div style="height:88px;border-radius:999px;background:#F1ECFF;display:grid;place-items:center;font-size:12px;color:#4A22C4">999 · pill</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;height:60px">
+        <span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span><span style="background:#F1ECFF;border-radius:4px"></span>
+      </div>
+      <span style="font-size:13px;color:#6B6B80;line-height:20px">Desktop 12 col / 24 gutter / 32 margin · Tablet 8 col / 20 / 24 · Mobile 4 col / 16 / 16. Elementor: Boxed container 1280, content width 1216.</span>
+    </div>
+  </section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() { if (!window.TIX) this._t = setInterval(() => { if (window.TIX) { clearInterval(this._t); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const E = (window.TIX && window.TIX.events) || [];
+    return { cards: [E[0], E[5], E[7]].filter(Boolean), listEv: E[3] };
+  }
+}
+</script>
+</body>
+</html>

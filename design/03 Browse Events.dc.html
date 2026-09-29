@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><script src="data.js"></script><style>body{margin:0;background:#E9E8EE;font-family:Inter,sans-serif;color:#1A1A2E}a{color:#5B2EE0}a:hover{color:#4A22C4}</style></helmet>
+<dc-import name="DocNav" current="03" hint-size="100%,58px"></dc-import>
+<div style="padding:48px;display:flex;gap:48px;align-items:flex-start;width:max-content">
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">BROWSE / SEARCH RESULTS · DESKTOP 1280 — grid/list toggle is live</span>
+<div style="width:1280px;background:#F7F7F9;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" hint-size="100%,72px"></dc-import>
+  <div style="background:#fff;border-bottom:1px solid #ECECF2">
+    <div style="max-width:1280px;margin:0 auto;padding:28px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:13px;color:#6B6B80">Home <i class="fa-solid fa-chevron-right" style="font-size:9px;margin:0 6px"></i> Events <i class="fa-solid fa-chevron-right" style="font-size:9px;margin:0 6px"></i> <span style="color:#1A1A2E">New York</span></span>
+      <h1 style="margin:0;font:800 36px/44px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em">Events in New York</h1>
+    </div>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:32px;box-sizing:border-box;display:grid;grid-template-columns:280px minmax(0,1fr);gap:32px;align-items:start">
+    <aside style="background:#fff;border-radius:16px;border:1px solid #ECECF2;display:flex;flex-direction:column">
+      <div style="padding:18px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ECECF2"><b style="font:700 17px 'Plus Jakarta Sans'">Filters</b><span style="font:600 13px Inter;color:#5B2EE0">Clear all</span></div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid #ECECF2">
+        <b style="font:700 14px Inter;display:flex;justify-content:space-between">Category<i class="fa-solid fa-chevron-up" style="font-size:11px;color:#6B6B80"></i></b>
+        <sc-for list="{{ catF }}" as="c" hint-placeholder-count="8">
+          <span style="display:flex;align-items:center;gap:10px;font-size:14px">
+            <sc-if value="{{ c.on }}"><span style="width:20px;height:20px;border-radius:6px;background:#5B2EE0;color:#fff;display:grid;place-items:center;font-size:11px"><i class="fa-solid fa-check"></i></span></sc-if>
+            <sc-if value="{{ c.off }}"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span></sc-if>
+            <span style="flex:1">{{ c.name }}</span><span style="font-size:12px;color:#6B6B80">{{ c.n }}</span>
+          </span>
+        </sc-for>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid #ECECF2">
+        <b style="font:700 14px Inter">Date</b>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span style="height:36px;padding:0 14px;border-radius:999px;border:1.5px solid #E4E4EB;font:600 13px Inter;display:flex;align-items:center;box-sizing:border-box">Today</span>
+          <span style="height:36px;padding:0 14px;border-radius:999px;border:1.5px solid #E4E4EB;font:600 13px Inter;display:flex;align-items:center;box-sizing:border-box">Tomorrow</span>
+          <span style="height:36px;padding:0 14px;border-radius:999px;background:#1A1A2E;color:#fff;font:600 13px Inter;display:flex;align-items:center">This weekend</span>
+          <span style="height:36px;padding:0 14px;border-radius:999px;border:1.5px solid #E4E4EB;font:600 13px Inter;display:flex;align-items:center;gap:6px;box-sizing:border-box"><i class="fa-regular fa-calendar"></i>Custom</span>
+        </div>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid #ECECF2">
+        <b style="font:700 14px Inter">Price</b>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border:1.5px solid #E4E4EB;border-radius:10px;overflow:hidden;font:600 13px Inter;text-align:center"><span style="padding:9px 0;background:#F1ECFF;color:#4A22C4">Any</span><span style="padding:9px 0;border-left:1.5px solid #E4E4EB">Free</span><span style="padding:9px 0;border-left:1.5px solid #E4E4EB">Paid</span></div>
+        <div style="position:relative;height:20px;display:flex;align-items:center"><span style="position:absolute;left:0;right:0;height:4px;border-radius:4px;background:#E4E4EB"></span><span style="position:absolute;left:0;right:45%;height:4px;border-radius:4px;background:#5B2EE0"></span><span style="position:absolute;left:0;width:20px;height:20px;border-radius:999px;background:#fff;border:2px solid #5B2EE0;box-sizing:border-box"></span><span style="position:absolute;left:52%;width:20px;height:20px;border-radius:999px;background:#fff;border:2px solid #5B2EE0;box-sizing:border-box"></span></div>
+        <div style="display:flex;gap:10px"><span style="flex:1;height:40px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 12px;display:flex;align-items:center;font-size:14px">$0</span><span style="flex:1;height:40px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 12px;display:flex;align-items:center;font-size:14px">$150</span></div>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid #ECECF2">
+        <b style="font:700 14px Inter">Location</b>
+        <span style="height:44px;border-radius:10px;border:1.5px solid #D5D5E0;padding:0 12px;display:flex;align-items:center;gap:10px;font-size:14px"><i class="fa-solid fa-location-dot" style="color:#5B2EE0"></i>New York, NY</span>
+        <span style="display:flex;justify-content:space-between;font-size:14px;color:#4B4B63">Within<b style="color:#1A1A2E">25 miles</b></span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+        <b style="font:700 14px Inter">Event type</b>
+        <span style="display:flex;align-items:center;gap:10px;font-size:14px"><span style="width:20px;height:20px;border-radius:999px;border:6px solid #5B2EE0;box-sizing:border-box"></span>Any</span>
+        <span style="display:flex;align-items:center;gap:10px;font-size:14px"><span style="width:20px;height:20px;border-radius:999px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span>In-person</span>
+        <span style="display:flex;align-items:center;gap:10px;font-size:14px"><span style="width:20px;height:20px;border-radius:999px;border:1.5px solid #B5B5C5;box-sizing:border-box"></span>Online</span>
+      </div>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <span style="font-size:15px;color:#4B4B63"><b style="color:#1A1A2E">248 events</b> this weekend</span>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="height:44px;padding:0 14px;border-radius:10px;background:#fff;border:1.5px solid #E4E4EB;display:flex;align-items:center;gap:10px;font-size:14px;box-sizing:border-box"><span style="color:#6B6B80">Sort by</span><b>Relevance</b><i class="fa-solid fa-chevron-down" style="font-size:11px"></i></span>
+          <div style="display:flex;background:#fff;border:1.5px solid #E4E4EB;border-radius:10px;padding:3px;gap:2px;box-sizing:border-box">
+            <span onClick="{{ setGrid }}" style="{{ gridBtn }}"><i class="fa-solid fa-grip"></i></span>
+            <span onClick="{{ setList }}" style="{{ listBtn }}"><i class="fa-solid fa-list"></i></span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="height:34px;padding:0 12px;border-radius:999px;background:#F1ECFF;border:1.5px solid #5B2EE0;color:#4A22C4;font:600 13px Inter;display:flex;align-items:center;gap:8px;box-sizing:border-box">Music Concerts<i class="fa-solid fa-xmark"></i></span>
+        <span style="height:34px;padding:0 12px;border-radius:999px;background:#F1ECFF;border:1.5px solid #5B2EE0;color:#4A22C4;font:600 13px Inter;display:flex;align-items:center;gap:8px;box-sizing:border-box">Nightlife<i class="fa-solid fa-xmark"></i></span>
+        <span style="height:34px;padding:0 12px;border-radius:999px;background:#F1ECFF;border:1.5px solid #5B2EE0;color:#4A22C4;font:600 13px Inter;display:flex;align-items:center;gap:8px;box-sizing:border-box">This weekend<i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+          <sc-for list="{{ results }}" as="e" hint-placeholder-count="9"><dc-import name="EventCard" ev="{{ e }}" hint-size="100%,360px"></dc-import></sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isList }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <sc-for list="{{ results }}" as="e" hint-placeholder-count="6"><dc-import name="EventCard" layout="list" ev="{{ e }}" hint-size="100%,180px"></dc-import></sc-for>
+        </div>
+      </sc-if>
+      <div style="display:flex;justify-content:center;align-items:center;gap:6px;padding:16px 0 24px">
+        <span style="height:44px;padding:0 16px;border-radius:10px;border:1.5px solid #E4E4EB;background:#fff;display:flex;align-items:center;gap:8px;font:600 14px Inter;color:#8A8AA0;box-sizing:border-box"><i class="fa-solid fa-chevron-left" style="font-size:11px"></i>Prev</span>
+        <span style="width:44px;height:44px;border-radius:10px;background:#5B2EE0;color:#fff;display:grid;place-items:center;font:600 14px Inter">1</span>
+        <span style="width:44px;height:44px;border-radius:10px;background:#fff;border:1.5px solid #E4E4EB;display:grid;place-items:center;font:600 14px Inter;box-sizing:border-box">2</span>
+        <span style="width:44px;height:44px;border-radius:10px;background:#fff;border:1.5px solid #E4E4EB;display:grid;place-items:center;font:600 14px Inter;box-sizing:border-box">3</span>
+        <span style="width:44px;height:44px;display:grid;place-items:center;color:#6B6B80">…</span>
+        <span style="width:44px;height:44px;border-radius:10px;background:#fff;border:1.5px solid #E4E4EB;display:grid;place-items:center;font:600 14px Inter;box-sizing:border-box">28</span>
+        <span style="height:44px;padding:0 16px;border-radius:10px;border:1.5px solid #E4E4EB;background:#fff;display:flex;align-items:center;gap:8px;font:600 14px Inter;box-sizing:border-box">Next<i class="fa-solid fa-chevron-right" style="font-size:11px"></i></span>
+      </div>
+    </div>
+  </div>
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">MOBILE 375 · RESULTS</span>
+<div style="width:375px;height:1200px;background:#F7F7F9;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" mobile="{{ true }}" hint-size="100%,60px"></dc-import>
+  <div style="background:#fff;padding:18px 16px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid #ECECF2">
+    <h1 style="margin:0;font:800 26px/34px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em">Events in New York</h1>
+    <div style="display:flex;gap:10px">
+      <span style="flex:1;height:44px;border-radius:10px;border:1.5px solid #1A1A2E;display:flex;align-items:center;justify-content:center;gap:8px;font:600 14px Inter;box-sizing:border-box"><i class="fa-solid fa-sliders"></i>Filters<span style="min-width:20px;height:20px;border-radius:999px;background:#5B2EE0;color:#fff;font-size:11px;display:grid;place-items:center">3</span></span>
+      <span style="flex:1;height:44px;border-radius:10px;border:1.5px solid #E4E4EB;display:flex;align-items:center;justify-content:center;gap:8px;font:600 14px Inter;box-sizing:border-box"><i class="fa-solid fa-arrow-down-wide-short"></i>Relevance</span>
+    </div>
+    <span style="font-size:14px;color:#4B4B63"><b style="color:#1A1A2E">248 events</b> this weekend</span>
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:16px">
+    <sc-for list="{{ resultsM }}" as="e" hint-placeholder-count="3"><dc-import name="EventCard" ev="{{ e }}" hint-size="100%,360px"></dc-import></sc-for>
+  </div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;flex:none">
+<span style="font:600 13px ui-monospace,Menlo,monospace;color:#4B4B63">MOBILE 375 · FILTER DRAWER (Elementor Off-Canvas)</span>
+<div style="position:relative;width:375px;height:812px;background:#F7F7F9;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(26,26,46,.12)">
+  <dc-import name="SiteHeader" mobile="{{ true }}" hint-size="100%,60px"></dc-import>
+  <div style="position:absolute;inset:0;background:rgba(26,26,46,.55)"></div>
+  <div style="position:absolute;top:0;bottom:0;right:0;width:335px;background:#fff;display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,.2)">
+    <div style="height:64px;padding:0 16px 0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ECECF2"><b style="font:800 19px 'Plus Jakarta Sans'">Filters</b><span style="width:44px;height:44px;display:grid;place-items:center;font-size:18px"><i class="fa-solid fa-xmark"></i></span></div>
+    <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:12px"><b style="font:700 15px Inter">Category</b><div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ catF }}" as="c" hint-placeholder-count="8">
+          <sc-if value="{{ c.on }}"><span style="height:38px;padding:0 14px;border-radius:999px;background:#F1ECFF;border:1.5px solid #5B2EE0;color:#4A22C4;font:600 13px Inter;display:flex;align-items:center;box-sizing:border-box">{{ c.name }}</span></sc-if>
+          <sc-if value="{{ c.off }}"><span style="height:38px;padding:0 14px;border-radius:999px;border:1.5px solid #E4E4EB;font:600 13px Inter;display:flex;align-items:center;box-sizing:border-box">{{ c.name }}</span></sc-if>
+        </sc-for>
+      </div></div>
+      <div style="display:flex;flex-direction:column;gap:12px"><b style="font:700 15px Inter">Date</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <span style="height:44px;border-radius:10px;border:1.5px solid #E4E4EB;font:600 14px Inter;display:grid;place-items:center;box-sizing:border-box">Today</span><span style="height:44px;border-radius:10px;border:1.5px solid #E4E4EB;font:600 14px Inter;display:grid;place-items:center;box-sizing:border-box">Tomorrow</span><span style="height:44px;border-radius:10px;background:#1A1A2E;color:#fff;font:600 14px Inter;display:grid;place-items:center">This weekend</span><span style="height:44px;border-radius:10px;border:1.5px solid #E4E4EB;font:600 14px Inter;display:grid;place-items:center;box-sizing:border-box">Pick a date</span>
+      </div></div>
+      <div style="display:flex;flex-direction:column;gap:12px"><b style="font:700 15px Inter">Price</b><div style="display:grid;grid-template-columns:1fr 1fr 1fr;border:1.5px solid #E4E4EB;border-radius:10px;overflow:hidden;font:600 14px Inter;text-align:center"><span style="padding:11px 0;background:#F1ECFF;color:#4A22C4">Any</span><span style="padding:11px 0;border-left:1.5px solid #E4E4EB">Free</span><span style="padding:11px 0;border-left:1.5px solid #E4E4EB">Paid</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:12px"><b style="font:700 15px Inter">Event type</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="height:44px;border-radius:10px;border:1.5px solid #5B2EE0;background:#F1ECFF;color:#4A22C4;font:600 14px Inter;display:flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-location-dot"></i>In-person</span><span style="height:44px;border-radius:10px;border:1.5px solid #E4E4EB;font:600 14px Inter;display:flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box"><i class="fa-solid fa-video"></i>Online</span></div></div>
+    </div>
+    <div style="padding:14px 16px;border-top:1px solid #ECECF2;display:flex;gap:10px"><span style="height:52px;padding:0 18px;border-radius:12px;border:1.5px solid #D5D5E0;font:600 15px Inter;display:flex;align-items:center;box-sizing:border-box">Reset</span><span style="flex:1;height:52px;border-radius:12px;background:#5B2EE0;color:#fff;font:600 15px Inter;display:grid;place-items:center">Show 248 events</span></div>
+  </div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'grid' };
+  componentDidMount() { if (!window.TIX) this._t = setInterval(() => { if (window.TIX) { clearInterval(this._t); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this._t); }
+  renderVals() {
+    const T = window.TIX || { events: [], cats: [] };
+    const E = T.events;
+    const on = ['Music Concerts', 'Nightlife'];
+    const btn = a => ({ width: 38, height: 34, borderRadius: 8, display: 'grid', placeItems: 'center', cursor: 'pointer', background: a ? '#1A1A2E' : 'transparent', color: a ? '#fff' : '#4B4B63' });
+    const g = this.state.view === 'grid';
+    return {
+      catF: T.cats.map(c => ({ ...c, on: on.includes(c.name), off: !on.includes(c.name) })),
+      results: E.slice(0, 9), resultsM: [E[0], E[5], E[8]].filter(Boolean),
+      isGrid: g, isList: !g, gridBtn: btn(g), listBtn: btn(!g),
+      setGrid: () => this.setState({ view: 'grid' }), setList: () => this.setState({ view: 'list' })
+    };
+  }
+}
+</script>
+</body>
+</html>

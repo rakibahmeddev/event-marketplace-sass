@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></helmet>
+<sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+<header style="position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #E9E9F0;font-family:Inter,sans-serif">
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;height:72px;display:flex;align-items:center;gap:28px;box-sizing:border-box">
+    <a href="02%20Home.dc.html" style="display:flex;align-items:center;gap:9px;text-decoration:none;flex:none">
+      <span style="width:34px;height:34px;border-radius:10px;background:#5B2EE0;display:grid;place-items:center;color:#fff"><i class="fa-solid fa-ticket" style="font-size:15px;transform:rotate(-25deg)"></i></span>
+      <span style="font:800 21px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;color:#1A1A2E">brandname<span style="color:#FF6B4A">.</span></span>
+    </a>
+    <div style="flex:1;max-width:400px;height:44px;border-radius:999px;background:#F4F4F8;border:1px solid #E9E9F0;display:flex;align-items:center;gap:10px;padding:0 6px 0 16px;box-sizing:border-box">
+      <i class="fa-solid fa-magnifying-glass" style="color:#6B6B80;font-size:14px"></i>
+      <span style="flex:1;font-size:14px;color:#6B6B80">Search events, artists, venues</span>
+      <span style="height:32px;padding:0 12px;border-radius:999px;background:#fff;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:#1A1A2E;border:1px solid #E9E9F0"><i class="fa-solid fa-location-dot" style="color:#5B2EE0;font-size:12px"></i>New York</span>
+    </div>
+    <nav style="display:flex;align-items:center;gap:24px;font-size:15px;font-weight:500">
+      <a href="03%20Browse%20Events.dc.html" style="color:#1A1A2E;text-decoration:none">Browse Events</a>
+      <a href="08%20Become%20an%20Organizer.dc.html" style="color:#1A1A2E;text-decoration:none;display:flex;align-items:center;gap:7px"><i class="fa-solid fa-plus" style="font-size:12px;color:#5B2EE0"></i>Create Event</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+      <a href="05%20Checkout%20and%20Tickets.dc.html" style="position:relative;width:44px;height:44px;border-radius:999px;display:grid;place-items:center;color:#1A1A2E;text-decoration:none"><i class="fa-solid fa-cart-shopping" style="font-size:17px"></i><span style="position:absolute;top:5px;right:4px;min-width:18px;height:18px;border-radius:999px;background:#FF6B4A;color:#1A1A2E;font-size:11px;font-weight:700;display:grid;place-items:center;border:2px solid #fff">2</span></a>
+      <a href="11%20Supporting%20Pages.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;font-size:15px;font-weight:600;color:#1A1A2E;text-decoration:none">Log in</a>
+      <a href="11%20Supporting%20Pages.dc.html" style="height:44px;padding:0 20px;border-radius:10px;background:#5B2EE0;display:flex;align-items:center;font-size:15px;font-weight:600;color:#fff;text-decoration:none">Sign up</a>
+    </div>
+  </div>
+</header>
+</sc-if>
+<sc-if value="{{ mobile }}">
+<header style="position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #E9E9F0;font-family:Inter,sans-serif">
+  <div style="height:60px;padding:0 16px;display:flex;align-items:center;gap:4px">
+    <a href="02%20Home.dc.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto">
+      <span style="width:30px;height:30px;border-radius:9px;background:#5B2EE0;display:grid;place-items:center;color:#fff"><i class="fa-solid fa-ticket" style="font-size:13px;transform:rotate(-25deg)"></i></span>
+      <span style="font:800 18px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;color:#1A1A2E">brandname<span style="color:#FF6B4A">.</span></span>
+    </a>
+    <span style="width:44px;height:44px;display:grid;place-items:center;color:#1A1A2E"><i class="fa-solid fa-magnifying-glass" style="font-size:17px"></i></span>
+    <span style="position:relative;width:44px;height:44px;display:grid;place-items:center;color:#1A1A2E"><i class="fa-solid fa-cart-shopping" style="font-size:17px"></i><span style="position:absolute;top:6px;right:4px;min-width:16px;height:16px;border-radius:999px;background:#FF6B4A;color:#1A1A2E;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid #fff">2</span></span>
+    <span style="width:44px;height:44px;display:grid;place-items:center;color:#1A1A2E"><i class="fa-solid fa-bars" style="font-size:19px"></i></span>
+  </div>
+</header>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:80},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() { const m = !!this.props.mobile; return { mobile: m, desktop: !m }; }
+}
+</script>
+</body>
+</html>
