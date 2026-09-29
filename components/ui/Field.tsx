@@ -89,7 +89,8 @@ export function Input({ invalid, leadingIcon, trailing, inputSize = 'md', classN
         {...rest}
       />
       <span className="absolute inset-y-0 right-3.5 grid place-items-center">
-        {invalid ? <Icon icon={faCircleExclamation} className="text-danger" /> : trailing}
+        {/* A control in the trailing slot (e.g. show-password) wins over the error icon; the red border still shows the error. */}
+        {trailing ?? (invalid ? <Icon icon={faCircleExclamation} className="text-danger" /> : null)}
       </span>
     </div>
   );

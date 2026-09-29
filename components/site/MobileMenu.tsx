@@ -3,21 +3,23 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { ButtonLink } from '@/components/ui/Button';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { Icon } from '@/components/ui/Icon';
+import { accountLinks, useLogout, type MenuUser } from './UserMenu';
 
-const links = [
+const siteLinks = [
   { href: '/events', label: 'Browse events' },
   { href: '/become-an-organizer', label: 'Create an event' },
-  { href: '/account/tickets', label: 'My tickets' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
 
-export function MobileMenu() {
+export function MobileMenu({ user }: { user: MenuUser | null }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
+  const doLogout = useLogout();
+  const links = user ? [...accountLinks(user.role), ...siteLinks] : siteLinks;
   return (
     <>
       <button
@@ -34,14 +36,27 @@ export function MobileMenu() {
         onClose={close}
         title="Menu"
         footer={
-          <div className="grid grid-cols-2 gap-2.5">
-            <ButtonLink href="/login" variant="secondary" onClick={close}>
-              Log in
-            </ButtonLink>
-            <ButtonLink href="/register" onClick={close}>
-              Sign up
-            </ButtonLink>
-          </div>
+          user ? (
+            <Button
+              variant="secondary"
+              fullWidth
+              onClick={() => {
+                close();
+                void doLogout();
+              }}
+            >
+              Log out
+            </Button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2.5">
+              <ButtonLink href="/login" variant="secondary" onClick={close}>
+                Log in
+              </ButtonLink>
+              <ButtonLink href="/register" onClick={close}>
+                Sign up
+              </ButtonLink>
+            </div>
+          )
         }
       >
         <nav aria-label="Mobile" className="flex flex-col">

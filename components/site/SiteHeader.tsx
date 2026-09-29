@@ -3,9 +3,16 @@ import { faCartShopping, faLocationDot, faMagnifyingGlass, faPlus } from '@forta
 import { ButtonLink } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
+import type { SessionUser } from '@/lib/auth/session';
 import { MobileMenu } from './MobileMenu';
+import { UserMenu, type MenuUser } from './UserMenu';
 
-type Props = { tenantName: string; cartCount?: number };
+type Props = { tenantName: string; cartCount?: number; user?: SessionUser | null };
+
+/** Only what the browser needs — never the full session. */
+function toMenuUser(user: SessionUser): MenuUser {
+  return { name: user.name || user.email?.split('@')[0] || 'Account', email: user.email, role: user.role };
+}
 
 function CartLink({ count, small }: { count: number; small?: boolean }) {
   return (
@@ -29,7 +36,8 @@ function CartLink({ count, small }: { count: number; small?: boolean }) {
   );
 }
 
-export function SiteHeader({ tenantName, cartCount = 0 }: Props) {
+export function SiteHeader({ tenantName, cartCount = 0, user }: Props) {
+  const menuUser = user ? toMenuUser(user) : null;
   return (
     <header className="sticky top-0 z-20 border-b border-[#E9E9F0] bg-white">
       {/* Desktop */}
@@ -71,15 +79,21 @@ export function SiteHeader({ tenantName, cartCount = 0 }: Props) {
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <CartLink count={cartCount} />
-          <Link
-            href="/login"
-            className="flex h-11 items-center rounded-input px-4 text-[15px] font-semibold hover:bg-mist focus-ring"
-          >
-            Log in
-          </Link>
-          <ButtonLink href="/register" size="md" className="h-11 px-5">
-            Sign up
-          </ButtonLink>
+          {menuUser ? (
+            <UserMenu user={menuUser} />
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="flex h-11 items-center rounded-input px-4 text-[15px] font-semibold hover:bg-mist focus-ring"
+              >
+                Log in
+              </Link>
+              <ButtonLink href="/register" size="md" className="h-11 px-5">
+                Sign up
+              </ButtonLink>
+            </>
+          )}
         </div>
       </div>
 
@@ -94,7 +108,7 @@ export function SiteHeader({ tenantName, cartCount = 0 }: Props) {
           <Icon icon={faMagnifyingGlass} className="text-[17px]" />
         </Link>
         <CartLink count={cartCount} small />
-        <MobileMenu />
+        <MobileMenu user={menuUser} />
       </div>
     </header>
   );

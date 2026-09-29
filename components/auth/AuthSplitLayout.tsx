@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
+import { SiteHeader } from '@/components/site/SiteHeader';
 import { Logo } from '@/components/ui/Logo';
 
-/** Login / register: photo panel on the left (desktop), form on the right (design 11). */
+/** Login / register: photo panel on the left (desktop), form on the right; site header on mobile (design 11). */
 export function AuthSplitLayout({ tenantName, children }: { tenantName: string; children: ReactNode }) {
   return (
     <div className="grid min-h-dvh bg-white lg:grid-cols-2">
@@ -21,10 +22,10 @@ export function AuthSplitLayout({ tenantName, children }: { tenantName: string; 
         </div>
       </div>
       <div className="flex flex-col">
-        <div className="flex h-[60px] items-center border-b border-line-soft px-4 lg:hidden">
-          <Logo name={tenantName} size="sm" />
+        <div className="lg:hidden">
+          <SiteHeader tenantName={tenantName} />
         </div>
-        <div className="flex flex-1 items-center justify-center px-4 py-10 md:p-10">
+        <div className="flex flex-1 justify-center px-5 py-6 lg:items-center lg:p-10">
           <div className="flex w-full max-w-[420px] flex-col gap-[18px]">{children}</div>
         </div>
       </div>
