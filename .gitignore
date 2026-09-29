@@ -1,0 +1,32 @@
+# deps
+node_modules/
+functions/node_modules/
+
+# build
+.next/
+out/
+functions/lib/
+*.tsbuildinfo
+next-env.d.ts
+
+# env — never commit real keys
+.env
+.env.*
+!.env.example
+
+# firebase
+.emulator-data/
+firebase-debug*.log
+firestore-debug.log
+storage-debug.log
+ui-debug.log
+.firebase/
+
+# testing
+playwright-report/
+test-results/
+coverage/
+
+# os / editor
+.DS_Store
+*.zip

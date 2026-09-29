@@ -1,0 +1,9 @@
+design/
+.next/
+node_modules/
+functions/lib/
+.emulator-data/
+package-lock.json
+claude.md
+CLAUDE.md
+*.md
