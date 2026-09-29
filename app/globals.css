@@ -1,0 +1,237 @@
+@import 'tailwindcss';
+/* Layered so Tailwind utilities (hidden, sizes…) can override Font Awesome defaults. */
+@import '@fortawesome/fontawesome-svg-core/styles.css' layer(base);
+
+/*
+ * Design tokens — source: design/01 Style Guide.dc.html
+ *
+ * Brand colours are CSS variables so each tenant's branding can override them at
+ * runtime (see lib/tenant/branding.ts → TenantThemeProvider). Everything else is fixed.
+ */
+:root {
+  --brand-primary: #5b2ee0;
+  --brand-primary-hover: #4a22c4;
+  --brand-primary-100: #e2d8ff;
+  --brand-primary-50: #f1ecff;
+  --brand-accent: #ff6b4a;
+  --brand-accent-hover: #f2552f;
+  --brand-accent-100: #ffe3db;
+}
+
+@theme inline {
+  /* Fonts (set by next/font in app/layout.tsx) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+
+  /* Brand (tenant-overridable) */
+  --color-primary: var(--brand-primary);
+  --color-primary-hover: var(--brand-primary-hover);
+  --color-primary-100: var(--brand-primary-100);
+  --color-primary-50: var(--brand-primary-50);
+  --color-accent: var(--brand-accent);
+  --color-accent-hover: var(--brand-accent-hover);
+  --color-accent-100: var(--brand-accent-100);
+}
+
+@theme {
+  /* Ink & dark surfaces */
+  --color-ink: #1a1a2e;
+  --color-ink-800: #26263d;
+  --color-ink-700: #2e2e48;
+  --color-ink-muted: #c9c9d6;
+  --color-body: #33334a;
+
+  /* Slate */
+  --color-slate-600: #4b4b63;
+  --color-slate-500: #6b6b80;
+  --color-slate-400: #8a8aa0;
+  --color-slate-300: #a5a5b5;
+  --color-slate-250: #b5b5c5;
+
+  /* Lines & surfaces */
+  --color-line-strong: #d5d5e0;
+  --color-line: #e4e4eb;
+  --color-line-soft: #ececf2;
+  --color-line-faint: #f0f0f4;
+  --color-mist: #f7f7f9;
+  --color-field: #f4f4f8;
+  --color-row-alt: #fbfbfd;
+
+  /* Status */
+  --color-success: #12805c;
+  --color-success-bg: #e6f6ef;
+  --color-success-ink: #0b5c42;
+  --color-warning: #d97706;
+  --color-warning-bg: #fff1de;
+  --color-warning-ink: #8a4b00;
+  --color-danger: #c8281e;
+  --color-danger-bg: #fdecea;
+  --color-danger-ink: #8f1a13;
+
+  /* Image placeholder stripes */
+  --color-placeholder-a: #2b2542;
+  --color-placeholder-b: #332c50;
+  --color-placeholder-text: #b9b1d9;
+
+  /* Radius */
+  --radius-input: 10px;
+  --radius-lg: 12px;
+  --radius-card: 16px;
+  --radius-panel: 20px;
+  --radius-sheet: 24px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgb(26 26 46 / 0.05);
+  --shadow-lift: 0 12px 32px rgb(26 26 46 / 0.12);
+  --shadow-badge: 0 2px 8px rgb(0 0 0 / 0.15);
+  --shadow-primary-glow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 35%, transparent);
+  --shadow-segment: 0 1px 3px rgb(0 0 0 / 0.08);
+
+  /* Layout */
+  --container-page: 1280px;
+}
+
+/* ---------- Typography scale (desktop / ≤767px mobile) ---------- */
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 44px;
+  letter-spacing: -0.03em;
+  @media (width >= 48rem) {
+    font-size: 56px;
+    line-height: 64px;
+  }
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: -0.02em;
+  @media (width >= 48rem) {
+    font-size: 40px;
+    line-height: 48px;
+  }
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.02em;
+  @media (width >= 48rem) {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}
+@utility type-h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  @media (width >= 48rem) {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+@utility type-h5 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 26px;
+  @media (width >= 48rem) {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+@utility type-h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility type-body-lg {
+  font-size: 18px;
+  line-height: 28px;
+}
+@utility type-body {
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility type-small {
+  font-size: 14px;
+  line-height: 20px;
+}
+@utility type-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Layout helpers ---------- */
+/* 1280 container · 32 side padding desktop / 24 tablet / 16 mobile */
+@utility page-container {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (width >= 48rem) {
+    padding-inline: 24px;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 32px;
+  }
+}
+
+/* Striped stand-in for event photography until real images exist */
+@utility img-placeholder {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-placeholder-a) 0 12px,
+    var(--color-placeholder-b) 12px 24px
+  );
+}
+
+/* Focus ring used by buttons and links (design: 3px white + 2px brand) */
+@utility focus-ring {
+  outline: none;
+  &:focus-visible {
+    box-shadow:
+      0 0 0 3px #fff,
+      0 0 0 5px var(--brand-primary);
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
