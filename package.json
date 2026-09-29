@@ -14,9 +14,11 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run --project unit",
-    "test:rules": "firebase emulators:exec --only firestore,storage --project demo-ticketing \"vitest run --project rules\"",
-    "test:e2e": "playwright test",
-    "emulators": "firebase emulators:start --project demo-ticketing --import=.emulator-data --export-on-exit=.emulator-data"
+    "test:rules": "firebase emulators:exec --only firestore,storage --project demo-ticketing \"vitest run --project rules --no-file-parallelism\"",
+    "test:e2e": "npm --prefix functions run build && firebase emulators:exec --only auth,functions,firestore --project demo-ticketing \"npm run seed && playwright test\"",
+    "emulators": "npm --prefix functions run build && firebase emulators:start --project demo-ticketing --import=.emulator-data --export-on-exit=.emulator-data",
+    "seed": "node --experimental-strip-types --no-warnings scripts/seed-emulators.ts",
+    "test:integration": "npm --prefix functions run build && firebase emulators:exec --only auth,functions,firestore --project demo-ticketing \"npm run seed && vitest run --project integration --no-file-parallelism\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
