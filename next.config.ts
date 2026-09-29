@@ -7,7 +7,8 @@ const isDev = process.env.NODE_ENV !== 'production';
 // style/font origins are needed.
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+  // apis.google.com: Firebase Auth popup helper. www.google.com / www.gstatic.com: reCAPTCHA Enterprise (App Check).
+  `script-src 'self' 'unsafe-inline' https://apis.google.com https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://firebasestorage.googleapis.com",
   "font-src 'self'",
@@ -18,7 +19,11 @@ const csp = [
     'https://firebaseappcheck.googleapis.com',
     ...(isDev ? ['http://127.0.0.1:*', 'ws://127.0.0.1:*', 'http://localhost:*', 'ws://localhost:*'] : []),
   ].join(' '),
-  "frame-src 'self' https://*.firebaseapp.com",
+  // *.firebaseapp.com: Firebase Auth helper iframe / popup handler; google.com: reCAPTCHA.
+  [
+    "frame-src 'self' https://*.firebaseapp.com https://www.google.com https://recaptcha.google.com",
+    ...(isDev ? ['http://127.0.0.1:*', 'http://localhost:*'] : []),
+  ].join(' '),
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
