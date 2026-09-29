@@ -1,10 +1,65 @@
 rules_version = '2';
 
-// Phase 1: deny everything. Each later phase opens only what a role needs,
-// together with rules tests (see /tests/rules).
+// Deny by default. Each phase opens only what a role needs, with tests in /tests/rules.
+// Roles live in custom claims { role, tenantId, organizerId? } set only by Cloud Functions.
+// platform_admin has no client access: platform work goes through server code (Admin SDK).
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+    function inTenant(tenantId) {
+      return signedIn() && request.auth.token.tenantId == tenantId;
+    }
+    function hasRole(role) {
+      return request.auth.token.role == role;
+    }
+    // Only these keys may differ between the stored doc and the write.
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // ---------- tenants ----------
+    match /tenants/{tenantId} {
+      // Branding for public pages is served by the server; only the tenant's admins read the doc.
+      // commissionRate, paymentConfig, status are written by server code only.
+      allow read: if inTenant(tenantId) && hasRole('tenant_admin');
+      allow write: if false;
+
+      match /auditLogs/{logId} {
+        allow read: if inTenant(tenantId) && hasRole('tenant_admin');
+        allow write: if false; // append-only from Cloud Functions
+      }
+
+      // Phase 3+: organizers, events, ticketTypes, orders, tickets, scannerAssignments.
+      match /{document=**} {
+        allow read, write: if false;
+      }
+    }
+
+    // ---------- users ----------
+    // users/{uid} is created by the beforeUserCreated function. No role data here.
+    match /users/{uid} {
+      allow read: if signedIn()
+        && request.auth.uid == uid
+        && resource.data.tenantId == request.auth.token.tenantId;
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && resource.data.tenantId == request.auth.token.tenantId
+        && onlyChanges(['displayName'])
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 80;
+      allow create, delete: if false;
+    }
+
+    // ---------- server-only collections ----------
+    // tenantDomains/{hostname} → tenant lookup, rateLimits/{key} → counters.
+    match /tenantDomains/{hostname} {
+      allow read, write: if false;
+    }
+    match /rateLimits/{key} {
       allow read, write: if false;
     }
   }
