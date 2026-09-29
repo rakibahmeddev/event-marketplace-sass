@@ -2,14 +2,15 @@ import { faTicket } from '@fortawesome/free-solid-svg-icons';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { ButtonLink } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
+import { getSessionUser } from '@/lib/auth/session';
 import { getCurrentTenantBranding } from '@/lib/tenant/current';
 
 // Design 11 · 404 (desktop 1280 / mobile 375)
 export default async function NotFound() {
-  const { name } = await getCurrentTenantBranding();
+  const [{ name }, user] = await Promise.all([getCurrentTenantBranding(), getSessionUser()]);
   return (
     <div className="flex min-h-dvh flex-col">
-      <SiteHeader tenantName={name} />
+      <SiteHeader tenantName={name} user={user} />
       <main className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center md:gap-5 md:p-10">
         <p
           aria-hidden

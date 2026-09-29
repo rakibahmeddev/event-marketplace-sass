@@ -1,9 +1,14 @@
 'use client';
 
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
-import { connectAuthEmulator, getAuth, type Auth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore, type Firestore } from 'firebase/firestore';
-import { connectStorageEmulator, getStorage, type FirebaseStorage } from 'firebase/storage';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
+import {
+  browserPopupRedirectResolver,
+  connectAuthEmulator,
+  inMemoryPersistence,
+  initializeAuth,
+  type Auth,
+} from 'firebase/auth';
 
 // Public web config — identifies the project, grants no access on its own.
 const config = {
@@ -15,22 +20,41 @@ const config = {
 };
 
 const useEmulators = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === 'true';
+const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_SITE_KEY;
 
-type Clients = { app: FirebaseApp; auth: Auth; db: Firestore; storage: FirebaseStorage };
-let clients: Clients | undefined;
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
 
-/** Lazily initialises the browser SDK. App Check is added in Phase 2. */
-export function getFirebaseClient(): Clients {
-  if (clients) return clients;
-  const app = getApps().length ? getApp() : initializeApp(config);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
-  if (useEmulators) {
-    connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
-    connectFirestoreEmulator(db, '127.0.0.1', 8080);
-    connectStorageEmulator(storage, '127.0.0.1', 9199);
+function firebaseApp(): FirebaseApp {
+  if (app) return app;
+  app = getApps().length ? getApp() : initializeApp(config);
+  if (recaptchaSiteKey) {
+    if (useEmulators) {
+      // Debug provider for local work; register the printed token in the console if needed.
+      (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN: boolean | string }).FIREBASE_APPCHECK_DEBUG_TOKEN =
+        process.env.NEXT_PUBLIC_APP_CHECK_DEBUG_TOKEN || true;
+    }
+    initializeAppCheck(app, {
+      provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
+      isTokenAutoRefreshEnabled: true,
+    });
   }
-  clients = { app, auth, db, storage };
-  return clients;
+  return app;
+}
+
+/**
+ * Browser Auth bound to this marketplace's Identity Platform tenant.
+ * Persistence is in-memory: the httpOnly session cookie is the source of truth,
+ * so no tokens are left in localStorage/IndexedDB.
+ */
+export function getClientAuth(authTenantId: string): Auth {
+  if (!auth) {
+    auth = initializeAuth(firebaseApp(), {
+      persistence: inMemoryPersistence,
+      popupRedirectResolver: browserPopupRedirectResolver,
+    });
+    if (useEmulators) connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+  }
+  auth.tenantId = authTenantId;
+  return auth;
 }

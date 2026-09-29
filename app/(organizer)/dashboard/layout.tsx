@@ -2,16 +2,18 @@ import type { ReactNode } from 'react';
 import { faArrowUpRightFromSquare, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { Icon } from '@/components/ui/Icon';
+import { requireRole } from '@/lib/auth/guards';
 import { getCurrentTenantBranding } from '@/lib/tenant/current';
 import { organizerNav } from './nav';
 
 export default async function OrganizerLayout({ children }: { children: ReactNode }) {
+  const user = await requireRole('organizer');
   const { name } = await getCurrentTenantBranding();
-  // Phase 2 replaces the placeholder account with the signed-in organizer (custom claims).
+  // Organizer name comes from tenants/{t}/organizers/{organizerId} in Phase 3.
   return (
     <DashboardShell
       tenantName={name}
-      accountName="Organizer"
+      accountName={user.name ?? user.email ?? 'Organizer'}
       accountRole="Organizer"
       title="Dashboard"
       nav={organizerNav}
