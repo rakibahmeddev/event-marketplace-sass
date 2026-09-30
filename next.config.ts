@@ -10,7 +10,8 @@ const csp = [
   // apis.google.com: Firebase Auth popup helper. www.google.com / www.gstatic.com: reCAPTCHA Enterprise (App Check).
   `script-src 'self' 'unsafe-inline' https://apis.google.com https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://firebasestorage.googleapis.com",
+  // Dev: upload previews load straight from the Storage emulator.
+  `img-src 'self' data: blob: https://firebasestorage.googleapis.com${isDev ? ' http://127.0.0.1:9199' : ''}`,
   "font-src 'self'",
   [
     "connect-src 'self'",

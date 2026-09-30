@@ -1,11 +1,26 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
-import { faArrowRight, faGear, faStore, faTags, faTicket } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowRight,
+  faChartColumn,
+  faDollarSign,
+  faGear,
+  faReceipt,
+  faStore,
+  faTags,
+  faTicket,
+} from '@fortawesome/free-solid-svg-icons';
+import { Delta } from '@/components/reports/Delta';
+import { SalesChart } from '@/components/reports/SalesChart';
 import { Icon } from '@/components/ui/Icon';
 import { StatCard } from '@/components/ui/StatCard';
 import { requireRole } from '@/lib/auth/guards';
 import { adminDb } from '@/lib/firebase/admin';
+import { formatMoney } from '@/lib/format/money';
+import { resolveRange } from '@/lib/reports/days';
+import { tenantDaily } from '@/lib/reports/repository';
+import { fillDays, netOf, percentChange, sum } from '@/lib/reports/summarize';
 import { requireTenant } from '@/lib/tenant/current';
 
 export const metadata: Metadata = { title: 'Overview' };
@@ -30,10 +45,18 @@ async function counts(tenantId: string) {
   };
 }
 
-/** Tenant admin overview. Sales reports arrive with checkout (Phase 4) and reports (Phase 6). */
+/** Tenant admin overview: last 30 days of sales, then marketplace counts and shortcuts. */
 export default async function AdminOverviewPage() {
   const [, tenant] = await Promise.all([requireRole('tenant_admin'), requireTenant()]);
-  const c = await counts(tenant.id);
+  const range = resolveRange({ range: '30d' }, new Date(), tenant.timezone);
+  const [c, current, previous] = await Promise.all([
+    counts(tenant.id),
+    tenantDaily(tenant.id, range.from, range.to),
+    tenantDaily(tenant.id, range.prevFrom, range.prevTo),
+  ]);
+  const cur = netOf(sum(current));
+  const prev = netOf(sum(previous));
+  const money = (v: number) => formatMoney(v, tenant.currency);
   const links = [
     {
       href: '/admin/organizers?status=pending',
@@ -62,6 +85,60 @@ export default async function AdminOverviewPage() {
   ];
   return (
     <>
+      <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+        <StatCard
+          label="Net sales"
+          value={money(cur.gross)}
+          delta={<Delta value={percentChange(cur.gross, prev.gross)} />}
+          note="last 30 days"
+          icon={<Icon icon={faChartColumn} />}
+        />
+        <StatCard
+          label="Marketplace commission"
+          value={money(cur.commission)}
+          delta={<Delta value={percentChange(cur.commission, prev.commission)} />}
+          note="last 30 days"
+          icon={<Icon icon={faDollarSign} />}
+        />
+        <StatCard
+          label="Tickets sold"
+          value={cur.tickets.toLocaleString('en-US')}
+          delta={<Delta value={percentChange(cur.tickets, prev.tickets)} />}
+          note="last 30 days"
+          icon={<Icon icon={faTicket} />}
+        />
+        <StatCard
+          label="Orders"
+          value={cur.orders.toLocaleString('en-US')}
+          note="last 30 days"
+          icon={<Icon icon={faReceipt} />}
+        />
+      </div>
+      <section
+        aria-labelledby="sales-title"
+        className="flex flex-col gap-5 rounded-card border border-line-soft bg-white p-6"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 id="sales-title" className="font-display text-lg font-bold">
+              Gross sales
+            </h2>
+            <p className="text-[13px] text-slate-500">Last 30 days, including service fees</p>
+          </div>
+          <Link href="/admin/reports" className="text-sm font-semibold text-primary hover:text-primary-hover">
+            Sales reports
+          </Link>
+        </div>
+        <SalesChart
+          days={fillDays(current, range.from, range.to).map((d) => ({
+            date: d.date,
+            amount: d.gross,
+            tickets: d.tickets,
+          }))}
+          currency={tenant.currency}
+          caption="Gross sales per day, last 30 days"
+        />
+      </section>
       <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
         <StatCard label="Pending organizers" value={c.pending} icon={<Icon icon={faStore} />} />
         <StatCard label="Approved organizers" value={c.approved} icon={<Icon icon={faStore} />} />
@@ -94,9 +171,6 @@ export default async function AdminOverviewPage() {
           </Link>
         ))}
       </div>
-      <p className="text-xs text-slate-500">
-        Sales figures appear here once checkout is live (Phase 4) and in Sales reports (Phase 6).
-      </p>
     </>
   );
 }
