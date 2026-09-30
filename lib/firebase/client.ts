@@ -9,6 +9,7 @@ import {
   initializeAuth,
   type Auth,
 } from 'firebase/auth';
+import { connectFirestoreEmulator, getFirestore, type Firestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
 import { connectStorageEmulator, getStorage, type FirebaseStorage } from 'firebase/storage';
 
@@ -28,6 +29,7 @@ let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let storage: FirebaseStorage | undefined;
 let functions: Functions | undefined;
+let firestore: Firestore | undefined;
 
 function firebaseApp(): FirebaseApp {
   if (app) return app;
@@ -77,4 +79,12 @@ export function getClientFunctions(): Functions {
     if (useEmulators) connectFunctionsEmulator(functions, '127.0.0.1', 5001);
   }
   return functions;
+}
+
+export function getClientDb(): Firestore {
+  if (!firestore) {
+    firestore = getFirestore(firebaseApp());
+    if (useEmulators) connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
+  }
+  return firestore;
 }

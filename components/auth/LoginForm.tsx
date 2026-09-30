@@ -14,7 +14,16 @@ import { useAfterSignIn } from './useAuthNavigation';
 
 type Errors = Partial<Record<'email' | 'password' | 'form', string>>;
 
-export function LoginForm({ authTenantId, redirectTo }: { authTenantId: string; redirectTo?: string }) {
+/** `staff`: the scanner's staff login (design 10) — email/password only, no organizer sign-up link. */
+export function LoginForm({
+  authTenantId,
+  redirectTo,
+  staff = false,
+}: {
+  authTenantId: string;
+  redirectTo?: string;
+  staff?: boolean;
+}) {
   const afterSignIn = useAfterSignIn(redirectTo);
   const [errors, setErrors] = useState<Errors>({});
   const [pending, setPending] = useState<'email' | 'google' | null>(null);
@@ -25,7 +34,7 @@ export function LoginForm({ authTenantId, redirectTo }: { authTenantId: string; 
     const parsed = loginFormSchema.safeParse({
       email: String(data.get('email') ?? ''),
       password: String(data.get('password') ?? ''),
-      remember: data.get('remember') === 'on',
+      remember: staff || data.get('remember') === 'on',
     });
     if (!parsed.success) {
       const f = parsed.error.flatten().fieldErrors;
@@ -57,11 +66,15 @@ export function LoginForm({ authTenantId, redirectTo }: { authTenantId: string; 
 
   return (
     <>
-      <GoogleButton label="Continue with Google" onClick={onGoogle} loading={pending === 'google'} />
-      <OrDivider label="or with email" />
+      {!staff && (
+        <>
+          <GoogleButton label="Continue with Google" onClick={onGoogle} loading={pending === 'google'} />
+          <OrDivider label="or with email" />
+        </>
+      )}
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-[18px]">
         {errors.form && <Alert tone="danger">{errors.form}</Alert>}
-        <Field id="login-email" label="Email" error={errors.email}>
+        <Field id="login-email" label={staff ? 'Staff email' : 'Email'} error={errors.email}>
           <Input
             id="login-email"
             name="email"
@@ -94,7 +107,7 @@ export function LoginForm({ authTenantId, redirectTo }: { authTenantId: string; 
             aria-describedby={describedBy('login-password', { error: errors.password })}
           />
         </Field>
-        <Checkbox name="remember" label="Keep me logged in" defaultChecked className="text-sm" />
+        {!staff && <Checkbox name="remember" label="Keep me logged in" defaultChecked className="text-sm" />}
         <Button
           type="submit"
           size="lg"
@@ -106,12 +119,14 @@ export function LoginForm({ authTenantId, redirectTo }: { authTenantId: string; 
           Log in
         </Button>
       </form>
-      <p className="text-center text-sm text-slate-600">
-        Organizing events?{' '}
-        <Link href="/become-an-organizer" className="font-semibold text-primary hover:text-primary-hover">
-          Create an organizer account
-        </Link>
-      </p>
+      {!staff && (
+        <p className="text-center text-sm text-slate-600">
+          Organizing events?{' '}
+          <Link href="/become-an-organizer" className="font-semibold text-primary hover:text-primary-hover">
+            Create an organizer account
+          </Link>
+        </p>
+      )}
     </>
   );
 }

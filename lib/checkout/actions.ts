@@ -38,6 +38,9 @@ export async function startCheckout(
   const [user, tenant] = await Promise.all([getSessionUser(), getCurrentTenant()]);
   if (!tenant) return fail('Marketplace unavailable.');
   if (!user) return { ok: false, error: 'login_required' };
+  // Scanner staff accounts can only check tickets in (CLAUDE.md → Roles).
+  if (user.role === 'scanner')
+    return fail('Staff accounts can’t buy tickets. Log in with a personal account.');
   if (!(await rateLimit(`checkout:${user.uid}`, { limit: 10, windowSeconds: 60 })))
     return fail('Too many checkout attempts. Wait a minute.');
   const parsed = startCheckoutSchema.safeParse(input);

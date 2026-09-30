@@ -19,3 +19,15 @@ export async function withFirebaseUser<T>(authTenantId: string, fn: () => Promis
     await signOut(auth);
   }
 }
+
+/**
+ * Keeps a Firebase sign-in for long-lived screens (the scanner): signs in once with a custom token
+ * from the server session; the SDK refreshes ID tokens on its own. Call `signOut` when leaving.
+ */
+export async function ensureFirebaseUser(authTenantId: string): Promise<void> {
+  const auth = getClientAuth(authTenantId);
+  if (auth.currentUser) return;
+  const res = await getClientToken();
+  if ('error' in res) throw new Error(res.error);
+  await signInWithCustomToken(auth, res.token);
+}

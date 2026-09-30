@@ -12,6 +12,7 @@ import type { Role } from '@/lib/auth/roles';
 export type MenuUser = { name: string; email: string | undefined; role: Role };
 
 export function accountLinks(role: Role) {
+  if (role === 'scanner') return [{ href: '/scanner', label: 'Scanner' }]; // staff accounts: scanning only
   const links = [
     { href: '/account/tickets', label: 'My tickets' },
     { href: '/account/orders', label: 'Orders' },
@@ -19,7 +20,6 @@ export function accountLinks(role: Role) {
   ];
   if (role === 'organizer') links.unshift({ href: '/dashboard', label: 'Organizer dashboard' });
   if (role === 'tenant_admin') links.unshift({ href: '/admin', label: 'Admin' });
-  if (role === 'scanner') links.unshift({ href: '/scanner', label: 'Scanner' });
   return links;
 }
 
