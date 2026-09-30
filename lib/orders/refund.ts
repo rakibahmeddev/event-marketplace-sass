@@ -3,6 +3,9 @@ import 'server-only';
 import { FieldValue } from 'firebase-admin/firestore';
 import { adminDb } from '@/lib/firebase/admin';
 import { getPaymentProvider, type ProviderId } from '@/lib/payments';
+import { dayKey } from '@/lib/reports/days';
+import { refundIncrements } from '@/lib/reports/rollup';
+import { applyRollup } from '@/lib/reports/write';
 import type { Tenant } from '@/lib/tenant/schema';
 import type { OrderItem } from './schema';
 
@@ -10,7 +13,8 @@ export class RefundError extends Error {}
 
 /**
  * Full refund: provider refund first (idempotency key per order), then one transaction that marks the
- * order refunded, cancels its tickets, gives the seats back and writes the audit log.
+ * order refunded, cancels its tickets, gives the seats back, records the refund in the sales rollups
+ * (on the refund day) and writes the audit log.
  */
 export async function refundOrder(
   tenant: Tenant,
@@ -41,8 +45,9 @@ export async function refundOrder(
     const fresh = await tx.get(orderRef);
     if (fresh.get('status') !== 'paid') return; // refunded concurrently
     const eventId = fresh.get('eventId') as string;
+    const items = fresh.get('items') as OrderItem[];
     let seats = 0;
-    for (const item of fresh.get('items') as OrderItem[]) {
+    for (const item of items) {
       seats += item.quantity;
       tx.update(db.doc(`tenants/${tenant.id}/events/${eventId}/ticketTypes/${item.ticketTypeId}`), {
         sold: FieldValue.increment(-item.quantity),
@@ -50,13 +55,26 @@ export async function refundOrder(
     }
     tx.update(db.doc(`tenants/${tenant.id}/events/${eventId}`), { totalSold: FieldValue.increment(-seats) });
     const active = tickets.docs.filter((t) => t.get('status') !== 'cancelled').length;
-    tx.set(
-      db.doc(`tenants/${tenant.id}/eventStats/${eventId}`),
-      { ticketsIssued: FieldValue.increment(-active) },
-      { merge: true },
-    );
     for (const t of tickets.docs) tx.update(t.ref, { status: 'cancelled' });
-    tx.update(orderRef, { status: 'refunded', refundRef, refundedAt: FieldValue.serverTimestamp() });
+    const refundedAt = new Date();
+    tx.update(orderRef, { status: 'refunded', refundRef, refundedAt });
+    applyRollup(
+      db,
+      tx,
+      {
+        tenantId: tenant.id,
+        organizerId: fresh.get('organizerId') as string,
+        eventId,
+        day: dayKey(refundedAt, tenant.timezone),
+      },
+      refundIncrements({
+        items,
+        subtotal: fresh.get('subtotal') as number,
+        fees: fresh.get('fees') as number,
+        total: fresh.get('total') as number,
+      }),
+      { ticketsIssued: FieldValue.increment(-active) },
+    );
     tx.create(db.collection(`tenants/${tenant.id}/auditLogs`).doc(), {
       actorUid,
       action: 'refund',

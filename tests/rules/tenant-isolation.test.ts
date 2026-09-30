@@ -15,6 +15,8 @@ const tenantBPaths = [
   'tenants/tB/tickets/tk1',
   'tenants/tB/scannerAssignments/u1',
   'tenants/tB/eventStats/e1',
+  'tenants/tB/salesDaily/2026-10-01',
+  'tenants/tB/organizerSalesDaily/o1_2026-10-01',
   'users/userB',
 ];
 
@@ -37,6 +39,8 @@ beforeEach(async () => {
     'tenants/tB/tickets/tk1': { orderId: 'ord1', status: 'valid' },
     'tenants/tB/scannerAssignments/u1': { eventIds: ['e1'] },
     'tenants/tB/eventStats/e1': { checkedIn: 1 },
+    'tenants/tB/salesDaily/2026-10-01': { date: '2026-10-01', gross: 1000 },
+    'tenants/tB/organizerSalesDaily/o1_2026-10-01': { date: '2026-10-01', organizerId: 'o1', gross: 1000 },
     'users/userB': { tenantId: 'tB', displayName: 'B user' },
   });
 });

@@ -2,6 +2,9 @@ import 'server-only';
 
 import { FieldValue } from 'firebase-admin/firestore';
 import { adminDb } from '@/lib/firebase/admin';
+import { dayKey } from '@/lib/reports/days';
+import { saleIncrements } from '@/lib/reports/rollup';
+import { applyRollup } from '@/lib/reports/write';
 import type { Attendee, OrderItem } from './schema';
 
 export type FulfilResult = 'fulfilled' | 'duplicate' | 'already_paid' | 'refund_required' | 'not_found';
@@ -9,7 +12,7 @@ export type FulfilResult = 'fulfilled' | 'duplicate' | 'already_paid' | 'refund_
 /**
  * Webhook "paid" handling, idempotent: the provider event id is recorded in
  * processedWebhookEvents/{provider}_{eventId} inside the same transaction that marks the order paid,
- * creates one ticket per seat, moves reserved → sold and bumps the event's totalSold.
+ * creates one ticket per seat, moves reserved → sold, bumps the event's totalSold and the sales rollups.
  * A payment that arrives after the hold expired is honoured if stock allows, otherwise refunded.
  */
 export async function fulfilOrder(args: {
@@ -22,9 +25,14 @@ export async function fulfilOrder(args: {
   const db = adminDb();
   const processedRef = db.doc(`processedWebhookEvents/${args.provider}_${args.providerEventId}`);
   const orderRef = db.doc(`tenants/${args.tenantId}/orders/${args.orderId}`);
+  const tenantRef = db.doc(`tenants/${args.tenantId}`);
 
   return db.runTransaction(async (tx) => {
-    const [processed, order] = await Promise.all([tx.get(processedRef), tx.get(orderRef)]);
+    const [processed, order, tenant] = await Promise.all([
+      tx.get(processedRef),
+      tx.get(orderRef),
+      tx.get(tenantRef),
+    ]);
     if (processed.exists) return 'duplicate';
     const record = (result: FulfilResult) =>
       tx.create(processedRef, {
@@ -79,12 +87,6 @@ export async function fulfilOrder(args: {
     tx.update(db.doc(`tenants/${args.tenantId}/events/${eventId}`), {
       totalSold: FieldValue.increment(seats),
     });
-    // Live check-in counter denominator (scanner app).
-    tx.set(
-      db.doc(`tenants/${args.tenantId}/eventStats/${eventId}`),
-      { ticketsIssued: FieldValue.increment(seats) },
-      { merge: true },
-    );
 
     const attendees = (order.get('attendees') as Attendee[] | undefined) ?? [];
     const buyer = { name: order.get('buyerName') as string, email: order.get('buyerEmail') as string };
@@ -105,11 +107,27 @@ export async function fulfilOrder(args: {
         });
       }
     }
-    tx.update(orderRef, {
-      status: 'paid',
-      paymentRef: args.paymentRef,
-      paidAt: FieldValue.serverTimestamp(),
-    });
+    // Server clock (not serverTimestamp) so the sales day and paidAt agree; days use the marketplace timezone.
+    const paidAt = new Date();
+    tx.update(orderRef, { status: 'paid', paymentRef: args.paymentRef, paidAt });
+    applyRollup(
+      db,
+      tx,
+      {
+        tenantId: args.tenantId,
+        organizerId: order.get('organizerId') as string,
+        eventId,
+        day: dayKey(paidAt, (tenant.get('timezone') as string | undefined) ?? 'UTC'),
+      },
+      saleIncrements({
+        items,
+        subtotal: order.get('subtotal') as number,
+        fees: order.get('fees') as number,
+        total: order.get('total') as number,
+      }),
+      // Live check-in counter denominator (scanner app).
+      { ticketsIssued: FieldValue.increment(seats) },
+    );
     record('fulfilled');
     return 'fulfilled';
   });
