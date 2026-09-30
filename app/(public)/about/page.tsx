@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { faHandHoldingHeart, faScaleBalanced, faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@/components/ui/Icon';
+import { STOCK } from '@/lib/images/stock';
 import { requireTenant } from '@/lib/tenant/current';
 
 export const metadata: Metadata = { title: 'About us' };
@@ -43,10 +45,14 @@ export default async function AboutPage() {
         </p>
       </section>
       <div className="page-container">
-        <div className="grid h-[220px] place-items-center rounded-card img-placeholder md:h-[420px] md:rounded-sheet">
-          <span aria-hidden className="font-mono text-[11px] text-[#9C94BF]">
-            [ team / community event photo ]
-          </span>
+        <div className="relative h-[220px] overflow-hidden rounded-card bg-ink md:h-[420px] md:rounded-sheet">
+          <Image
+            src={STOCK.aboutCommunity}
+            alt="People enjoying a community event together"
+            fill
+            sizes="(min-width: 1280px) 1216px, 100vw"
+            className="object-cover"
+          />
         </div>
       </div>
       <section className="mt-14 bg-mist md:mt-[72px]">

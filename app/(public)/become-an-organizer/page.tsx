@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { headers } from 'next/headers';
@@ -19,6 +20,7 @@ import { getSessionUser } from '@/lib/auth/session';
 import { listCategories } from '@/lib/categories/repository';
 import { getOrganizerForOwner } from '@/lib/organizers/repository';
 import { storagePaths } from '@/lib/storage/server';
+import { STOCK } from '@/lib/images/stock';
 import { requireTenant } from '@/lib/tenant/current';
 
 export const metadata: Metadata = { title: 'Sell tickets' };
@@ -122,10 +124,14 @@ export default async function BecomeOrganizerPage() {
               </ButtonLink>
             </div>
           </div>
-          <div className="hidden h-[440px] place-items-center rounded-sheet img-placeholder lg:grid">
-            <span aria-hidden className="font-mono text-[11px] text-[#9C94BF]">
-              [ organizer dashboard + scanner screenshot ]
-            </span>
+          <div className="relative hidden h-[440px] overflow-hidden rounded-sheet bg-primary lg:block">
+            <Image
+              src={STOCK.productOrganizer}
+              alt="The organizer dashboard with ticket sales, next to the phone scanner checking a ticket in"
+              fill
+              sizes="(min-width: 1280px) 600px, 50vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>

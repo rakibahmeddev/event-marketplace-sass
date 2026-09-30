@@ -48,7 +48,7 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Relevance sort                                         | Browse results                                             | Soonest first                                                 |
 | Marketplace statistics ("12,400+ organizers", "$94M")  | Home, About, Become an organizer                           | Hidden until tenants supply real numbers (Phase 6)            |
 | Testimonials ("Loved by fans")                         | Home                                                       | Hidden until tenants supply real quotes (Phase 6)             |
-| Organizer cover image                                  | Organizer profile                                          | Striped placeholder; no upload yet                            |
+| Organizer cover upload                                 | Organizer profile                                          | One shared stock cover for every organizer                    |
 | "Contact" / "Follow" on organizer profile & event page | Organizer profile, event page                              | Omitted                                                       |
 | Contact form sending                                   | Contact page                                               | Opens the visitor's email app until the email provider (Phase 4) |
 | Age rating ("18+"), event duration chips               | Event page                                                 | Not in the data model                                         |

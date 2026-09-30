@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   faArrowRight,
@@ -20,6 +21,7 @@ import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Icon } from '@/components/ui/Icon';
 import { getHomeData } from '@/lib/events/discovery';
+import { STOCK } from '@/lib/images/stock';
 import { requireTenant } from '@/lib/tenant/current';
 
 // Always fresh: event lists change as organizers publish.
@@ -56,13 +58,15 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[520px] items-center bg-[repeating-linear-gradient(135deg,#231E38_0_14px,#2A2442_14px_28px)] md:min-h-[600px]">
-        <span
-          aria-hidden
-          className="absolute top-6 right-8 hidden font-mono text-[11px] text-[#9C94BF] md:block"
-        >
-          [ hero photo ]
-        </span>
+      <section className="relative flex min-h-[520px] items-center overflow-hidden bg-ink md:min-h-[600px]">
+        <Image
+          src={STOCK.hero}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[70%_center]"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(26_26_46/0.92)_0%,rgb(26_26_46/0.55)_60%,rgb(26_26_46/0.2)_100%)]" />
         <div className="page-container relative flex flex-col gap-6 py-14">
           {data.totalUpcoming > 0 && (
@@ -221,10 +225,14 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="relative hidden min-h-[280px] place-items-center bg-[repeating-linear-gradient(135deg,#4A22C4_0_12px,#5227CF_12px_24px)] md:grid">
-            <span aria-hidden className="font-mono text-[11px] text-[#CFC2FF]">
-              [ organizer scanning tickets at the door ]
-            </span>
+          <div className="relative hidden min-h-[280px] md:block">
+            <Image
+              src={STOCK.door}
+              alt="A phone showing a QR code ticket"
+              fill
+              sizes="(min-width: 768px) 50vw, 0px"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>

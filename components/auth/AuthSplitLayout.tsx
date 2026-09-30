@@ -1,20 +1,18 @@
 import type { ReactNode } from 'react';
+import Image from 'next/image';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { TenantLogo } from '@/components/site/TenantLogo';
+import { STOCK } from '@/lib/images/stock';
 
 /** Login / register: photo panel on the left (desktop), form on the right; site header on mobile (design 11). */
 export function AuthSplitLayout({ tenantName, children }: { tenantName: string; children: ReactNode }) {
   return (
     <div className="grid min-h-dvh bg-white lg:grid-cols-2">
-      <div className="relative hidden flex-col justify-between bg-[repeating-linear-gradient(135deg,#231E38_0_14px,#2A2442_14px_28px)] p-10 text-white lg:flex">
-        <TenantLogo name={tenantName} tone="light" />
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-1/2 text-center font-mono text-[11px] font-medium text-[#9C94BF]"
-        >
-          [ crowd photo ]
-        </span>
-        <div className="flex flex-col gap-3">
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
+        <Image src={STOCK.aboutCrowd} alt="" fill sizes="50vw" className="object-cover" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(26_26_46/0.55)_0%,rgb(26_26_46/0.1)_40%,rgb(26_26_46/0.85)_100%)]" />
+        <TenantLogo name={tenantName} tone="light" className="relative" />
+        <div className="relative flex flex-col gap-3">
           <b className="font-display text-[40px] leading-[48px] font-extrabold tracking-[-0.02em]">
             Your tickets, all in one place.
           </b>

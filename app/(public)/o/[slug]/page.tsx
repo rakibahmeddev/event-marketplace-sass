@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { STOCK } from '@/lib/images/stock';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -8,7 +9,6 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Icon } from '@/components/ui/Icon';
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
 import { categoryMap } from '@/lib/categories/repository';
 import { listPastEvents, listPublishedEvents } from '@/lib/events/repository';
 import { toEventCard } from '@/lib/events/view';
@@ -51,19 +51,20 @@ export default async function OrganizerProfilePage({ params }: Props) {
 
   return (
     <>
-      <div className="relative h-[140px] md:h-[240px]">
-        <ImagePlaceholder label="cover image" className="absolute inset-0" />
+      <div className="relative h-[140px] bg-ink md:h-[240px]">
+        {/* Per-organizer covers are deferred (docs/deferred.md): one shared stock cover for now. */}
+        <Image src={STOCK.organizerCover} alt="" fill priority sizes="100vw" className="object-cover" />
       </div>
       <div className="page-container">
-        <div className="-mt-12 flex flex-col gap-5 md:-mt-16 md:flex-row md:items-end md:gap-6">
+        <div className="relative -mt-12 flex flex-col gap-5 md:-mt-16 md:flex-row md:items-end md:gap-6">
           {organizer.logo ? (
-            <span className="relative size-24 shrink-0 overflow-hidden rounded-full border-4 border-white bg-white md:size-32">
-              <Image src={organizer.logo.url} alt="" fill sizes="128px" className="object-cover" />
+            <span className="relative size-24 shrink-0 overflow-hidden rounded-full border-4 border-white bg-white md:size-[148px]">
+              <Image src={organizer.logo.url} alt="" fill sizes="148px" className="object-cover" />
             </span>
           ) : (
             <Avatar
               name={organizer.name}
-              className="size-24 border-4 border-white text-3xl md:size-32 md:text-4xl"
+              className="size-24 border-4 border-white text-3xl md:size-[148px] md:text-[44px]"
             />
           )}
           <div className="flex flex-1 flex-col gap-2 md:pb-2">
