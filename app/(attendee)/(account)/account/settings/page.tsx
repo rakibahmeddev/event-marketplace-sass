@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AccountTabs } from '@/components/account/AccountTabs';
 import { ChangePasswordForm } from '@/components/auth/ChangePasswordForm';
 import { Card } from '@/components/ui/Card';
 import { requireUser } from '@/lib/auth/guards';
@@ -12,6 +13,7 @@ export default async function AccountSettingsPage() {
   return (
     <div className="page-container flex max-w-[880px] flex-col gap-6 py-10 md:py-14">
       <h1 className="type-h3">Account settings</h1>
+      <AccountTabs active="settings" />
       <Card padded className="flex flex-col gap-2">
         <h2 className="type-h5">Account details</h2>
         <dl className="grid gap-x-6 gap-y-1 text-[15px] sm:grid-cols-[120px_1fr]">
@@ -20,9 +22,7 @@ export default async function AccountSettingsPage() {
           <dt className="text-slate-500">Email</dt>
           <dd>{user.email ?? '—'}</dd>
         </dl>
-        <p className="text-sm text-slate-500">
-          Editing your details arrives with the rest of the account area in Phase 4.
-        </p>
+        <p className="text-sm text-slate-500">Your name and email come from your sign-in account.</p>
       </Card>
       <Card padded className="flex flex-col gap-4">
         <h2 className="type-h5">Change password</h2>

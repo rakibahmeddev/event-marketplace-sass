@@ -234,7 +234,13 @@ export default async function EventPage({ params }: Props) {
               Tickets are no longer available for this event.
             </div>
           ) : (
-            <TicketSelector options={options} currency={event.currency} checkoutOpen={false} />
+            <TicketSelector
+              eventId={event.id}
+              eventPath={`/events/${event.slug}`}
+              options={options}
+              currency={event.currency}
+              checkoutOpen
+            />
           )}
         </div>
       </div>

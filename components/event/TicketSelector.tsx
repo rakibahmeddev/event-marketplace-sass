@@ -1,11 +1,14 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { faLock, faTicket } from '@fortawesome/free-solid-svg-icons';
+import { Alert } from '@/components/ui/Alert';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { QuantityStepper } from '@/components/ui/QuantityStepper';
+import { startCheckout } from '@/lib/checkout/actions';
 import { formatMoney } from '@/lib/format/money';
 
 export const MAX_PER_ORDER = 8;
@@ -25,15 +28,36 @@ export type TicketOption = {
  * service fees and the final total are computed on the server at checkout (Phase 4).
  */
 export function TicketSelector({
+  eventId,
+  eventPath,
   options,
   currency,
   checkoutOpen,
 }: {
+  eventId: string;
+  eventPath: string;
   options: TicketOption[];
   currency: string;
   checkoutOpen: boolean;
 }) {
+  const router = useRouter();
   const [qty, setQty] = useState<Record<string, number>>({});
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string>();
+
+  async function getTickets() {
+    setPending(true);
+    setError(undefined);
+    const items = Object.entries(qty)
+      .filter(([, q]) => q > 0)
+      .map(([ticketTypeId, quantity]) => ({ ticketTypeId, quantity }));
+    const res = await startCheckout({ eventId, items });
+    if (res.ok) return router.push(`/checkout/${res.data.orderId}`);
+    setPending(false);
+    if (res.error === 'login_required') return router.push(`/login?next=${encodeURIComponent(eventPath)}`);
+    setError(res.error);
+    router.refresh(); // show current availability
+  }
   const count = Object.values(qty).reduce((a, b) => a + b, 0);
   const subtotal = useMemo(
     () => options.reduce((sum, o) => sum + o.price * (qty[o.id] ?? 0), 0),
@@ -50,7 +74,7 @@ export function TicketSelector({
       </div>
       <div className="flex justify-between text-sm text-slate-600">
         <span>Service fees</span>
-        <span>Calculated at checkout</span>
+        <span>Shown at checkout</span>
       </div>
     </>
   );
@@ -110,17 +134,21 @@ export function TicketSelector({
             <b className="text-base">Subtotal</b>
             <b className="font-display text-2xl font-extrabold">{formatMoney(subtotal, currency)}</b>
           </div>
+          {error && <Alert tone="danger">{error}</Alert>}
           <Button
             size="lg"
             fullWidth
             disabled={!checkoutOpen || count === 0}
+            loading={pending}
+            loadingText="Reserving"
+            onClick={getTickets}
             leadingIcon={<Icon icon={faTicket} />}
           >
-            {checkoutOpen ? 'Get tickets' : 'Checkout opens soon'}
+            {checkoutOpen ? 'Get tickets' : 'Checkout unavailable'}
           </Button>
           <span className="flex items-center justify-center gap-1.5 text-center text-xs text-slate-500">
             <Icon icon={faLock} />
-            Secure checkout · Card payments by Stripe
+            Secure checkout · Tickets held for 10 minutes
           </span>
         </div>
       </aside>
@@ -134,8 +162,13 @@ export function TicketSelector({
             </span>
             <b className="font-display text-lg font-extrabold">{formatMoney(subtotal, currency)}</b>
           </div>
-          <Button disabled={!checkoutOpen} leadingIcon={<Icon icon={faTicket} />}>
-            {checkoutOpen ? 'Get tickets' : 'Opens soon'}
+          <Button
+            disabled={!checkoutOpen}
+            loading={pending}
+            onClick={getTickets}
+            leadingIcon={<Icon icon={faTicket} />}
+          >
+            Get tickets
           </Button>
         </div>
       )}
