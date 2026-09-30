@@ -7,23 +7,46 @@
  *   other → http://other.localhost:3000   (used to prove tenant isolation)
  * and one account per role. TEST CREDENTIALS ONLY — see scripts/seed-credentials.ts.
  */
+import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import { searchWords } from '../lib/format/text.ts';
 import { zonedToUtc } from '../lib/format/time.ts';
 import { SEED_PASSWORD } from './seed-credentials.ts';
 
 process.env.FIRESTORE_EMULATOR_HOST ??= '127.0.0.1:8080';
 process.env.FIREBASE_AUTH_EMULATOR_HOST ??= '127.0.0.1:9099';
+process.env.FIREBASE_STORAGE_EMULATOR_HOST ??= '127.0.0.1:9199';
 const projectId = process.env.FIREBASE_PROJECT_ID ?? 'demo-ticketing';
 if (!projectId.startsWith('demo-')) {
   throw new Error(`Refusing to seed project "${projectId}": only demo-* (emulator) projects are allowed.`);
 }
 
-initializeApp({ projectId });
+const storageBucket = process.env.FIREBASE_STORAGE_BUCKET ?? `${projectId}.appspot.com`;
+initializeApp({ projectId, storageBucket });
 const auth = getAuth();
 const db = getFirestore();
+const bucket = getStorage().bucket();
+
+/**
+ * Uploads a file from scripts/seed-assets to the Storage emulator and returns the { path, url } ref the app
+ * stores (same tokenised URL format as lib/storage/server.ts). Photos: Unsplash License, see docs/image-credits.md.
+ */
+async function uploadAsset(file: string, path: string): Promise<{ path: string; url: string }> {
+  const token = randomUUID();
+  await bucket.file(path).save(readFileSync(new URL(`./seed-assets/${file}`, import.meta.url)), {
+    contentType: 'image/webp',
+    metadata: { metadata: { firebaseStorageDownloadTokens: token } },
+  });
+  const host = process.env.FIREBASE_STORAGE_EMULATOR_HOST;
+  return {
+    path,
+    url: `http://${host}/v0/b/${bucket.name}/o/${encodeURIComponent(path)}?alt=media&token=${token}`,
+  };
+}
 
 type TenantSeed = {
   id: string;
@@ -31,6 +54,8 @@ type TenantSeed = {
   domains: string[];
   primaryColor: string;
   accentColor: string;
+  /** File in scripts/seed-assets uploaded as branding.logo. */
+  logo?: string;
   users: { email: string; name: string; role: 'tenant_admin' | 'organizer' | 'scanner' | 'attendee' }[];
   /** A pending organizer application (attendee account) for trying the approval flow. */
   applicant?: { email: string; name: string; org: string; slug: string };
@@ -52,6 +77,7 @@ const CATEGORIES = [
 const SAMPLE_EVENTS = [
   {
     title: 'Neon Tides Live — Summer Tour Finale',
+    image: 'event-neon-tides.webp',
     cat: 'music-concerts',
     days: 4,
     time: '20:00',
@@ -65,6 +91,7 @@ const SAMPLE_EVENTS = [
   },
   {
     title: 'Sunset Rooftop Jazz Sessions',
+    image: 'event-rooftop-jazz.webp',
     cat: 'music-concerts',
     days: 5,
     time: '18:00',
@@ -74,6 +101,7 @@ const SAMPLE_EVENTS = [
   },
   {
     title: 'Intro to Ceramics: Wheel Throwing',
+    image: 'event-ceramics.webp',
     cat: 'workshops',
     days: 4,
     time: '10:00',
@@ -83,6 +111,7 @@ const SAMPLE_EVENTS = [
   },
   {
     title: 'Open Studios: Contemporary Print Fair',
+    image: 'event-print-fair.webp',
     cat: 'arts-and-culture',
     days: 5,
     time: '11:00',
@@ -92,6 +121,7 @@ const SAMPLE_EVENTS = [
   },
   {
     title: 'Stand-Up Saturdays with Priya Rao',
+    image: 'event-stand-up.webp',
     cat: 'comedy',
     days: 11,
     time: '19:30',
@@ -101,6 +131,7 @@ const SAMPLE_EVENTS = [
   },
   {
     title: 'UX Writing Masterclass (Online)',
+    image: 'event-ux-writing.webp',
     cat: 'workshops',
     days: 15,
     time: '18:00',
@@ -113,7 +144,8 @@ const SAMPLE_EVENTS = [
 const tenants: TenantSeed[] = [
   {
     id: 'demo',
-    name: 'brandname',
+    name: 'TicketExpert',
+    logo: 'ticketexpert-logo.webp',
     domains: ['localhost', '127.0.0.1', 'demo.localhost'],
     primaryColor: '#5B2EE0',
     accentColor: '#FF6B4A',
@@ -170,7 +202,12 @@ async function seedTenant(t: TenantSeed) {
     socialLinks: { instagram: 'https://instagram.com/example', x: 'https://x.com/example' },
     commissionRate: 0.035,
     paymentConfig: { provider: 'test', chargesEnabled: false },
-    branding: { name: t.name, primaryColor: t.primaryColor, accentColor: t.accentColor, logo: null },
+    branding: {
+      name: t.name,
+      primaryColor: t.primaryColor,
+      accentColor: t.accentColor,
+      logo: t.logo ? await uploadAsset(t.logo, `tenants/${t.id}/branding/logo.webp`) : null,
+    },
   });
   for (const host of t.domains) await db.doc(`tenantDomains/${host}`).set({ tenantId: t.id });
 
@@ -283,6 +320,10 @@ async function seedEvents(tenantId: string, organizerId: string) {
     const city = e.venue ? e.venue[2] : '';
     const prices = e.tickets.map((tt) => tt[1]);
     const minPrice = Math.min(...prices);
+    const cover = await uploadAsset(
+      e.image,
+      `tenants/${tenantId}/organizers/${organizerId}/events/${id}/cover.webp`,
+    );
     await db.doc(`tenants/${tenantId}/events/${id}`).set({
       organizerId,
       title: e.title,
@@ -290,7 +331,7 @@ async function seedEvents(tenantId: string, organizerId: string) {
       category: e.cat,
       description:
         'Expect a great night out with friends and strangers alike.\n\nDoors open 30 minutes before the start. Bring a valid photo ID.',
-      images: [],
+      images: [cover],
       venue: e.venue
         ? { name: e.venue[0], address: e.venue[1], city, country: 'US' }
         : { name: '', address: '', city: '', country: '' },

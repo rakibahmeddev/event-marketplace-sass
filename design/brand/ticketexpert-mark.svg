@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" role="img" aria-label="TicketExpert">
+  <rect width="72" height="72" rx="18" fill="#5B2EE0"/>
+  <g transform="rotate(-18 36 36)">
+    <!-- ticket with side notches -->
+    <path fill="#FFFFFF" d="M15 22h42a4 4 0 0 1 4 4v6a4 4 0 0 0 0 8v6a4 4 0 0 1-4 4H15a4 4 0 0 1-4-4v-6a4 4 0 0 0 0-8v-6a4 4 0 0 1 4-4z"/>
+    <!-- perforation -->
+    <path stroke="#5B2EE0" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 5" d="M46 26v20"/>
+    <!-- expert check -->
+    <path fill="none" stroke="#FF6B4A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M21 36.5l6 6 11-12"/>
+  </g>
+</svg>

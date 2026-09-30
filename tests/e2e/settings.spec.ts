@@ -17,6 +17,9 @@ test.describe.serial('admin settings', () => {
   test('colour, logo and social link changes show up on the public site', async ({ page }) => {
     await login(page, SEED_USERS.admin, '/admin/settings');
     await page.getByLabel('Primary colour', { exact: true }).fill('#0F766E');
+    // The seed gives the demo marketplace a logo; replace it.
+    const remove = page.getByRole('button', { name: 'Remove image' });
+    if (await remove.isVisible()) await remove.click();
     await page.locator('input[type=file]').setInputFiles({ ...tinyPng, name: 'logo.png' });
     await expect(page.getByRole('button', { name: 'Remove image' })).toBeVisible({ timeout: 15000 });
     await page.getByLabel('YouTube').fill('https://youtube.com/@example');
@@ -30,7 +33,7 @@ test.describe.serial('admin settings', () => {
       getComputedStyle(document.documentElement).getPropertyValue('--brand-primary').trim(),
     );
     expect(primary.toLowerCase()).toBe('#0f766e');
-    await expect(page.getByRole('banner').getByRole('img', { name: 'brandname' }).first()).toBeVisible();
+    await expect(page.getByRole('banner').getByRole('img', { name: 'TicketExpert' }).first()).toBeVisible();
     await expect(
       page.getByRole('contentinfo').getByRole('link', { name: 'YouTube' }).first(),
     ).toHaveAttribute('href', 'https://youtube.com/@example');

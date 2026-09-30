@@ -43,7 +43,7 @@ They only render when the app talks to the local emulators, never in production.
 
 | URL | Marketplace |
 |---|---|
-| http://localhost:3000, http://demo.localhost:3000 | `demo` (default branding) |
+| http://localhost:3000, http://demo.localhost:3000 | `demo` ("TicketExpert": seeded logo, event photos, sample order) |
 | http://other.localhost:3000 | `other` ("Othertix", teal) — used to check tenant isolation |
 | any other host | "Marketplace not found" (404) |
 
