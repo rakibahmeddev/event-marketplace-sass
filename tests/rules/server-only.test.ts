@@ -15,12 +15,20 @@ beforeEach(async () => {
   await seed(env, {
     'tenantDomains/demo.localhost': { tenantId: 'tA' },
     'rateLimits/abc': { count: 1 },
+    'processedWebhookEvents/test_evt1': { orderId: 'o1' },
+    'devEmails/e1': { to: 'x@example.test' },
     'somethingElse/x': { a: 1 },
   });
 });
 
 describe('server-only collections', () => {
-  for (const path of ['tenantDomains/demo.localhost', 'rateLimits/abc', 'somethingElse/x']) {
+  for (const path of [
+    'tenantDomains/demo.localhost',
+    'rateLimits/abc',
+    'processedWebhookEvents/test_evt1',
+    'devEmails/e1',
+    'somethingElse/x',
+  ]) {
     it(`${path} is closed to every client`, async () => {
       await assertFails(env.unauthenticatedContext().firestore().doc(path).get());
       for (const role of ROLES) {

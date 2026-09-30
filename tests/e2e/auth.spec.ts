@@ -8,7 +8,7 @@ test.describe('sign-in and roles', () => {
     isMobile,
   }) => {
     await login(page, SEED_USERS.attendee, '/account/tickets');
-    await expect(page.getByRole('heading', { name: 'My tickets' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^Hi, / })).toBeVisible();
 
     await page.goto('/dashboard');
     await expect(page).toHaveURL(/\/forbidden$/);
@@ -27,7 +27,7 @@ test.describe('sign-in and roles', () => {
 
   test('organizer reaches the organizer dashboard', async ({ page }) => {
     await login(page, SEED_USERS.organizer, '/dashboard');
-    await expect(page.getByRole('heading', { name: 'Dashboard' }).first()).toBeVisible();
+    await expect(page.getByText('Tickets sold').first()).toBeVisible();
   });
 
   test('tenant admin reaches admin but not the organizer dashboard', async ({ page }) => {

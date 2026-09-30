@@ -14,7 +14,8 @@ test.describe('public discovery', () => {
     await expect(page).toHaveURL(/\/events\/sunset-rooftop/, { timeout: 15000 });
     await expect(page.getByRole('heading', { level: 1, name: 'Sunset Rooftop Jazz Sessions' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Select tickets' })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Checkout opens soon|Opens soon/ }).first()).toBeDisabled();
+    // Nothing selected yet → the button waits for a quantity.
+    await expect(page.getByRole('button', { name: 'Get tickets' }).first()).toBeDisabled();
   });
 
   test('browse filters by category, price and keyword', async ({ page }) => {

@@ -7,6 +7,8 @@ export const SEED_USERS = {
   scanner: 'scanner@demo.test',
   attendee: 'attendee@demo.test',
   applicant: 'applicant@demo.test',
+  /** Used only by the purchase E2E flow (logouts elsewhere revoke every session of an account). */
+  buyer: 'buyer@demo.test',
   otherAdmin: 'admin@other.test',
   otherAttendee: 'attendee@other.test',
 } as const;

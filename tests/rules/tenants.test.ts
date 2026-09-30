@@ -81,6 +81,7 @@ describe('server-rendered data: closed to browsers (read and write)', () => {
     'tenants/tA/categories/c1',
     'tenants/tA/orders/x',
     'tenants/tA/tickets/x',
+    'tenants/tA/orders/x/anything/y',
   ]) {
     it(`${path} is closed for every role`, async () => {
       for (const role of ROLES) {

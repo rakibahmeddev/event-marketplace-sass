@@ -128,6 +128,7 @@ const tenants: TenantSeed[] = [
       { email: 'organizer@demo.test', name: 'Marcus Bell', role: 'organizer' },
       { email: 'scanner@demo.test', name: 'Tasha Green', role: 'scanner' },
       { email: 'attendee@demo.test', name: 'Jordan Lee', role: 'attendee' },
+      { email: 'buyer@demo.test', name: 'Priya Shah', role: 'attendee' },
     ],
   },
   {
@@ -168,7 +169,7 @@ async function seedTenant(t: TenantSeed) {
       'The marketplace for live experiences. Discover events near you, or sell tickets to your own.',
     socialLinks: { instagram: 'https://instagram.com/example', x: 'https://x.com/example' },
     commissionRate: 0.035,
-    paymentConfig: {},
+    paymentConfig: { provider: 'test', chargesEnabled: false },
     branding: { name: t.name, primaryColor: t.primaryColor, accentColor: t.accentColor, logo: null },
   });
   for (const host of t.domains) await db.doc(`tenantDomains/${host}`).set({ tenantId: t.id });
