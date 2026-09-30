@@ -8,6 +8,13 @@ export const tenantDocSchema = z.object({
   /** Identity Platform tenant that holds this marketplace's user accounts. */
   authTenantId: z.string().min(1),
   branding: tenantBrandingSchema,
+  /** IANA zone used for "today / this weekend" filters and as the default for new events. */
+  timezone: z.string().min(1).default('America/New_York'),
+  /** ISO 4217; all prices on this marketplace use it. */
+  currency: z.string().length(3).default('USD'),
+  /** Decimal share, e.g. 0.035. Server-side only; shown on the organizer pricing page. */
+  commissionRate: z.number().min(0).max(1).default(0),
+  supportEmail: z.email().optional(),
 });
 
 export type TenantDoc = z.infer<typeof tenantDocSchema>;
