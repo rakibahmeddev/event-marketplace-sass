@@ -37,7 +37,6 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | "Watch 2-min demo"                                     | Become an organizer                                        | Not built                                                     |
 | Careers, Press, Blog, Help center, Resources           | Footer                                                     | Plain text, no link                                           |
 | Terms of service, Privacy policy, Refund policy pages  | Footer, checkout consent                                   | Plain text — **needed before launch**, confirm content owner  |
-| Social profile links                                   | Footer                                                     | Decorative icons until tenant settings (Phase 6)              |
 | FAQ page                                               | Supporting pages                                           | Not in the CLAUDE.md MVP list                                 |
 | Duplicate-scan counter, manual "Search name" lookup    | Scanner / attendees                                        | Revisit in Phase 5                                            |
 | Price range slider                                     | Browse filters                                             | Any / Free / Paid only                                        |

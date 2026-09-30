@@ -9,7 +9,9 @@
   custom claims, route guards, Firestore rules + tests, rate limiting.
 - Phase 3 complete: categories, organizer applications + approval, event create/edit/publish with
   ticket types and image uploads, public home / browse / event / organizer pages, about, contact.
-- Checkout, tickets, scanner and dashboard statistics are still stubs (Phases 4–6).
+- Admin settings (brought forward from Phase 6): name, logo, brand colours with contrast check, support email,
+  footer tagline, social links, commission — plus an admin overview with counts.
+- Checkout, tickets, scanner and sales reports are still stubs (Phases 4–6).
 
 ## Repository layout
 
@@ -95,9 +97,19 @@ docs/                   architecture.md, setup.md, deferred.md
 | `events.timezone`, `.isOnline`, `.refundPolicy`, `venue { name, address, city, country }`, `images[] { path, url }` | event details |
 | `events.organizerName`, `.organizerSlug`, `.city`, `.currency`, `.minPrice`, `.isFree`, `.totalQuantity`, `.totalSold`, `.searchWords[]` | denormalised for cards, filters, badges and keyword search; written only by server code |
 | `ticketTypes.description`, `.order` | display |
+| `tenants/{t}.branding.logo` `{ path, url } \| null`, `.footerTagline`, `.socialLinks { instagram?, tiktok?, x?, facebook?, youtube? }` | admin settings (approved 2026-09-30) |
 
 Composite indexes for every browse filter live in `firestore.indexes.json` (Firestore merges them for
 combined filters). The emulator does not enforce indexes, so they are verified on the first deploy (Phase 7).
+
+## Admin settings
+
+`/admin/settings` → `updateTenantSettings` server action (tenant_admin, Zod strict, rate limit). Colours must pass
+WCAG AA (white text on primary, ink text on accent, 4.5:1). Social links must be `https://`. Currency, timezone,
+status and the Identity Platform tenant are not editable. Each save writes a `settings.change` audit entry listing the
+changed fields, clears this server's tenant cache and revalidates all pages (other instances refresh within 60 s).
+Logos upload to `tenants/{t}/branding/` (Storage rules: tenant_admin of that tenant, images ≤ 5 MB, create-only).
+`TenantLogo` renders the uploaded logo everywhere the mark appears.
 
 ## Organizers and events (Phase 3)
 
