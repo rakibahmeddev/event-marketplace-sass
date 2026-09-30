@@ -6,6 +6,7 @@ export const SEED_USERS = {
   organizer: 'organizer@demo.test',
   scanner: 'scanner@demo.test',
   attendee: 'attendee@demo.test',
+  applicant: 'applicant@demo.test',
   otherAdmin: 'admin@other.test',
   otherAttendee: 'attendee@other.test',
 } as const;

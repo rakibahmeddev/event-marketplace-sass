@@ -43,6 +43,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  images: {
+    // Dev only: the Storage emulator serves images from 127.0.0.1. remotePatterns still pins the host.
+    dangerouslyAllowLocalIP: isDev,
+    remotePatterns: [
+      { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
+      ...(isDev ? [{ protocol: 'http' as const, hostname: '127.0.0.1', port: '9199' }] : []),
+    ],
+  },
   // Pin the workspace root; otherwise a stray lockfile in a parent folder is picked up.
   turbopack: { root: process.cwd() },
   poweredByHeader: false,

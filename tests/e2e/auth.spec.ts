@@ -1,13 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { SEED_PASSWORD, SEED_USERS } from '../../scripts/seed-credentials';
-
-async function login(page: Page, email: string, next = '/') {
-  await page.goto(`/login?next=${encodeURIComponent(next)}`);
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password', { exact: true }).fill(SEED_PASSWORD);
-  await page.getByRole('button', { name: 'Log in' }).click();
-  await expect(page).toHaveURL((url) => url.pathname === next, { timeout: 15000 });
-}
+import { login } from './helpers';
 
 test.describe('sign-in and roles', () => {
   test('attendee logs in, reaches their account, is refused the dashboard, logs out', async ({
