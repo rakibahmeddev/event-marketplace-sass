@@ -54,6 +54,10 @@ Accounts: `admin@demo.test` (tenant_admin), `organizer@demo.test` (Pulse Live, 6
 `scripts/seed-credentials.ts`. Google sign-in works through the emulator's fake account picker.
 Password-reset emails are not sent; the link is printed in the emulator log.
 
+Sales: the seed adds about 45 days of past Pulse Live orders (made-up buyers, a few refunded) so the dashboard and
+Admin → Sales reports have data, then runs `npm run backfill:sales` logic to build the rollups. Run
+`npm run backfill:sales` yourself if you edit orders by hand in the Emulator UI.
+
 Check-in: the seed creates a paid order for "Neon Tides Live" with tickets `seedticket0001`, `seedticket0002` (valid) and
 `seedticket0003` (already checked in). On a laptop without a camera, use **Enter ticket ID** on the scan screen. The camera
 needs `localhost` or HTTPS; to try it on a phone, open the dev server through an HTTPS tunnel.

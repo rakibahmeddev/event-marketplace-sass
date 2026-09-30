@@ -15,7 +15,8 @@
   signed webhooks, QR tickets, PDF tickets, ticket/approval emails, refunds, organizer orders & overview.
 - Phase 5 complete: staff scanner (login, event choice, camera + manual entry, result screens, live counter),
   `checkInTicket` / `createScanner` / `updateScanner` functions, organizer Check-in staff and Attendees pages, CSV export.
-- Sales reports (Phase 6) are still stubs.
+- Phase 6 complete: daily sales rollups, organizer dashboard (sales chart 7D/30D/90D, deltas vs previous period,
+  recent orders), per-event sales on the event page, admin overview sales and `/admin/reports` with CSV export.
 
 ## Repository layout
 
@@ -109,6 +110,10 @@ docs/                   architecture.md, setup.md, deferred.md
 | `devEmails/{id}` | **emulator only**: emails written instead of sent, visible in the Emulator UI |
 | `tenants/{t}/eventStats/{eventId}` → `{ checkedIn, ticketsIssued }` | live check-in counter (Phase 5); written by fulfilment, refunds and `checkInTicket` |
 | `scannerAssignments.name`, `.email`, `.active`, `.scanCount`, `.lastScanAt`, `.createdAt` | staff list + turning staff off (Phase 5) |
+| `tenants/{t}/salesDaily/{YYYY-MM-DD}` → `{ date, orders, tickets, gross, subtotal, fees, refundedOrders, refundedTickets, refunds, refundedSubtotal, refundedFees }` | marketplace sales per day (Phase 6), server only |
+| `tenants/{t}/organizerSalesDaily/{organizerId}_{YYYY-MM-DD}` → same + `organizerId` | per-organizer sales per day (Phase 6), server only; index `organizerId + date` |
+| `eventStats` sales fields (same counters, all-time) | per-event totals (Phase 6) |
+| `orders.paidAt`, `.refundedAt` | now the server clock at the moment of the transaction (was serverTimestamp), so the rollup day and the order agree |
 
 Composite indexes for every browse filter live in `firestore.indexes.json` (Firestore merges them for
 combined filters). The emulator does not enforce indexes, so they are verified on the first deploy (Phase 7).
@@ -170,6 +175,28 @@ staff ─ /scanner/login → /scanner (assigned, published events) → /scanner/
 - `/dashboard/attendees`: per-event list, status filter, search (name, email, ticket ID), 50 per page.
   `/api/dashboard/events/{eventId}/attendees` exports CSV for the owning organizer; cells starting with
   `= + - @` are prefixed with `'` (CSV injection).
+
+## Sales reports (Phase 6)
+
+```
+fulfilOrder transaction ── order paid ─┐
+refundOrder transaction ── refunded ───┴→ applyRollup (lib/reports/write.ts), same transaction:
+     salesDaily/{day} += counters · organizerSalesDaily/{org}_{day} += counters · eventStats/{event} += counters
+     day = dayKey(paidAt | refundedAt, tenant.timezone)   (sale on the paid day, refund on the refund day)
+pages ── lib/reports/repository.ts (range queries by date) → summarize.ts (fill empty days, totals, net, % change)
+```
+
+- Idempotent by construction: rollups are written inside the transactions that already dedupe webhooks
+  (`processedWebhookEvents`) and refunds (status check), so a replayed webhook never counts twice (tested).
+- Net = sales − refunds in the same period. Organizer earnings = `subtotal` (ticket prices); marketplace commission
+  = `fees` (service fees). Gross = what buyers paid (`total`).
+- `scripts/backfill-sales.ts` (`npm run backfill:sales`) rebuilds all rollups and eventStats counters from orders and
+  tickets; the seed uses it, and an integration test checks it reproduces the live counters exactly.
+- Pages: `/dashboard` (organizer, `?range=7d|30d|90d`), `/dashboard/events/{id}` (all-time event totals),
+  `/admin` (last 30 days), `/admin/reports` (`?range=7d|30d|90d|month|last-month|custom&from&to`, max 366 days),
+  `/api/admin/reports?…&kind=daily|organizers` (CSV, tenant_admin only, formula-escaped).
+- Charts: `components/reports/SalesChart.tsx`, HTML/CSS bars rendered on the server (no chart library), with an
+  equivalent screen-reader table.
 
 ## Admin settings
 
@@ -247,14 +274,15 @@ Every hostname a tenant uses (custom domain or platform subdomain) is a `tenantD
 | `tenants/{t}` | tenant_admin of t | none |
 | `tenants/{t}/auditLogs/*` | tenant_admin of t | none (Functions only) |
 | `tenants/{t}/eventStats/{eventId}` | active scanner assigned to the event, or its organizer | none |
+| `tenants/{t}/salesDaily/*`, `organizerSalesDaily/*` | none (server-rendered) | none |
 | `tenants/{t}/**` (events, ticketTypes, organizers, categories, …) | none (server-rendered) | none (server actions / Functions) |
 | `users/{uid}` | owner, same tenant | owner may change `displayName` only (string ≤ 80) |
 | `tenantDomains/*`, `rateLimits/*`, anything else | none | none |
 
 ## Tests
 
-- `tests/rules` — 107 tests, incl. every role × every tenant-B path (tenant isolation) and claim spoofing.
-- `tests/integration` — 31 tests against Auth + Functions + Firestore emulators (blocking function, `setUserRole`,
+- `tests/rules` — 119 tests, incl. every role × every tenant-B path (tenant isolation) and claim spoofing.
+- `tests/integration` — 33 tests against Auth + Functions + Firestore emulators (blocking function, `setUserRole`,
   organizer approval, orders/webhooks/refunds, check-in incl. concurrent scans, staff management).
 - `tests/e2e` — Playwright at 1280 and 375: layouts, guards, login/logout/register, roles, cross-tenant sessions, Google (desktop).
 - Unit tests (Vitest) for pure logic: host parsing, redirects, schemas, role decisions, error messages.

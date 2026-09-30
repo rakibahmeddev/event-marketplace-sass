@@ -46,8 +46,8 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Multi-select categories with counts                    | Browse filters                                             | Single category (a count per category = one query each)       |
 | Numbered pagination (1 2 3 … 28)                       | Browse results                                             | Prev / Next + total count (Firestore offsets are costly)      |
 | Relevance sort                                         | Browse results                                             | Soonest first                                                 |
-| Marketplace statistics ("12,400+ organizers", "$94M")  | Home, About, Become an organizer                           | Hidden until tenants supply real numbers (Phase 6)            |
-| Testimonials ("Loved by fans")                         | Home                                                       | Hidden until tenants supply real quotes (Phase 6)             |
+| Marketplace statistics ("12,400+ organizers", "$94M")  | Home, About, Become an organizer                           | Hidden; editable in the section editor (after Phase 6)        |
+| Testimonials ("Loved by fans")                         | Home                                                       | Hidden; editable in the section editor (after Phase 6)        |
 | Organizer cover upload                                 | Organizer profile                                          | One shared stock cover for every organizer                    |
 | "Contact" / "Follow" on organizer profile & event page | Organizer profile, event page                              | Omitted                                                       |
 | Contact form sending                                   | Contact page                                               | Opens the visitor's email app until the email provider (Phase 4) |
@@ -61,4 +61,7 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | PDF tickets attached to the email                        | Order email                                                | Inline QR images + "View tickets online"; PDF from the account |
 | Partial refunds, refund requests by buyers               | Orders                                                     | Full refunds by organizer / tenant admin only                 |
 | Organizer payouts                                        | Dashboard                                                  | Money lands in the tenant's Stripe account; paid out manually |
-
+| Platform-admin dashboard across all marketplaces         | Platform                                                   | Not in the MVP list; platform owner uses the console for now  |
+| Traffic / conversion analytics, scheduled email reports  | Dashboards                                                 | Rollups cover sales only                                      |
+| Per-event sales for a date range                         | Admin reports                                              | "Top events" shows all-time totals (eventStats)               |
+| Search box and notifications bell in the dashboard header | Organizer dashboard                                        | Not built                                                     |
