@@ -15,6 +15,7 @@ import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { searchWords } from '../lib/format/text.ts';
 import { zonedToUtc } from '../lib/format/time.ts';
+import { rebuildSales } from './backfill-sales.ts';
 import { SEED_PASSWORD } from './seed-credentials.ts';
 
 process.env.FIRESTORE_EMULATOR_HOST ??= '127.0.0.1:8080';
@@ -274,6 +275,8 @@ async function seedTenant(t: TenantSeed) {
     });
   }
   if (organizerId && attendeeUid) await seedSampleOrder(t.id, organizerId, attendeeUid);
+  if (organizerId) await seedSalesHistory(t.id, organizerId);
+  const sales = await rebuildSales(db, t.id);
   if (t.applicant) {
     const a = t.applicant;
     const existing = await tenantAuth.getUserByEmail(a.email).catch(() => null);
@@ -302,7 +305,9 @@ async function seedTenant(t: TenantSeed) {
       approvedAt: null,
     });
   }
-  console.log(`✓ ${t.id}: pool ${authTenantId}, ${t.users.length} users, domains ${t.domains.join(', ')}`);
+  console.log(
+    `✓ ${t.id}: pool ${authTenantId}, ${t.users.length} users, domains ${t.domains.join(', ')}, ${sales.orders} paid orders`,
+  );
 }
 
 async function seedEvents(tenantId: string, organizerId: string) {
@@ -419,9 +424,85 @@ async function seedSampleOrder(tenantId: string, organizerId: string, buyerUid: 
       checkedInBy: used ? 'seed' : null,
     });
   }
-  await db
-    .doc(`tenants/${tenantId}/eventStats/${eventId}`)
-    .set({ ticketsIssued: people.length, checkedIn: 1 });
+}
+
+/**
+ * ~45 days of past paid orders (a few refunded) from made-up fans, so the dashboard and report charts have
+ * something to show. Deterministic (seeded PRNG) so every seed looks the same. Buyers have no accounts.
+ */
+async function seedSalesHistory(tenantId: string, organizerId: string) {
+  let r = 20261001;
+  const rand = () => (r = (r * 1103515245 + 12345) % 2 ** 31) / 2 ** 31;
+  const pick = <T>(xs: readonly T[]) => xs[Math.floor(rand() * xs.length)]!;
+  const fans = [
+    'Alex Kim',
+    'Maya Patel',
+    'Chris Obi',
+    'Lena Novak',
+    'Sam Rivera',
+    'Noor Hassan',
+    'Diego Ruiz',
+    'Ivy Chen',
+  ];
+  // [eventId, ticketTypeId, name, unit price]
+  const lines = [
+    ['seed0000000001', 'tt1', 'Early Bird', 3500],
+    ['seed0000000001', 'tt2', 'General Admission', 4500],
+    ['seed0000000001', 'tt2', 'General Admission', 4500],
+    ['seed0000000001', 'tt3', 'VIP Balcony', 12000],
+    ['seed0000000002', 'tt1', 'General Admission', 3500],
+    ['seed0000000003', 'tt1', 'Workshop seat', 6500],
+    ['seed0000000006', 'tt1', 'Live seat', 4000],
+  ] as const;
+  const now = Date.now();
+  let n = 0;
+  for (let daysAgo = 45; daysAgo >= 1; daysAgo--) {
+    const perDay = Math.floor(rand() * 3) + (daysAgo < 15 ? 1 : 0); // busier as the events get closer
+    for (let k = 0; k < perDay; k++) {
+      n++;
+      const [eventId, ticketTypeId, name, price] = pick(lines);
+      const quantity = 1 + Math.floor(rand() * 3);
+      const fee = Math.round(price * 0.035);
+      const buyer = pick(fans);
+      const paidAt = new Date(now - daysAgo * 86_400_000 + Math.floor(rand() * 10) * 3_600_000);
+      const refunded = n % 17 === 0;
+      const orderId = `seedhist${String(n).padStart(4, '0')}`;
+      await db.doc(`tenants/${tenantId}/orders/${orderId}`).set({
+        buyerUid: `seed-fan-${buyer.split(' ')[0]!.toLowerCase()}`,
+        buyerName: buyer,
+        buyerEmail: `${buyer.toLowerCase().replace(' ', '.')}@example.com`,
+        eventId,
+        organizerId,
+        items: [{ ticketTypeId, name, unitPrice: price, quantity }],
+        attendees: [],
+        subtotal: price * quantity,
+        fees: fee * quantity,
+        commission: fee * quantity,
+        total: (price + fee) * quantity,
+        currency: 'USD',
+        status: refunded ? 'refunded' : 'paid',
+        provider: 'test',
+        paymentRef: `seed-${orderId}`,
+        expiresAt: null,
+        createdAt: paidAt,
+        paidAt,
+        ...(refunded ? { refundRef: 'seed', refundedAt: new Date(paidAt.getTime() + 2 * 86_400_000) } : {}),
+      });
+      for (let q = 0; q < quantity; q++) {
+        await db.doc(`tenants/${tenantId}/tickets/${orderId}t${q + 1}`).set({
+          orderId,
+          eventId,
+          ticketTypeId,
+          ticketTypeName: name,
+          attendeeName: buyer,
+          attendeeEmail: `${buyer.toLowerCase().replace(' ', '.')}@example.com`,
+          status: refunded ? 'cancelled' : 'valid',
+          checkedInAt: null,
+          checkedInBy: null,
+        });
+      }
+    }
+  }
 }
 
 for (const t of tenants) await seedTenant(t);

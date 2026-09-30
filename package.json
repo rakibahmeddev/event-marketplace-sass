@@ -19,6 +19,7 @@
     "test:e2e": "npm --prefix functions run build && firebase emulators:exec --only auth,functions,firestore,storage --project demo-ticketing \"npm run seed && playwright test\"",
     "emulators": "node scripts/dev.mjs --emulators-only",
     "seed": "node --experimental-strip-types --no-warnings scripts/seed-emulators.ts",
+    "backfill:sales": "node --experimental-strip-types --no-warnings scripts/backfill-sales.ts",
     "test:integration": "npm --prefix functions run build && firebase emulators:exec --only auth,functions,firestore,storage --project demo-ticketing \"npm run seed && vitest run --project integration --no-file-parallelism\""
   },
   "dependencies": {
