@@ -39,7 +39,8 @@ function ensureJava() {
 }
 
 function run(cmd, args, name) {
-  const child = spawn(cmd, args, { stdio: 'inherit', env: process.env });
+  // Own process group, so shutdown reaches grandchildren too (npx → firebase → java).
+  const child = spawn(cmd, args, { stdio: 'inherit', env: process.env, detached: true });
   child.on('exit', (code) => {
     if (!shuttingDown) {
       log(`${name} exited (code ${code}). Stopping everything.`);
@@ -78,7 +79,13 @@ function shutdown(code = 0) {
   if (shuttingDown) return;
   shuttingDown = true;
   log('Stopping… (saving emulator data)');
-  for (const c of children.reverse()) c.kill('SIGINT');
+  for (const c of children.reverse()) {
+    try {
+      process.kill(-c.pid, 'SIGINT');
+    } catch {
+      c.kill('SIGINT');
+    }
+  }
   setTimeout(() => process.exit(code), 8000).unref();
 }
 process.on('SIGINT', () => shutdown(0));
@@ -88,6 +95,7 @@ process.on('unhandledRejection', (err) => {
   shutdown(1);
 });
 process.on('SIGTERM', () => shutdown(0));
+process.on('SIGHUP', () => shutdown(0));
 
 ensureJava();
 
