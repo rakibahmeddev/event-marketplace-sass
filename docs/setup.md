@@ -40,7 +40,8 @@ The app needs the emulators: every page resolves its marketplace from Firestore.
 | http://other.localhost:3000 | `other` ("Othertix", teal) — used to check tenant isolation |
 | any other host | "Marketplace not found" (404) |
 
-Accounts: `admin@demo.test` (tenant_admin), `organizer@demo.test`, `scanner@demo.test`, `attendee@demo.test`,
+Accounts: `admin@demo.test` (tenant_admin), `organizer@demo.test` (Pulse Live, 6 sample events), `scanner@demo.test`,
+`attendee@demo.test`, `applicant@demo.test` (pending organizer application "Clay Collective"),
 `admin@other.test`, `attendee@other.test`. The shared test password is `SEED_PASSWORD` in
 `scripts/seed-credentials.ts`. Google sign-in works through the emulator's fake account picker.
 Password-reset emails are not sent; the link is printed in the emulator log.
@@ -53,7 +54,7 @@ Password-reset emails are not sent; the link is printed in the emulator log.
 | `npm test` | Unit tests (Vitest), incl. pure Cloud Functions logic |
 | `npm run test:rules` | Security-rules tests (starts Firestore + Storage emulators) |
 | `npm run test:integration` | Blocking function + callables against Auth/Functions/Firestore emulators (seeds them) |
-| `npm run test:e2e` | Playwright at 1280px and 375px (starts + seeds emulators; reuses a running `npm run dev`) |
+| `npm run test:e2e` | Playwright at 1280px and 375px (starts + seeds emulators incl. Storage; reuses a running `npm run dev`) |
 
 `test:integration` and `test:e2e` start their own emulators: stop `npm run emulators` first (ports clash).
 
@@ -77,6 +78,8 @@ Firebase project, and the seed script refuses to run against anything else.
    `NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_SITE_KEY`, register the app, then enforce App Check for Firestore,
    Storage and Cloud Functions in the console. Callables already set `enforceAppCheck` outside the emulator.
 5. **TTL policy** on `rateLimits.expiresAt` (Firestore → TTL) so old counters are deleted.
+7. **Indexes & custom tokens**: deploy `firestore.indexes.json`; the server's service account needs
+   *Service Account Token Creator* so `createCustomToken` (image uploads, admin actions) can sign tokens.
 6. **Client IP**: rate limiting trusts the last `X-Forwarded-For` hop. Confirm this matches the hosting
    provider's proxy chain before launch (Phase 7).
 

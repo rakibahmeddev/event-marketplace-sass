@@ -7,7 +7,9 @@
 - Phase 1 complete: project setup, design tokens, component library, layouts, emulators.
 - Phase 2 complete: tenant resolution, Identity Platform multi-tenant auth, session cookies,
   custom claims, route guards, Firestore rules + tests, rate limiting.
-- Feature pages (events, checkout, tickets, dashboards) are still stubs.
+- Phase 3 complete: categories, organizer applications + approval, event create/edit/publish with
+  ticket types and image uploads, public home / browse / event / organizer pages, about, contact.
+- Checkout, tickets, scanner and dashboard statistics are still stubs (Phases 4–6).
 
 ## Repository layout
 
@@ -41,9 +43,9 @@ lib/
   validation/           Zod schemas (auth forms, session request)
   payments/             PaymentProvider interface + adapters (Phase 4)
   utils/cn.ts
-functions/              Cloud Functions 2nd gen (TypeScript, Node 22): beforeUserCreated, setUserRole, health
+functions/              Cloud Functions 2nd gen: beforeUserCreated, setUserRole, approveOrganizer, suspendOrganizer, health
 firestore.rules         deny by default; tenants, auditLogs, users opened per role
-storage.rules           deny-all (opened in Phase 3)
+storage.rules           create-only image uploads per organizer / applicant folder
 tests/rules/            @firebase/rules-unit-testing against the emulators
 tests/integration/      Auth + Functions + Firestore emulators (blocking function, callables)
 tests/e2e/              Playwright
@@ -72,7 +74,7 @@ docs/                   architecture.md, setup.md, deferred.md
 - `next.config.ts` sets CSP, HSTS, X-Frame-Options DENY, X-Content-Type-Options, Referrer-Policy and
   Permissions-Policy (camera allowed for the scanner only). CSP still allows `'unsafe-inline'` scripts;
   Phase 7 moves to nonces.
-- Firestore rules: see below. Storage rules still deny everything (opened in Phase 3).
+- Firestore rules: see below. Storage rules: create-only image uploads into the caller's own folder (see above).
 - Emulator project id `demo-ticketing` cannot reach production.
 
 ## Data model additions (approved in Phase 2)
@@ -82,6 +84,40 @@ docs/                   architecture.md, setup.md, deferred.md
 | `tenants/{tenantId}.authTenantId` | Identity Platform tenant (user pool) of this marketplace | server only |
 | `tenantDomains/{hostname}` → `{ tenantId }` | hostname → tenant lookup; one doc per hostname keeps domains unique | server only |
 | `rateLimits/{sha256(key, window)}` → `{ count, expiresAt }` | fixed-window counters; `expiresAt` for a Firestore TTL policy | server only |
+
+## Data model additions (approved in Phase 3)
+
+| Path / field | Purpose |
+|---|---|
+| `tenants/{t}.timezone`, `.currency`, `.supportEmail` | date filters/defaults, marketplace currency, contact |
+| `tenants/{t}/categories/{slug}` → `{ name, slug, icon, order, active }` | tenant-managed categories; the slug is the id |
+| `organizers.category`, `.city`, `.createdAt`, `.approvedAt`; `logo` is `{ path, url } \| null` | application + profile |
+| `events.timezone`, `.isOnline`, `.refundPolicy`, `venue { name, address, city, country }`, `images[] { path, url }` | event details |
+| `events.organizerName`, `.organizerSlug`, `.city`, `.currency`, `.minPrice`, `.isFree`, `.totalQuantity`, `.totalSold`, `.searchWords[]` | denormalised for cards, filters, badges and keyword search; written only by server code |
+| `ticketTypes.description`, `.order` | display |
+
+Composite indexes for every browse filter live in `firestore.indexes.json` (Firestore merges them for
+combined filters). The emulator does not enforce indexes, so they are verified on the first deploy (Phase 7).
+
+## Organizers and events (Phase 3)
+
+- **Reads**: public pages and dashboards are Server Components reading with the Admin SDK
+  (`lib/*/repository.ts`, Zod-validated). Firestore rules keep events, ticket types, organizers and
+  categories closed to browsers.
+- **Writes**: Next.js server actions (`lib/events/actions.ts`, `lib/organizers/actions.ts`,
+  `lib/categories/actions.ts`) — session + role + ownership checks, Zod (unknown fields rejected), rate limits.
+  `saveEvent` computes every server-owned field (status, slug, totals, minPrice, searchWords…) in a transaction;
+  ticket prices are locked once sold, quantities can't drop below sold + reserved, types with sales can't be deleted.
+- **Publishing** requires title + category, cover image, future start < end, venue (unless online) and ≥ 1 ticket type.
+  Published events can be unpublished only before any sale; otherwise cancelled.
+- **Organizer applications**: `applyAsOrganizer` creates a `pending` organizer (slug uniqueness checked in a
+  transaction). The tenant admin approves or suspends via the `approveOrganizer` / `suspendOrganizer` callables
+  (claims + token revocation + audit log; suspension unpublishes the organizer's events).
+- **Images**: the browser gets a short-lived custom token (`getClientToken` server action → `signInWithCustomToken`),
+  uploads into its own folder (Storage rules: images only, ≤ 5 MB, create-only, no reads/listing), then signs out.
+  On save the server verifies path prefix, existence, type and size, and builds the tokenised download URL itself.
+- **Browse**: URL params → Zod → repository filters (`lib/events/browse.ts`); date ranges use the marketplace
+  timezone; keyword search = first word via `searchWords` array-contains, other words filtered on the page.
 
 ## Tenant resolution
 
@@ -129,7 +165,7 @@ Every hostname a tenant uses (custom domain or platform subdomain) is a `tenantD
 |---|---|---|
 | `tenants/{t}` | tenant_admin of t | none |
 | `tenants/{t}/auditLogs/*` | tenant_admin of t | none (Functions only) |
-| `tenants/{t}/**` (everything else) | none yet (Phase 3+) | none yet |
+| `tenants/{t}/**` (events, ticketTypes, organizers, categories, …) | none (server-rendered) | none (server actions / Functions) |
 | `users/{uid}` | owner, same tenant | owner may change `displayName` only (string ≤ 80) |
 | `tenantDomains/*`, `rateLimits/*`, anything else | none | none |
 

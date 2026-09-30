@@ -29,7 +29,7 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Sign in with Apple                                     | Login / register                                           | Email/password + Google only                                  |
 | Payouts page & sidebar balance                         | Organizer dashboard                                        | Nav item omitted; `DashboardShell` has a `sidebarFooter` slot |
 | Notifications bell                                     | Dashboard top bar                                          | Omitted                                                       |
-| "Within 25 miles" radius search, location picker       | Browse filters, header                                     | Static location pill in header                                |
+| "Within 25 miles" radius search, header location picker | Browse filters, header                                    | City filter on /events instead; header pill removed           |
 | Google Maps embed ("Show map")                         | Event page venue                                           | Address text only                                             |
 | Lineup / schedule section, per-event FAQ               | Event page                                                 | Needs data-model fields — ask before adding                   |
 | Newsletter subscribe                                   | Home, register checkbox                                    | Not built                                                     |
@@ -40,3 +40,16 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Social profile links                                   | Footer                                                     | Decorative icons until tenant settings (Phase 6)              |
 | FAQ page                                               | Supporting pages                                           | Not in the CLAUDE.md MVP list                                 |
 | Duplicate-scan counter, manual "Search name" lookup    | Scanner / attendees                                        | Revisit in Phase 5                                            |
+| Price range slider                                     | Browse filters                                             | Any / Free / Paid only                                        |
+| Multi-select categories with counts                    | Browse filters                                             | Single category (a count per category = one query each)       |
+| Numbered pagination (1 2 3 … 28)                       | Browse results                                             | Prev / Next + total count (Firestore offsets are costly)      |
+| Relevance sort                                         | Browse results                                             | Soonest first                                                 |
+| Marketplace statistics ("12,400+ organizers", "$94M")  | Home, About, Become an organizer                           | Hidden until tenants supply real numbers (Phase 6)            |
+| Testimonials ("Loved by fans")                         | Home                                                       | Hidden until tenants supply real quotes (Phase 6)             |
+| Organizer cover image                                  | Organizer profile                                          | Striped placeholder; no upload yet                            |
+| "Contact" / "Follow" on organizer profile & event page | Organizer profile, event page                              | Omitted                                                       |
+| Contact form sending                                   | Contact page                                               | Opens the visitor's email app until the email provider (Phase 4) |
+| Age rating ("18+"), event duration chips               | Event page                                                 | Not in the data model                                         |
+| Service-fee line in the ticket panel                   | Event page                                                 | "Calculated at checkout" (fee model is Phase 4)               |
+| "Pass service fee to buyers" toggle                    | Event editor                                               | Phase 4 fee model                                             |
+| Deleting orphaned uploads                              | Storage                                                    | Images removed from an event stay in Storage (cleanup job later) |
