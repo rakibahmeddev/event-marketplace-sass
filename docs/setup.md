@@ -48,7 +48,7 @@ They only render when the app talks to the local emulators, never in production.
 | any other host | "Marketplace not found" (404) |
 
 Accounts: `admin@demo.test` (tenant_admin), `organizer@demo.test` (Pulse Live, 6 sample events), `scanner@demo.test`,
-`attendee@demo.test`, `applicant@demo.test` (pending organizer application "Clay Collective"),
+`attendee@demo.test`, `buyer@demo.test` (used by the purchase E2E test), `applicant@demo.test` (pending organizer application "Clay Collective"),
 `admin@other.test`, `attendee@other.test`. The shared test password is `SEED_PASSWORD` in
 `scripts/seed-credentials.ts`. Google sign-in works through the emulator's fake account picker.
 Password-reset emails are not sent; the link is printed in the emulator log.
@@ -95,3 +95,28 @@ Firebase project, and the seed script refuses to run against anything else.
 None yet. From Phase 4, payment keys, webhook secrets, the QR signing secret and the email API key live in
 Google Secret Manager and are read only by Cloud Functions. Never put them in `.env*` files the Next.js client
 can read, and never in `NEXT_PUBLIC_*` variables.
+
+## Payments locally
+
+The demo marketplace uses the **test payment provider**: "Continue to payment" opens a local page with
+"Pay (test)" / "Simulate a declined payment", which sends a signed webhook to the app — the same path Stripe uses.
+Emails are not sent; they appear in the Emulator UI under Firestore → `devEmails`.
+
+Secrets for local use are random values in `.env.local` (`QR_SIGNING_SECRET`, `TEST_PAYMENT_WEBHOOK_SECRET`) and
+`functions/.secret.local` (`QR_SIGNING_SECRET` must match, `RESEND_API_KEY=dev`). Both files are gitignored.
+
+### Trying real Stripe (test mode)
+1. Create a Stripe account with Connect enabled; put the **test** keys in `.env.local`:
+   `STRIPE_SECRET_KEY=sk_test_…`, and run `stripe listen --forward-connect-to localhost:3000/api/webhooks/stripe`
+   to get `STRIPE_WEBHOOK_SECRET=whsec_…`.
+2. Admin → Settings → Payments → **Connect Stripe**, finish onboarding with Stripe's test data.
+3. Buy a ticket and pay with card `4242 4242 4242 4242`.
+
+### Production (Phase 7 deployment docs will expand this)
+- Secret Manager: `QR_SIGNING_SECRET` (same value for the web app and Functions), `RESEND_API_KEY`,
+  `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`; Functions param `EMAIL_FROM` (verified sender domain).
+- Stripe: a **Connect** webhook endpoint → `https://<platform domain>/api/webhooks/stripe` with events
+  `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.expired`,
+  `checkout.session.async_payment_failed`.
+- The test provider refuses to run when `NODE_ENV=production`.
+

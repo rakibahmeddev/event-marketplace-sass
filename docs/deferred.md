@@ -52,3 +52,10 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Service-fee line in the ticket panel                   | Event page                                                 | "Calculated at checkout" (fee model is Phase 4)               |
 | "Pass service fee to buyers" toggle                    | Event editor                                               | Phase 4 fee model                                             |
 | Deleting orphaned uploads                              | Storage                                                    | Images removed from an event stay in Storage (cleanup job later) |
+| Card fields embedded in the checkout page                | Checkout                                                   | Stripe-hosted Checkout page (decision 2026-09-30)             |
+| "Processing fee" line, promo code field                  | Checkout summary                                           | One "Service fee" line; promo codes are out of scope          |
+| "Buyer protection", "Transferable anytime" copy          | Checkout / tickets                                         | Replaced with accurate copy                                   |
+| PDF tickets attached to the email                        | Order email                                                | Inline QR images + "View tickets online"; PDF from the account |
+| Partial refunds, refund requests by buyers               | Orders                                                     | Full refunds by organizer / tenant admin only                 |
+| Organizer payouts                                        | Dashboard                                                  | Money lands in the tenant's Stripe account; paid out manually |
+

@@ -11,7 +11,9 @@
   ticket types and image uploads, public home / browse / event / organizer pages, about, contact.
 - Admin settings (brought forward from Phase 6): name, logo, brand colours with contrast check, support email,
   footer tagline, social links, commission — plus an admin overview with counts.
-- Checkout, tickets, scanner and sales reports are still stubs (Phases 4–6).
+- Phase 4 complete: checkout with 10-minute holds, payment layer (Stripe Connect + local test provider),
+  signed webhooks, QR tickets, PDF tickets, ticket/approval emails, refunds, organizer orders & overview.
+- Scanner (Phase 5) and sales reports (Phase 6) are still stubs.
 
 ## Repository layout
 
@@ -98,9 +100,48 @@ docs/                   architecture.md, setup.md, deferred.md
 | `events.organizerName`, `.organizerSlug`, `.city`, `.currency`, `.minPrice`, `.isFree`, `.totalQuantity`, `.totalSold`, `.searchWords[]` | denormalised for cards, filters, badges and keyword search; written only by server code |
 | `ticketTypes.description`, `.order` | display |
 | `tenants/{t}.branding.logo` `{ path, url } \| null`, `.footerTagline`, `.socialLinks { instagram?, tiktok?, x?, facebook?, youtube? }` | admin settings (approved 2026-09-30) |
+| `tenants/{t}.paymentConfig { provider: stripe\|test, stripeAccountId?, chargesEnabled }` | payment provider per tenant (non-secret) |
+| `orders.buyerName`, `.buyerEmail`, `.attendees[]`, `.commission`, `.provider`, `.expiresAt`, `.paidAt`, `.checkoutRef`, `.refundRef`, `.refundedAt`; `items[] { ticketTypeId, name, unitPrice, quantity }` | checkout (Phase 4) |
+| `tickets.ticketTypeName` | display on tickets without an extra read |
+| `processedWebhookEvents/{provider}_{eventId}` | webhook idempotency (server only) |
+| `devEmails/{id}` | **emulator only**: emails written instead of sent, visible in the Emulator UI |
 
 Composite indexes for every browse filter live in `firestore.indexes.json` (Firestore merges them for
 combined filters). The emulator does not enforce indexes, so they are verified on the first deploy (Phase 7).
+
+## Checkout, payments and tickets (Phase 4)
+
+```
+event page ─ startCheckout (server action, rate limited)
+              └─ transaction: remaining = quantity − sold − reserved ≥ requested → reserved += q,
+                 order { status: pending, expiresAt: +10 min, items (server prices), subtotal, fees, total }
+checkout page ─ submitCheckout → buyer + attendee details → PaymentProvider.createCheckout → redirect
+                 (Stripe hosted Checkout on the tenant's connected account | local test page)
+provider ─ POST /api/webhooks/{stripe|test} (skips tenant proxy; raw body; signature verified)
+            └─ processWebhook: tenant from signed metadata + must match tenant.paymentConfig
+               (Stripe: event.account === tenant's account)
+               └─ fulfilOrder (transaction, idempotent via processedWebhookEvents/{provider}_{eventId}):
+                  order paid, 1 ticket per seat, sold += q, reserved −= q, event.totalSold += n
+                  (late payment after expiry: honoured if seats free, else refunded)
+Cloud Function onOrderPaid (pending→paid) → emails QR tickets to the buyer and to attendees with their own email
+Cloud Function expireReservations (every minute) → pending past expiresAt → expired, reserved −= q
+  (the web app also sweeps one event before each new hold, so the emulator behaves the same)
+```
+
+- **Fees**: service fee per paid ticket = `round(price × commissionRate)`, paid by the buyer; it is the marketplace's
+  commission (`orders.fees` = `orders.commission`). Organizer earnings = `orders.subtotal`. Free tickets: no fee;
+  free orders are confirmed without a provider.
+- **Money flow (MVP)**: all payments land in the tenant's Stripe account; organizer payouts happen outside the app.
+- **QR**: `ticketId.tenantId.base64url(HMAC-SHA256(QR_SIGNING_SECRET))`, rendered on the server (web: SVG/PNG/PDF,
+  Functions: PNG in email). Same algorithm in `lib/tickets/qr-core.ts` and `functions/src/lib/qr.ts`, pinned by an
+  openssl test vector. No personal data in the code.
+- **Refunds**: organizer (own events) or tenant admin → provider refund (idempotency key per order) → transaction:
+  order refunded, tickets cancelled, seats returned, audit log `refund`.
+- **Pages**: `/checkout` (cart = active holds), `/checkout/[orderId]`, `/checkout/[orderId]/test-payment` (dev),
+  `/orders/[orderId]/confirmation`, `/account/tickets`, `/account/tickets/[ticketId]`, `/account/orders`,
+  `/api/orders/[orderId]/pdf` (buyer only), `/dashboard` (overview), `/dashboard/orders` (refunds).
+- **Stripe Connect onboarding**: Admin → Settings → Payments → Standard connected account + account link;
+  `/api/admin/stripe/return` switches the tenant to Stripe once `charges_enabled`.
 
 ## Admin settings
 
