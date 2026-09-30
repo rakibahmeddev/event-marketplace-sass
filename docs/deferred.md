@@ -38,7 +38,10 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Careers, Press, Blog, Help center, Resources           | Footer                                                     | Plain text, no link                                           |
 | Terms of service, Privacy policy, Refund policy pages  | Footer, checkout consent                                   | Plain text — **needed before launch**, confirm content owner  |
 | FAQ page                                               | Supporting pages                                           | Not in the CLAUDE.md MVP list                                 |
-| Duplicate-scan counter, manual "Search name" lookup    | Scanner / attendees                                        | Revisit in Phase 5                                            |
+| Duplicate-scan counter, "Search name" on the scanner    | Scanner / attendees                                        | Button shown disabled; manual ticket-ID entry instead         |
+| Offline scanning, undo / reset a check-in               | Scanner                                                    | Needs network; organizer contact for mistakes                 |
+| Bulk select / row actions on the attendee list          | Attendees                                                  | Search, filter and CSV export only                            |
+| Scan chime                                              | Scanner result                                             | Vibration only                                                |
 | Price range slider                                     | Browse filters                                             | Any / Free / Paid only                                        |
 | Multi-select categories with counts                    | Browse filters                                             | Single category (a count per category = one query each)       |
 | Numbered pagination (1 2 3 … 28)                       | Browse results                                             | Prev / Next + total count (Firestore offsets are costly)      |

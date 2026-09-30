@@ -13,7 +13,9 @@
   footer tagline, social links, commission — plus an admin overview with counts.
 - Phase 4 complete: checkout with 10-minute holds, payment layer (Stripe Connect + local test provider),
   signed webhooks, QR tickets, PDF tickets, ticket/approval emails, refunds, organizer orders & overview.
-- Scanner (Phase 5) and sales reports (Phase 6) are still stubs.
+- Phase 5 complete: staff scanner (login, event choice, camera + manual entry, result screens, live counter),
+  `checkInTicket` / `createScanner` / `updateScanner` functions, organizer Check-in staff and Attendees pages, CSV export.
+- Sales reports (Phase 6) are still stubs.
 
 ## Repository layout
 
@@ -105,6 +107,8 @@ docs/                   architecture.md, setup.md, deferred.md
 | `tickets.ticketTypeName` | display on tickets without an extra read |
 | `processedWebhookEvents/{provider}_{eventId}` | webhook idempotency (server only) |
 | `devEmails/{id}` | **emulator only**: emails written instead of sent, visible in the Emulator UI |
+| `tenants/{t}/eventStats/{eventId}` → `{ checkedIn, ticketsIssued }` | live check-in counter (Phase 5); written by fulfilment, refunds and `checkInTicket` |
+| `scannerAssignments.name`, `.email`, `.active`, `.scanCount`, `.lastScanAt`, `.createdAt` | staff list + turning staff off (Phase 5) |
 
 Composite indexes for every browse filter live in `firestore.indexes.json` (Firestore merges them for
 combined filters). The emulator does not enforce indexes, so they are verified on the first deploy (Phase 7).
@@ -142,6 +146,30 @@ Cloud Function expireReservations (every minute) → pending past expiresAt → 
   `/api/orders/[orderId]/pdf` (buyer only), `/dashboard` (overview), `/dashboard/orders` (refunds).
 - **Stripe Connect onboarding**: Admin → Settings → Payments → Standard connected account + account link;
   `/api/admin/stripe/return` switches the tenant to Stripe once `charges_enabled`.
+
+## Scanner and check-in (Phase 5)
+
+```
+organizer ─ /dashboard/staff ─ createScanner (callable) → staff account in the tenant's pool, claims
+             { role: scanner, tenantId, organizerId }, scannerAssignments/{uid}, invitation email (set-password link)
+           └ updateScanner → change events / turn off (disables sign-in, revokes refresh tokens)
+staff ─ /scanner/login → /scanner (assigned, published events) → /scanner/{eventId}
+         camera: BarcodeDetector, else jsQR on canvas frames (lib/scanner/decode.ts); or "Enter ticket ID"
+         └ checkInTicket (callable, App Check, 120 scans/min per user)
+            1. caller: active scanner assigned to the event, or the organizer owning it
+            2. QR signature (constant-time) and tenant; manual entry skips only this step
+            3. transaction: valid → used + checkedInAt/By, eventStats.checkedIn += 1,
+               assignment scanCount/lastScanAt, audit log `checkin`
+            → valid | already_used (first time + who) | invalid (not_a_ticket, other_marketplace,
+              not_found, wrong_event, cancelled)
+         live counter: onSnapshot(eventStats/{eventId}) with a custom-token Firebase sign-in kept for the page
+```
+
+- The client never decides validity; two simultaneous scans of one ticket yield exactly one `valid` (tested).
+- Scanner accounts see only `/scanner`: account pages redirect there and checkout refuses them.
+- `/dashboard/attendees`: per-event list, status filter, search (name, email, ticket ID), 50 per page.
+  `/api/dashboard/events/{eventId}/attendees` exports CSV for the owning organizer; cells starting with
+  `= + - @` are prefixed with `'` (CSV injection).
 
 ## Admin settings
 
@@ -201,7 +229,7 @@ Every hostname a tenant uses (custom domain or platform subdomain) is a `tenantD
   re-checks `tenantId`. A cookie from marketplace A is worthless on marketplace B.
 - **Guards** (server, in layouts): `requireUser()` → `/login?next=…` (same-site paths only);
   `requireRole(...)` → `/forbidden`. Account + checkout: any user · `/dashboard`: organizer ·
-  `/admin`: tenant_admin · `/scanner`: scanner or organizer.
+  `/admin`: tenant_admin · `/scanner/*`: scanner or organizer (signed-out → `/scanner/login`).
 - **Sign-out**: `DELETE /api/auth/session` clears the cookie and revokes refresh tokens.
 
 ## Roles and claims
@@ -218,13 +246,15 @@ Every hostname a tenant uses (custom domain or platform subdomain) is a `tenantD
 |---|---|---|
 | `tenants/{t}` | tenant_admin of t | none |
 | `tenants/{t}/auditLogs/*` | tenant_admin of t | none (Functions only) |
+| `tenants/{t}/eventStats/{eventId}` | active scanner assigned to the event, or its organizer | none |
 | `tenants/{t}/**` (events, ticketTypes, organizers, categories, …) | none (server-rendered) | none (server actions / Functions) |
 | `users/{uid}` | owner, same tenant | owner may change `displayName` only (string ≤ 80) |
 | `tenantDomains/*`, `rateLimits/*`, anything else | none | none |
 
 ## Tests
 
-- `tests/rules` — 84 tests, incl. every role × every tenant-B path (tenant isolation) and claim spoofing.
-- `tests/integration` — 10 tests against Auth + Functions + Firestore emulators (blocking function, `setUserRole`).
+- `tests/rules` — 107 tests, incl. every role × every tenant-B path (tenant isolation) and claim spoofing.
+- `tests/integration` — 31 tests against Auth + Functions + Firestore emulators (blocking function, `setUserRole`,
+  organizer approval, orders/webhooks/refunds, check-in incl. concurrent scans, staff management).
 - `tests/e2e` — Playwright at 1280 and 375: layouts, guards, login/logout/register, roles, cross-tenant sessions, Google (desktop).
 - Unit tests (Vitest) for pure logic: host parsing, redirects, schemas, role decisions, error messages.

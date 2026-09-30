@@ -47,11 +47,16 @@ They only render when the app talks to the local emulators, never in production.
 | http://other.localhost:3000 | `other` ("Othertix", teal) — used to check tenant isolation |
 | any other host | "Marketplace not found" (404) |
 
-Accounts: `admin@demo.test` (tenant_admin), `organizer@demo.test` (Pulse Live, 6 sample events), `scanner@demo.test`,
+Accounts: `admin@demo.test` (tenant_admin), `organizer@demo.test` (Pulse Live, 6 sample events), `scanner@demo.test`
+(staff for the first two events; log in at `/scanner/login`),
 `attendee@demo.test`, `buyer@demo.test` (used by the purchase E2E test), `applicant@demo.test` (pending organizer application "Clay Collective"),
 `admin@other.test`, `attendee@other.test`. The shared test password is `SEED_PASSWORD` in
 `scripts/seed-credentials.ts`. Google sign-in works through the emulator's fake account picker.
 Password-reset emails are not sent; the link is printed in the emulator log.
+
+Check-in: the seed creates a paid order for "Neon Tides Live" with tickets `seedticket0001`, `seedticket0002` (valid) and
+`seedticket0003` (already checked in). On a laptop without a camera, use **Enter ticket ID** on the scan screen. The camera
+needs `localhost` or HTTPS; to try it on a phone, open the dev server through an HTTPS tunnel.
 
 ## Checks
 
