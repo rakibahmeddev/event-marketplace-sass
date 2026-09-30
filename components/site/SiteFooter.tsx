@@ -15,6 +15,8 @@ import {
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
+import { listCategories } from '@/lib/categories/repository';
+import { getCurrentTenant } from '@/lib/tenant/current';
 import { footerColumns, type FooterLink } from './nav';
 
 // Social profile URLs become tenant settings in Phase 6; until then the icons are decorative.
@@ -37,8 +39,20 @@ function FooterItem({ link }: { link: FooterLink }) {
   );
 }
 
-export function SiteFooter({ tenantName }: { tenantName: string }) {
+export async function SiteFooter({ tenantName }: { tenantName: string }) {
   const year = new Date().getFullYear();
+  const tenant = await getCurrentTenant();
+  const categories = tenant ? await listCategories(tenant.id) : [];
+  const columns = [
+    {
+      title: 'Discover',
+      links: [
+        ...categories.slice(0, 8).map((c) => ({ label: c.name, href: `/events?category=${c.id}` })),
+        { label: 'All events', href: '/events' },
+      ],
+    },
+    ...footerColumns,
+  ];
   return (
     <footer className="bg-ink text-ink-muted">
       {/* Desktop */}
@@ -60,7 +74,7 @@ export function SiteFooter({ tenantName }: { tenantName: string }) {
               ))}
             </div>
           </div>
-          {footerColumns.map((col) => (
+          {columns.map((col) => (
             <div key={col.title} className="col-span-3 flex flex-col gap-3 text-sm lg:col-span-2">
               <h2 className="mb-1 font-display text-[13px] font-bold tracking-[0.06em] text-white uppercase">
                 {col.title}
@@ -87,7 +101,7 @@ export function SiteFooter({ tenantName }: { tenantName: string }) {
       <div className="flex flex-col gap-6 px-5 pt-10 pb-7 md:hidden">
         <Logo name={tenantName} tone="light" size="sm" />
         <div className="flex flex-col">
-          {footerColumns.map((col) => (
+          {columns.map((col) => (
             <details key={col.title} className="group border-b border-ink-700">
               <summary className="flex h-[52px] cursor-pointer list-none items-center justify-between text-[15px] font-semibold text-white [&::-webkit-details-marker]:hidden">
                 {col.title}

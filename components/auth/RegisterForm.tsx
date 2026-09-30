@@ -14,8 +14,8 @@ import { useAfterSignIn } from './useAuthNavigation';
 type FieldName = 'firstName' | 'lastName' | 'email' | 'password';
 type Errors = Partial<Record<FieldName | 'form', string>>;
 
-export function RegisterForm({ authTenantId }: { authTenantId: string }) {
-  const afterSignIn = useAfterSignIn();
+export function RegisterForm({ authTenantId, redirectTo }: { authTenantId: string; redirectTo?: string }) {
+  const afterSignIn = useAfterSignIn(redirectTo);
   const [errors, setErrors] = useState<Errors>({});
   const [pending, setPending] = useState<'email' | 'google' | null>(null);
 

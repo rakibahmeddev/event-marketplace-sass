@@ -1,20 +1,8 @@
 /** Public site navigation. Deferred destinations are listed in docs/deferred.md and render as plain text. */
 export type FooterLink = { label: string; href?: string };
 
+/** Static columns; the Discover column is built from the tenant's categories in SiteFooter. */
 export const footerColumns: { title: string; links: FooterLink[] }[] = [
-  {
-    title: 'Discover',
-    links: [
-      { label: 'Music Concerts', href: '/events?category=music-concerts' },
-      { label: 'Sports Events', href: '/events?category=sports-events' },
-      { label: 'Workshops', href: '/events?category=workshops' },
-      { label: 'Festivals', href: '/events?category=festivals' },
-      { label: 'Conferences', href: '/events?category=conferences' },
-      { label: 'Nightlife', href: '/events?category=nightlife' },
-      { label: 'Comedy', href: '/events?category=comedy' },
-      { label: 'Arts & Culture', href: '/events?category=arts-culture' },
-    ],
-  },
   {
     title: 'Organizers',
     links: [

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { faCartShopping, faLocationDot, faMagnifyingGlass, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faMagnifyingGlass, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ButtonLink } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
@@ -43,11 +43,11 @@ export function SiteHeader({ tenantName, cartCount = 0, user }: Props) {
       {/* Desktop */}
       <div className="page-container hidden h-[72px] items-center gap-7 lg:flex">
         <Logo name={tenantName} className="shrink-0" />
-        {/* Keyword search → events listing filters (Phase 3). Location picker is a placeholder. */}
+        {/* Keyword search → /events?q= (whole-word match on title, organizer, city). */}
         <form
           action="/events"
           role="search"
-          className="flex h-11 max-w-[400px] min-w-0 flex-1 items-center gap-2.5 rounded-full border border-[#E9E9F0] bg-field pr-1.5 pl-4 focus-within:border-primary"
+          className="flex h-11 max-w-[400px] min-w-0 flex-1 items-center gap-2.5 rounded-full border border-[#E9E9F0] bg-field pr-4 pl-4 focus-within:border-primary"
         >
           <Icon icon={faMagnifyingGlass} className="text-sm text-slate-500" />
           <label htmlFor="header-search" className="sr-only">
@@ -60,10 +60,6 @@ export function SiteHeader({ tenantName, cartCount = 0, user }: Props) {
             placeholder="Search events, artists, venues"
             className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-500"
           />
-          <span className="flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-[#E9E9F0] bg-white px-3 text-[13px] font-medium">
-            <Icon icon={faLocationDot} className="text-xs text-primary" />
-            New York
-          </span>
         </form>
         <nav
           aria-label="Main"

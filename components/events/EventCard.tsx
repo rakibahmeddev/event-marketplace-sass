@@ -4,10 +4,10 @@ import { faBan, faFire, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { Badge } from '@/components/ui/Badge';
 import { DateBadge } from '@/components/ui/DateBadge';
 import { Icon } from '@/components/ui/Icon';
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
+import { CoverImage } from '@/components/ui/CoverImage';
 import { cn } from '@/lib/utils/cn';
 
-/** Display-ready event summary. Built from Firestore data by a mapper in Phase 3. */
+/** Display-ready event summary (built by lib/events/view.ts). */
 export type EventCardData = {
   href: string;
   title: string;
@@ -20,6 +20,7 @@ export type EventCardData = {
   organizerName: string;
   status?: 'selling-fast' | 'sold-out';
   imageLabel: string;
+  imageUrl?: string | null;
 };
 
 function Meta({ event }: { event: EventCardData }) {
@@ -48,7 +49,13 @@ export function EventCard({ event, layout = 'grid' }: { event: EventCardData; la
         className="flex flex-col overflow-hidden rounded-card border border-line-soft bg-white shadow-card transition-shadow hover:shadow-lift focus-ring sm:flex-row"
       >
         <div className="relative min-h-[170px] shrink-0 sm:w-[260px]">
-          <ImagePlaceholder label={event.imageLabel} labelPosition="corner" className="absolute inset-0" />
+          <CoverImage
+            url={event.imageUrl}
+            alt=""
+            label={event.imageLabel}
+            labelPosition="corner"
+            sizes="(min-width: 640px) 260px, 100vw"
+          />
           <DateBadge
             month={event.month}
             day={event.day}
@@ -90,7 +97,12 @@ export function EventCard({ event, layout = 'grid' }: { event: EventCardData; la
       className="flex h-full flex-col overflow-hidden rounded-card border border-line-soft bg-white shadow-card transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lift focus-ring"
     >
       <div className="relative aspect-[16/10] shrink-0">
-        <ImagePlaceholder label={event.imageLabel} className="absolute inset-0" />
+        <CoverImage
+          url={event.imageUrl}
+          alt=""
+          label={event.imageLabel}
+          sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+        />
         <DateBadge month={event.month} day={event.day} size="sm" className="absolute top-3 left-3" />
         {/* Save/wishlist is deferred (docs/deferred.md) — decorative placeholder. */}
         <span
