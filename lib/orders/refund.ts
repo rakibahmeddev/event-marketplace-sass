@@ -49,6 +49,12 @@ export async function refundOrder(
       });
     }
     tx.update(db.doc(`tenants/${tenant.id}/events/${eventId}`), { totalSold: FieldValue.increment(-seats) });
+    const active = tickets.docs.filter((t) => t.get('status') !== 'cancelled').length;
+    tx.set(
+      db.doc(`tenants/${tenant.id}/eventStats/${eventId}`),
+      { ticketsIssued: FieldValue.increment(-active) },
+      { merge: true },
+    );
     for (const t of tickets.docs) tx.update(t.ref, { status: 'cancelled' });
     tx.update(orderRef, { status: 'refunded', refundRef, refundedAt: FieldValue.serverTimestamp() });
     tx.create(db.collection(`tenants/${tenant.id}/auditLogs`).doc(), {

@@ -79,6 +79,12 @@ export async function fulfilOrder(args: {
     tx.update(db.doc(`tenants/${args.tenantId}/events/${eventId}`), {
       totalSold: FieldValue.increment(seats),
     });
+    // Live check-in counter denominator (scanner app).
+    tx.set(
+      db.doc(`tenants/${args.tenantId}/eventStats/${eventId}`),
+      { ticketsIssued: FieldValue.increment(seats) },
+      { merge: true },
+    );
 
     const attendees = (order.get('attendees') as Attendee[] | undefined) ?? [];
     const buyer = { name: order.get('buyerName') as string, email: order.get('buyerEmail') as string };

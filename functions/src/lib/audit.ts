@@ -4,7 +4,14 @@ import { db } from './admin.js';
 export type AuditEntry = {
   actorUid: string;
   action:
-    'role.change' | 'organizer.approve' | 'organizer.suspend' | 'refund' | 'checkin' | 'settings.change';
+    | 'role.change'
+    | 'organizer.approve'
+    | 'organizer.suspend'
+    | 'refund'
+    | 'checkin'
+    | 'settings.change'
+    | 'scanner.create'
+    | 'scanner.update';
   target: Record<string, string | null>;
 };
 

@@ -16,6 +16,14 @@ service cloud.firestore {
     function hasRole(role) {
       return request.auth.token.role == role;
     }
+    function isAssignedScanner(tenantId, eventId) {
+      let a = /databases/$(database)/documents/tenants/$(tenantId)/scannerAssignments/$(request.auth.uid);
+      return exists(a) && get(a).data.active == true && eventId in get(a).data.eventIds;
+    }
+    function ownsEvent(tenantId, eventId) {
+      let e = /databases/$(database)/documents/tenants/$(tenantId)/events/$(eventId);
+      return exists(e) && get(e).data.organizerId == request.auth.token.organizerId;
+    }
     // Only these keys may differ between the stored doc and the write.
     function onlyChanges(keys) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
@@ -33,7 +41,18 @@ service cloud.firestore {
         allow write: if false; // append-only from Cloud Functions
       }
 
-      // Phase 3+: organizers, events, ticketTypes, orders, tickets, scannerAssignments.
+      // Live check-in counter { checkedIn, ticketsIssued }: read by the event's assigned (active)
+      // scanners and its organizer; written only by server code / Cloud Functions.
+      match /eventStats/{eventId} {
+        allow read: if inTenant(tenantId) && (
+          (hasRole('scanner') && isAssignedScanner(tenantId, eventId)) ||
+          (hasRole('organizer') && ownsEvent(tenantId, eventId))
+        );
+        allow write: if false;
+      }
+
+      // Everything else (organizers, events, ticketTypes, orders, tickets, scannerAssignments, categories)
+      // is server-rendered or handled by Cloud Functions: closed to browsers.
       match /{document=**} {
         allow read, write: if false;
       }

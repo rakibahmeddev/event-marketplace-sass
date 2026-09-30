@@ -9,6 +9,8 @@ export { setUserRole } from './auth/setUserRole.js';
 export { approveOrganizer, suspendOrganizer } from './organizers/callables.js';
 export { onOrderPaid } from './orders/onOrderPaid.js';
 export { expireReservations } from './orders/expireReservations.js';
+export { checkInTicket } from './checkin/checkInTicket.js';
+export { createScanner, updateScanner } from './scanners/callables.js';
 
 // Liveness check for the emulator / deploys. Returns no data.
 export const health = onRequest((_req, res) => {
