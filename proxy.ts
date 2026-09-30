@@ -39,7 +39,11 @@ export async function proxy(request: NextRequest) {
   } catch (err) {
     // Firestore unreachable (in development: emulators not running). Fail closed, without a stack trace.
     console.error('Tenant lookup failed', err instanceof Error ? err.message : err);
-    return new NextResponse('Service temporarily unavailable', {
+    const body =
+      process.env.NODE_ENV === 'production'
+        ? 'Service temporarily unavailable'
+        : 'Cannot reach Firestore. Start the local emulators: `npm run dev:all` (or `npm run emulators`).';
+    return new NextResponse(body, {
       status: 503,
       headers: { 'content-type': 'text/plain', 'retry-after': '30' },
     });

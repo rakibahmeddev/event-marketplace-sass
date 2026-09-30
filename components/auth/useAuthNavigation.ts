@@ -7,8 +7,8 @@ import { safeNextPath } from '@/lib/auth/next-path';
 export function useAfterSignIn(redirectTo?: string) {
   const router = useRouter();
   const params = useSearchParams();
-  return () => {
-    router.replace(safeNextPath(redirectTo ?? params.get('next')));
+  return (override?: string) => {
+    router.replace(safeNextPath(override ?? redirectTo ?? params.get('next')));
     router.refresh();
   };
 }

@@ -21,16 +21,23 @@ cp .env.example .env.local   # already points at the emulators
 
 ## Run locally
 
-Two terminals:
-
 ```bash
-npm run emulators   # builds functions, starts Auth 9099 · Firestore 8080 · Functions 5001 · Storage 9199 · UI 4000
-npm run seed        # once per fresh emulator data: marketplaces, domains, one account per role
-npm run dev         # Next.js on http://localhost:3000
+npm run dev:all
 ```
 
+One command: puts Java 21 on the PATH if needed (Homebrew `openjdk@21`), builds the Cloud Functions,
+starts the Emulator Suite (Auth 9099 · Firestore 8080 · Functions 5001 · Storage 9199 · UI 4000; data kept in
+`.emulator-data/`), seeds demo data on the first run, and starts Next.js on http://localhost:3000
+(or reuses one that is already running). Ctrl+C stops everything and saves emulator data.
+
+Prefer two terminals? `npm run emulators` (same steps without Next.js), then `npm run dev`.
+Re-seed any time with `npm run seed`.
+
 The app needs the emulators: every page resolves its marketplace from Firestore. Without them you get a
-503 "Service temporarily unavailable" after 5 s.
+503 "Cannot reach Firestore" after 5 s.
+
+In development the login page shows **one-click demo accounts** (admin, organizer, attendee, applicant).
+They only render when the app talks to the local emulators, never in production.
 
 ### Seeded marketplaces and accounts (emulator only)
 
