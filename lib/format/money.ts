@@ -15,6 +15,18 @@ export function formatMoney(cents: Cents, currency: string, locale = 'en-US'): s
   }).format(cents / 10 ** digits);
 }
 
+/** Axis / chart labels: 420000 → "$4.2K", 0 → "$0". */
+export function formatMoneyCompact(cents: Cents, currency: string, locale = 'en-US'): string {
+  const digits = minorDigits(currency);
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(cents / 10 ** digits);
+}
+
 /** "12.50" → 1250. Returns null for anything that is not a valid non-negative amount. */
 export function parseMoney(input: string, currency: string): Cents | null {
   const digits = minorDigits(currency);

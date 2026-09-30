@@ -1,4 +1,7 @@
+import { toCsv } from '@/lib/format/csv';
 import type { Ticket } from '@/lib/orders/schema';
+
+export { csvCell } from '@/lib/format/csv';
 
 export const ATTENDEE_FILTERS = ['all', 'in', 'out', 'cancelled'] as const;
 export type AttendeeFilter = (typeof ATTENDEE_FILTERS)[number];
@@ -30,15 +33,6 @@ export function attendeeSummary(tickets: Ticket[]) {
   return { checkedIn, notYet, total: checkedIn + notYet };
 }
 
-/**
- * One CSV cell. Values starting with = + - @ tab or CR are prefixed with ' so spreadsheet apps
- * don't run them as formulas (CSV injection); quotes are doubled and every cell is quoted.
- */
-export function csvCell(value: string): string {
-  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
-  return `"${safe.replace(/"/g, '""')}"`;
-}
-
 export function attendeesCsv(tickets: Ticket[], formatTime: (d: Date) => string): string {
   const rows = [['Attendee', 'Email', 'Ticket type', 'Ticket ID', 'Order', 'Status', 'Checked in at']];
   for (const t of tickets) {
@@ -52,6 +46,5 @@ export function attendeesCsv(tickets: Ticket[], formatTime: (d: Date) => string)
       t.checkedInAt ? formatTime(t.checkedInAt) : '',
     ]);
   }
-  // Excel needs the BOM to read UTF-8 names correctly.
-  return '﻿' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
+  return toCsv(rows);
 }

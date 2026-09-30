@@ -28,7 +28,10 @@ export function StatCard({ label, value, delta, note, icon, className }: Props) 
       </div>
       <b className="font-display text-[22px] leading-none font-extrabold md:text-[30px]">{value}</b>
       {(delta || note) && (
-        <span className="text-xs font-semibold text-success md:text-[13px]">
+        // A string delta is shown in green (design); pass a <Delta> for up/down colours.
+        <span
+          className={cn('text-xs font-semibold md:text-[13px]', typeof delta === 'string' && 'text-success')}
+        >
           {delta} {note && <span className="font-normal text-slate-500">{note}</span>}
         </span>
       )}
