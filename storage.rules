@@ -1,9 +1,40 @@
 rules_version = '2';
 
-// Phase 1: deny everything. Phase 3 opens tenant/organizer-scoped image uploads
-// (images only, 5 MB max) together with rules tests.
+// Deny by default. Browsers may only CREATE images inside their own folder:
+//   tenants/{t}/organizers/{organizerId}/events/{eventId}/{file}   approved organizer (claims)
+//   tenants/{t}/organizers/{organizerId}/logo/{file}               approved organizer (claims)
+//   tenants/{t}/applications/{uid}/{file}                          the signed-in applicant
+// No reads, listing, overwrites or deletes from clients: the server verifies each upload and
+// stores a tokenised download URL, which is how images are displayed.
 service firebase.storage {
   match /b/{bucket}/o {
+    function inTenant(t) {
+      return request.auth != null && request.auth.token.tenantId == t;
+    }
+    function isOrganizer(t, organizerId) {
+      return inTenant(t)
+        && request.auth.token.role == 'organizer'
+        && request.auth.token.organizerId == organizerId;
+    }
+    // resource == null: new objects only — no overwriting an existing upload.
+    function validImage(fileName) {
+      return resource == null
+        && request.resource.size > 0
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && fileName.matches('[A-Za-z0-9_-]{1,64}[.](jpg|jpeg|png|webp)');
+    }
+
+    match /tenants/{t}/organizers/{organizerId}/events/{eventId}/{fileName} {
+      allow create: if isOrganizer(t, organizerId) && validImage(fileName);
+    }
+    match /tenants/{t}/organizers/{organizerId}/logo/{fileName} {
+      allow create: if isOrganizer(t, organizerId) && validImage(fileName);
+    }
+    match /tenants/{t}/applications/{uid}/{fileName} {
+      allow create: if inTenant(t) && request.auth.uid == uid && validImage(fileName);
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

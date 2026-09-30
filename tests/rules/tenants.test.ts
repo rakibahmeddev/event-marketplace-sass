@@ -73,17 +73,22 @@ describe('tenants/{tenantId}/auditLogs', () => {
   });
 });
 
-describe('not yet opened (Phase 3+)', () => {
+describe('server-rendered data: closed to browsers (read and write)', () => {
   for (const path of [
     'tenants/tA/events/e1',
+    'tenants/tA/events/e1/ticketTypes/t1',
     'tenants/tA/organizers/o1',
+    'tenants/tA/categories/c1',
     'tenants/tA/orders/x',
     'tenants/tA/tickets/x',
   ]) {
-    it(`${path} stays closed for every role`, async () => {
+    it(`${path} is closed for every role`, async () => {
       for (const role of ROLES) {
-        await assertFails(as(env, `u-${role}`, role).firestore().doc(path).get());
+        const db = as(env, `u-${role}`, role).firestore();
+        await assertFails(db.doc(path).get());
+        await assertFails(db.doc(path).set({ status: 'published', price: 0, sold: 0 }));
       }
+      await assertFails(env.unauthenticatedContext().firestore().doc(path).get());
     });
   }
 });

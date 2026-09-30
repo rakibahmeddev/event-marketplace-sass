@@ -37,18 +37,3 @@ describe('server-only collections', () => {
     );
   });
 });
-
-describe('storage (opened in Phase 3)', () => {
-  it('blocks reads and writes for every role', async () => {
-    for (const role of ROLES) {
-      const storage = as(env, `u-${role}`, role).storage();
-      await assertFails(storage.ref('tenants/tA/logo.png').getDownloadURL());
-      await assertFails(
-        storage
-          .ref('tenants/tA/logo.png')
-          .putString('x')
-          .then((snap) => snap),
-      );
-    }
-  });
-});

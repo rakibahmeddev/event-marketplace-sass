@@ -9,6 +9,8 @@ import {
   initializeAuth,
   type Auth,
 } from 'firebase/auth';
+import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
+import { connectStorageEmulator, getStorage, type FirebaseStorage } from 'firebase/storage';
 
 // Public web config — identifies the project, grants no access on its own.
 const config = {
@@ -24,6 +26,8 @@ const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_SITE_KEY;
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
+let storage: FirebaseStorage | undefined;
+let functions: Functions | undefined;
 
 function firebaseApp(): FirebaseApp {
   if (app) return app;
@@ -57,4 +61,20 @@ export function getClientAuth(authTenantId: string): Auth {
   }
   auth.tenantId = authTenantId;
   return auth;
+}
+
+export function getClientStorage(): FirebaseStorage {
+  if (!storage) {
+    storage = getStorage(firebaseApp());
+    if (useEmulators) connectStorageEmulator(storage, '127.0.0.1', 9199);
+  }
+  return storage;
+}
+
+export function getClientFunctions(): Functions {
+  if (!functions) {
+    functions = getFunctions(firebaseApp(), 'us-central1');
+    if (useEmulators) connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+  }
+  return functions;
 }
