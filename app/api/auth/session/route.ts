@@ -8,6 +8,8 @@ import { getCurrentTenant } from '@/lib/tenant/current';
 import { createSessionSchema } from '@/lib/validation/auth';
 
 const RECENT_SIGN_IN_SECONDS = 5 * 60;
+/** Sign-ins per client IP per minute. Higher outside production so local test runs (all from one IP) pass. */
+const SESSION_LIMIT = process.env.NODE_ENV === 'production' ? 20 : 200;
 
 const error = (status: number, code: string) => NextResponse.json({ error: code }, { status });
 
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
   if (!tenant) return error(404, 'unknown_tenant');
 
   const allowed = await rateLimit(`session:${tenant.id}:${clientIp(request.headers)}`, {
-    limit: 20,
+    limit: SESSION_LIMIT,
     windowSeconds: 60,
   });
   if (!allowed) return error(429, 'rate_limited');

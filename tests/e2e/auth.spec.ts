@@ -62,7 +62,7 @@ test.describe('sign-in and roles', () => {
 
 test.describe('tenant isolation in the browser', () => {
   test('each hostname shows its own marketplace branding', async ({ page }) => {
-    await page.goto('http://other.localhost:3000/');
+    await page.goto('http://other.localhost:3100/');
     await expect(page).toHaveTitle(/Othertix/);
     const primary = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--brand-primary').trim(),
@@ -72,12 +72,12 @@ test.describe('tenant isolation in the browser', () => {
 
   test('a demo session is not valid on another marketplace', async ({ page }) => {
     await login(page, SEED_USERS.attendee, '/account/tickets');
-    await page.goto('http://other.localhost:3000/account/tickets');
-    await expect(page).toHaveURL(/other\.localhost:3000\/login\?next=/);
+    await page.goto('http://other.localhost:3100/account/tickets');
+    await expect(page).toHaveURL(/other\.localhost:3100\/login\?next=/);
   });
 
   test('demo accounts cannot sign in on another marketplace', async ({ page }) => {
-    await page.goto('http://other.localhost:3000/login');
+    await page.goto('http://other.localhost:3100/login');
     await page.getByLabel('Email').fill(SEED_USERS.attendee);
     await page.getByLabel('Password', { exact: true }).fill(SEED_PASSWORD);
     await page.getByRole('button', { name: 'Log in' }).click();

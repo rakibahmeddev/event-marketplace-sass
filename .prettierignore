@@ -1,5 +1,6 @@
 design/
 .next/
+.next-e2e/
 node_modules/
 functions/lib/
 .emulator-data/

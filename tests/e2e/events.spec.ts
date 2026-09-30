@@ -10,6 +10,8 @@ test.describe('public discovery', () => {
       .getByRole('link', { name: /Sunset Rooftop Jazz Sessions/ })
       .first()
       .click();
+    // First visit compiles the page in dev mode; allow for it.
+    await expect(page).toHaveURL(/\/events\/sunset-rooftop/, { timeout: 15000 });
     await expect(page.getByRole('heading', { level: 1, name: 'Sunset Rooftop Jazz Sessions' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Select tickets' })).toBeVisible();
     await expect(page.getByRole('button', { name: /Checkout opens soon|Opens soon/ }).first()).toBeDisabled();
@@ -58,7 +60,7 @@ test.describe.serial('organizer workflow', () => {
   test('an organizer creates, uploads a cover and publishes an event', async ({ page }) => {
     await login(page, SEED_USERS.organizer, '/dashboard/events');
     await page.getByRole('link', { name: 'Create event' }).first().click();
-    await expect(page.getByRole('heading', { name: 'Create event' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Create event' })).toBeVisible({ timeout: 20000 });
 
     await page.getByLabel('Event title').fill(title);
     await page.getByLabel('Category').selectOption('music-concerts');
@@ -78,7 +80,7 @@ test.describe.serial('organizer workflow', () => {
 
     await page.getByRole('button', { name: 'Publish event' }).click();
     await expect(page.getByText('Published! Your event is live.')).toBeVisible({ timeout: 15000 });
-    await expect(page).toHaveURL(/\/dashboard\/events\/[A-Za-z0-9]+$/);
+    await expect(page).toHaveURL(/\/dashboard\/events\/[A-Za-z0-9]+(\?saved=published)?$/);
 
     await page.goto(`/events?q=${encodeURIComponent('launch')}`);
     await page

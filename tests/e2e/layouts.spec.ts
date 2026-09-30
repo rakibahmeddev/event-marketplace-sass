@@ -46,7 +46,7 @@ test('unknown routes show the designed 404', async ({ page }) => {
 });
 
 test('unknown hostnames show "marketplace not found"', async ({ request }) => {
-  const res = await request.get('http://unknown.localhost:3000/');
+  const res = await request.get('http://unknown.localhost:3100/');
   expect(res.status()).toBe(404);
   expect(await res.text()).toContain('Marketplace not found');
 });

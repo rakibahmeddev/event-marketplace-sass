@@ -7,7 +7,7 @@ export default async function globalSetup() {
   let last = '';
   while (Date.now() < deadline) {
     try {
-      const res = await fetch('http://localhost:3000/login');
+      const res = await fetch('http://localhost:3100/login');
       if (res.ok) {
         await new Promise((r) => setTimeout(r, 2_500)); // let the 2 s dev cache expire once more
         return;

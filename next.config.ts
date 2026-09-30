@@ -43,6 +43,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // E2E runs a second dev server with its own build dir (see playwright.config.ts).
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   images: {
     // Dev only: the Storage emulator serves images from 127.0.0.1. remotePatterns still pins the host.
     dangerouslyAllowLocalIP: isDev,
