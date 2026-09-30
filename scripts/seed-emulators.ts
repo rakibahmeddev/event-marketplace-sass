@@ -183,6 +183,8 @@ async function seedTenant(t: TenantSeed) {
   }
 
   const tenantAuth = auth.tenantManager().authForTenant(authTenantId);
+  let organizerId: string | undefined; // the organizer is listed before the scanner and attendees
+  let attendeeUid: string | undefined;
   for (const u of t.users) {
     const existing = await tenantAuth.getUserByEmail(u.email).catch(() => null);
     const user =
@@ -195,7 +197,7 @@ async function seedTenant(t: TenantSeed) {
       }));
     const claims: Record<string, string> = { role: u.role, tenantId: t.id };
     if (u.role === 'organizer') {
-      const organizerId = `org-${user.uid.slice(0, 8)}`;
+      organizerId = `org-${user.uid.slice(0, 8)}`;
       claims.organizerId = organizerId;
       await db.doc(`tenants/${t.id}/organizers/${organizerId}`).set({
         name: 'Pulse Live',
@@ -211,9 +213,21 @@ async function seedTenant(t: TenantSeed) {
       });
       await seedEvents(t.id, organizerId);
     }
-    if (u.role === 'scanner') {
-      await db.doc(`tenants/${t.id}/scannerAssignments/${user.uid}`).set({ eventIds: [], organizerId: null });
+    if (u.role === 'scanner' && organizerId) {
+      // Staff of Pulse Live, assigned to the first two sample events (what createScanner would write).
+      claims.organizerId = organizerId;
+      await db.doc(`tenants/${t.id}/scannerAssignments/${user.uid}`).set({
+        eventIds: ['seed0000000001', 'seed0000000002'],
+        organizerId,
+        name: u.name,
+        email: u.email,
+        active: true,
+        scanCount: 0,
+        lastScanAt: null,
+        createdAt: FieldValue.serverTimestamp(),
+      });
     }
+    if (u.email.startsWith('attendee@')) attendeeUid = user.uid;
     await tenantAuth.setCustomUserClaims(user.uid, claims);
     await db.doc(`users/${user.uid}`).set({
       tenantId: t.id,
@@ -222,6 +236,7 @@ async function seedTenant(t: TenantSeed) {
       createdAt: FieldValue.serverTimestamp(),
     });
   }
+  if (organizerId && attendeeUid) await seedSampleOrder(t.id, organizerId, attendeeUid);
   if (t.applicant) {
     const a = t.applicant;
     const existing = await tenantAuth.getUserByEmail(a.email).catch(() => null);
@@ -313,6 +328,59 @@ async function seedEvents(tenantId: string, organizerId: string) {
       });
     }
   }
+}
+
+/**
+ * One paid order for the first sample event with fixed ticket ids, so the scanner, attendee list and
+ * My tickets have real data: seedticket0001/0002 valid, seedticket0003 already checked in.
+ */
+async function seedSampleOrder(tenantId: string, organizerId: string, buyerUid: string) {
+  const eventId = 'seed0000000001';
+  const price = 4500;
+  const fee = Math.round(price * 0.035);
+  const people = [
+    { name: 'Jordan Lee', email: 'attendee@demo.test' },
+    { name: 'Sam Ortiz', email: 'sam.ortiz@example.com' },
+    { name: 'Avery Kim', email: 'avery.kim@example.com' },
+  ];
+  const now = new Date();
+  await db.doc(`tenants/${tenantId}/orders/seedorder0001`).set({
+    buyerUid,
+    buyerName: 'Jordan Lee',
+    buyerEmail: 'attendee@demo.test',
+    eventId,
+    organizerId,
+    items: [{ ticketTypeId: 'tt2', name: 'General Admission', unitPrice: price, quantity: people.length }],
+    attendees: people,
+    subtotal: price * people.length,
+    fees: fee * people.length,
+    commission: fee * people.length,
+    total: (price + fee) * people.length,
+    currency: 'USD',
+    status: 'paid',
+    provider: 'test',
+    paymentRef: 'seed',
+    expiresAt: null,
+    createdAt: now,
+    paidAt: now,
+  });
+  for (const [i, p] of people.entries()) {
+    const used = i === 2;
+    await db.doc(`tenants/${tenantId}/tickets/seedticket000${i + 1}`).set({
+      orderId: 'seedorder0001',
+      eventId,
+      ticketTypeId: 'tt2',
+      ticketTypeName: 'General Admission',
+      attendeeName: p.name,
+      attendeeEmail: p.email,
+      status: used ? 'used' : 'valid',
+      checkedInAt: used ? now : null,
+      checkedInBy: used ? 'seed' : null,
+    });
+  }
+  await db
+    .doc(`tenants/${tenantId}/eventStats/${eventId}`)
+    .set({ ticketsIssued: people.length, checkedIn: 1 });
 }
 
 for (const t of tenants) await seedTenant(t);
