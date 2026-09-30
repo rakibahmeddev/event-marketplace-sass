@@ -69,3 +69,12 @@ export async function getTicket(tenantId: string, ticketId: string): Promise<Tic
   const s = await tickets(tenantId).doc(ticketId).get();
   return s.exists ? parseTicket(s.id, s.data()) : null;
 }
+
+/** Every ticket for one event (attendee list, CSV export). Capped for the MVP's event sizes. */
+export async function listEventTickets(tenantId: string, eventId: string, limit = 5000): Promise<Ticket[]> {
+  const snap = await tickets(tenantId).where('eventId', '==', eventId).limit(limit).get();
+  return snap.docs
+    .map((d) => parseTicket(d.id, d.data()))
+    .filter((t): t is Ticket => !!t)
+    .sort((a, b) => a.attendeeName.localeCompare(b.attendeeName));
+}
