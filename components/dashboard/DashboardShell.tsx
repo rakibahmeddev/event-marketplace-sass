@@ -5,6 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { DashboardMobileBar } from './DashboardMobileBar';
 import { DashboardNav } from './DashboardNav';
+import { DashboardTitle } from './DashboardTitle';
 import type { DashboardNavItem } from './types';
 
 type Props = {
@@ -51,7 +52,9 @@ export function DashboardShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <DashboardMobileBar title={title} accountName={accountName} items={nav} />
         <header className="hidden h-[72px] items-center gap-4 border-b border-line-soft bg-white px-8 lg:flex">
-          <h1 className="flex-1 font-display text-[22px] font-extrabold">{title}</h1>
+          <p className="flex-1 font-display text-[22px] font-extrabold">
+            <DashboardTitle nav={nav} fallback={title} />
+          </p>
           {actions}
         </header>
         <main className="flex flex-col gap-6 p-4 md:px-8 md:pt-7 md:pb-10">{children}</main>

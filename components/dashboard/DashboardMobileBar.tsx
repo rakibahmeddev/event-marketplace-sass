@@ -6,6 +6,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Drawer } from '@/components/ui/Drawer';
 import { Icon } from '@/components/ui/Icon';
 import { DashboardNav } from './DashboardNav';
+import { DashboardTitle } from './DashboardTitle';
 import type { DashboardNavItem } from './types';
 
 export function DashboardMobileBar({
@@ -21,7 +22,9 @@ export function DashboardMobileBar({
   return (
     <div className="sticky top-0 z-20 flex h-[60px] items-center gap-2.5 bg-ink pr-2 pl-4 text-white lg:hidden">
       <Avatar name={accountName} tone="white" className="size-[30px] rounded-[9px] text-[11px]" />
-      <b className="flex-1 font-display text-base font-bold">{title}</b>
+      <b className="flex-1 font-display text-base font-bold">
+        <DashboardTitle nav={items} fallback={title} />
+      </b>
       <button
         type="button"
         aria-label="Open menu"
