@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { tenantBrandingSchema } from './branding';
+import { socialLinksSchema } from './settings';
 
 /** Server-side shape of tenants/{tenantId} (fields used so far). */
 export const tenantDocSchema = z.object({
@@ -15,6 +16,8 @@ export const tenantDocSchema = z.object({
   /** Decimal share, e.g. 0.035. Server-side only; shown on the organizer pricing page. */
   commissionRate: z.number().min(0).max(1).default(0),
   supportEmail: z.email().optional(),
+  footerTagline: z.string().default(''),
+  socialLinks: socialLinksSchema.default({}),
 });
 
 export type TenantDoc = z.infer<typeof tenantDocSchema>;

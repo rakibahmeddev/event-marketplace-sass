@@ -4,6 +4,7 @@ rules_version = '2';
 //   tenants/{t}/organizers/{organizerId}/events/{eventId}/{file}   approved organizer (claims)
 //   tenants/{t}/organizers/{organizerId}/logo/{file}               approved organizer (claims)
 //   tenants/{t}/applications/{uid}/{file}                          the signed-in applicant
+//   tenants/{t}/branding/{file}                                    the marketplace's tenant admin
 // No reads, listing, overwrites or deletes from clients: the server verifies each upload and
 // stores a tokenised download URL, which is how images are displayed.
 service firebase.storage {
@@ -30,6 +31,9 @@ service firebase.storage {
     }
     match /tenants/{t}/organizers/{organizerId}/logo/{fileName} {
       allow create: if isOrganizer(t, organizerId) && validImage(fileName);
+    }
+    match /tenants/{t}/branding/{fileName} {
+      allow create: if inTenant(t) && request.auth.token.role == 'tenant_admin' && validImage(fileName);
     }
     match /tenants/{t}/applications/{uid}/{fileName} {
       allow create: if inTenant(t) && request.auth.uid == uid && validImage(fileName);

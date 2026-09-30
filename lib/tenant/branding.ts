@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
-const hexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Expected a 6-digit hex colour');
+export const hexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Use a 6-digit hex colour like #5B2EE0');
+
+/** Uploaded image (Storage path + tokenised download URL written by the server). */
+const logoSchema = z.object({ path: z.string().min(1), url: z.url() }).strict();
 
 /** Non-secret branding stored on tenants/{tenantId}.branding */
 export const tenantBrandingSchema = z
   .object({
     name: z.string().min(1).max(60),
-    logoUrl: z.url().optional(),
+    logo: logoSchema.nullable().optional(),
     primaryColor: hexColor,
     accentColor: hexColor,
   })

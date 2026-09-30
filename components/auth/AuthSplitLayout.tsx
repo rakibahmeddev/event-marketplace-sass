@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
 import { SiteHeader } from '@/components/site/SiteHeader';
-import { Logo } from '@/components/ui/Logo';
+import { TenantLogo } from '@/components/site/TenantLogo';
 
 /** Login / register: photo panel on the left (desktop), form on the right; site header on mobile (design 11). */
 export function AuthSplitLayout({ tenantName, children }: { tenantName: string; children: ReactNode }) {
   return (
     <div className="grid min-h-dvh bg-white lg:grid-cols-2">
       <div className="relative hidden flex-col justify-between bg-[repeating-linear-gradient(135deg,#231E38_0_14px,#2A2442_14px_28px)] p-10 text-white lg:flex">
-        <Logo name={tenantName} tone="light" />
+        <TenantLogo name={tenantName} tone="light" />
         <span
           aria-hidden
           className="absolute inset-x-0 top-1/2 text-center font-mono text-[11px] font-medium text-[#9C94BF]"

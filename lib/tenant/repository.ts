@@ -41,3 +41,8 @@ export async function getTenantById(tenantId: string): Promise<Tenant | null> {
   tenantCache.set(tenantId, { value: tenant, expires: Date.now() + TTL_MS });
   return tenant;
 }
+
+/** Drop cached copies after a settings change (other server instances refresh within the TTL). */
+export function invalidateTenantCache(tenantId: string): void {
+  tenantCache.delete(tenantId);
+}

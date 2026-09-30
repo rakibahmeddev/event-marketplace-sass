@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { faTicket } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils/cn';
@@ -10,11 +11,33 @@ type Props = {
   tone?: 'dark' | 'light';
   size?: 'sm' | 'md';
   suffix?: string;
+  /** Uploaded logo (Admin → Settings). Replaces the mark + wordmark. */
+  logoUrl?: string | null;
   className?: string;
 };
 
-/** Brand mark + wordmark with the coral full stop. Tenant logo images arrive with branding settings (Phase 6). */
-export function Logo({ name, href = '/', tone = 'dark', size = 'md', suffix, className }: Props) {
+/** Uploaded tenant logo, or the default mark + wordmark with the coral full stop. */
+export function Logo({ name, href = '/', tone = 'dark', size = 'md', suffix, logoUrl, className }: Props) {
+  if (logoUrl) {
+    return (
+      <Link
+        href={href}
+        className={cn('flex items-center rounded-input focus-ring', className)}
+        aria-label={`${name} home`}
+      >
+        <span
+          className={cn(
+            'relative block',
+            size === 'md' ? 'h-9 w-[150px]' : 'h-8 w-[130px]',
+            // Dark surfaces (footer, sidebar): a white plate keeps dark logos visible.
+            tone === 'light' && 'rounded-lg bg-white px-2',
+          )}
+        >
+          <Image src={logoUrl} alt={name} fill sizes="150px" className="object-contain object-left" />
+        </span>
+      </Link>
+    );
+  }
   const content = (
     <>
       <span

@@ -82,11 +82,26 @@ describe('logos', () => {
   });
 });
 
+describe('marketplace branding', () => {
+  it('only the tenant admin of that marketplace can upload a logo', async () => {
+    await assertSucceeds(put(as(env, 'a1', 'tenant_admin').storage(), 'tenants/tA/branding/logo.png', png()));
+    await assertFails(
+      put(as(env, 'a2', 'tenant_admin', 'tB').storage(), 'tenants/tA/branding/logo2.png', png()),
+    );
+    for (const role of ROLES.filter((r) => r !== 'tenant_admin')) {
+      await assertFails(put(as(env, `u-${role}`, role).storage(), `tenants/tA/branding/${role}.png`, png()));
+    }
+    await assertFails(
+      put(as(env, 'a1', 'tenant_admin').storage(), 'tenants/tA/branding/x.svg', png(), 'image/svg+xml'),
+    );
+  });
+});
+
 describe('everything else', () => {
   it('is closed', async () => {
     for (const role of ROLES) {
       const s = as(env, 'u1', role).storage();
-      await assertFails(put(s, 'tenants/tA/branding/logo.png', png()));
+      await assertFails(put(s, 'tenants/tA/other/logo.png', png()));
       await assertFails(put(s, 'anywhere/file.png', png()));
     }
   });

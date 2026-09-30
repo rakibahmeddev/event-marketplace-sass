@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { faCartShopping, faMagnifyingGlass, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ButtonLink } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-import { Logo } from '@/components/ui/Logo';
+import { TenantLogo } from '@/components/site/TenantLogo';
 import type { SessionUser } from '@/lib/auth/session';
 import { MobileMenu } from './MobileMenu';
 import { UserMenu, type MenuUser } from './UserMenu';
@@ -42,7 +42,7 @@ export function SiteHeader({ tenantName, cartCount = 0, user }: Props) {
     <header className="sticky top-0 z-20 border-b border-[#E9E9F0] bg-white">
       {/* Desktop */}
       <div className="page-container hidden h-[72px] items-center gap-7 lg:flex">
-        <Logo name={tenantName} className="shrink-0" />
+        <TenantLogo name={tenantName} className="shrink-0" />
         {/* Keyword search → /events?q= (whole-word match on title, organizer, city). */}
         <form
           action="/events"
@@ -95,7 +95,7 @@ export function SiteHeader({ tenantName, cartCount = 0, user }: Props) {
 
       {/* Mobile / tablet */}
       <div className="flex h-[60px] items-center gap-1 px-4 lg:hidden">
-        <Logo name={tenantName} size="sm" className="mr-auto" />
+        <TenantLogo name={tenantName} size="sm" className="mr-auto" />
         <Link
           href="/events"
           aria-label="Search events"

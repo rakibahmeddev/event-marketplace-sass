@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Avatar } from '@/components/ui/Avatar';
 import { Icon } from '@/components/ui/Icon';
-import { Logo } from '@/components/ui/Logo';
+import { TenantLogo } from '@/components/site/TenantLogo';
 import { DashboardMobileBar } from './DashboardMobileBar';
 import { DashboardNav } from './DashboardNav';
 import { DashboardTitle } from './DashboardTitle';
@@ -36,7 +36,7 @@ export function DashboardShell({
   return (
     <div className="min-h-dvh bg-mist lg:flex">
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-1 overflow-y-auto bg-ink px-3.5 py-5 text-ink-muted lg:flex">
-        <Logo name={tenantName} tone="light" className="px-2.5 pt-1.5 pb-6" />
+        <TenantLogo name={tenantName} tone="light" className="px-2.5 pt-1.5 pb-6" />
         <div className="mb-3.5 flex items-center gap-2.5 rounded-lg bg-ink-800 p-3">
           <Avatar name={accountName} size="sm" tone="white" />
           <div className="min-w-0 flex-1">

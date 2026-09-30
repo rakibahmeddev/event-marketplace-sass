@@ -3,7 +3,6 @@ import {
   faCcAmex,
   faCcApplePay,
   faCcMastercard,
-  faCcPaypal,
   faCcStripe,
   faCcVisa,
   faFacebookF,
@@ -14,20 +13,50 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@/components/ui/Icon';
-import { Logo } from '@/components/ui/Logo';
+import { TenantLogo } from '@/components/site/TenantLogo';
 import { listCategories } from '@/lib/categories/repository';
 import { getCurrentTenant } from '@/lib/tenant/current';
+import type { SocialNetwork } from '@/lib/tenant/settings';
 import { footerColumns, type FooterLink } from './nav';
 
-// Social profile URLs become tenant settings in Phase 6; until then the icons are decorative.
-const socials = [
-  { icon: faInstagram, label: 'Instagram' },
-  { icon: faTiktok, label: 'TikTok' },
-  { icon: faXTwitter, label: 'X' },
-  { icon: faFacebookF, label: 'Facebook' },
-  { icon: faYoutube, label: 'YouTube' },
+// Admin → Settings → social links. Only networks with a link are shown.
+const socialNetworks: { key: SocialNetwork; icon: typeof faInstagram; label: string }[] = [
+  { key: 'instagram', icon: faInstagram, label: 'Instagram' },
+  { key: 'tiktok', icon: faTiktok, label: 'TikTok' },
+  { key: 'x', icon: faXTwitter, label: 'X' },
+  { key: 'facebook', icon: faFacebookF, label: 'Facebook' },
+  { key: 'youtube', icon: faYoutube, label: 'YouTube' },
 ];
-const payments = [faCcVisa, faCcMastercard, faCcAmex, faCcPaypal, faCcApplePay, faCcStripe];
+// Card brands accepted through Stripe (PayPal is deferred).
+const payments = [faCcVisa, faCcMastercard, faCcAmex, faCcApplePay, faCcStripe];
+const DEFAULT_TAGLINE =
+  'The marketplace for live experiences. Discover events near you, or sell tickets to your own.';
+
+function SocialLinks({
+  links,
+  size,
+}: {
+  links: { href: string; icon: typeof faInstagram; label: string }[];
+  size: string;
+}) {
+  if (!links.length) return null;
+  return (
+    <div className="flex gap-2.5">
+      {links.map((s) => (
+        <a
+          key={s.label}
+          href={s.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={s.label}
+          className={`grid ${size} place-items-center rounded-full bg-ink-800 text-white hover:bg-primary focus-ring`}
+        >
+          <Icon icon={s.icon} />
+        </a>
+      ))}
+    </div>
+  );
+}
 
 function FooterItem({ link }: { link: FooterLink }) {
   return link.href ? (
@@ -42,6 +71,10 @@ function FooterItem({ link }: { link: FooterLink }) {
 export async function SiteFooter({ tenantName }: { tenantName: string }) {
   const year = new Date().getFullYear();
   const tenant = await getCurrentTenant();
+  const socials = socialNetworks
+    .filter((n) => tenant?.socialLinks[n.key])
+    .map((n) => ({ href: tenant!.socialLinks[n.key]!, icon: n.icon, label: n.label }));
+  const tagline = tenant?.footerTagline || DEFAULT_TAGLINE;
   const categories = tenant ? await listCategories(tenant.id) : [];
   const columns = [
     {
@@ -59,20 +92,9 @@ export async function SiteFooter({ tenantName }: { tenantName: string }) {
       <div className="page-container hidden pt-16 pb-8 md:block">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 flex flex-col gap-[18px] lg:col-span-4">
-            <Logo name={tenantName} tone="light" />
-            <p className="max-w-[300px] text-sm leading-[22px]">
-              The marketplace for live experiences. Discover events near you, or sell tickets to your own.
-            </p>
-            <div className="flex gap-2.5">
-              {socials.map((s) => (
-                <span
-                  key={s.label}
-                  className="grid size-10 place-items-center rounded-full bg-ink-800 text-white"
-                >
-                  <Icon icon={s.icon} label={s.label} />
-                </span>
-              ))}
-            </div>
+            <TenantLogo name={tenantName} tone="light" />
+            <p className="max-w-[300px] text-sm leading-[22px]">{tagline}</p>
+            <SocialLinks links={socials} size="size-10" />
           </div>
           {columns.map((col) => (
             <div key={col.title} className="col-span-3 flex flex-col gap-3 text-sm lg:col-span-2">
@@ -99,7 +121,7 @@ export async function SiteFooter({ tenantName }: { tenantName: string }) {
 
       {/* Mobile */}
       <div className="flex flex-col gap-6 px-5 pt-10 pb-7 md:hidden">
-        <Logo name={tenantName} tone="light" size="sm" />
+        <TenantLogo name={tenantName} tone="light" size="sm" />
         <div className="flex flex-col">
           {columns.map((col) => (
             <details key={col.title} className="group border-b border-ink-700">
@@ -115,16 +137,7 @@ export async function SiteFooter({ tenantName }: { tenantName: string }) {
             </details>
           ))}
         </div>
-        <div className="flex gap-2.5">
-          {socials.slice(0, 4).map((s) => (
-            <span
-              key={s.label}
-              className="grid size-11 place-items-center rounded-full bg-ink-800 text-white"
-            >
-              <Icon icon={s.icon} label={s.label} />
-            </span>
-          ))}
-        </div>
+        <SocialLinks links={socials} size="size-11" />
         <div className="flex gap-3 text-[26px] text-white">
           {payments.slice(0, 5).map((p) => (
             <Icon key={p.iconName} icon={p} />

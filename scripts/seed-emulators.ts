@@ -164,9 +164,12 @@ async function seedTenant(t: TenantSeed) {
     timezone: TZ,
     currency: 'USD',
     supportEmail: `help@${t.id}.test`,
+    footerTagline:
+      'The marketplace for live experiences. Discover events near you, or sell tickets to your own.',
+    socialLinks: { instagram: 'https://instagram.com/example', x: 'https://x.com/example' },
     commissionRate: 0.035,
     paymentConfig: {},
-    branding: { name: t.name, primaryColor: t.primaryColor, accentColor: t.accentColor },
+    branding: { name: t.name, primaryColor: t.primaryColor, accentColor: t.accentColor, logo: null },
   });
   for (const host of t.domains) await db.doc(`tenantDomains/${host}`).set({ tenantId: t.id });
 

@@ -14,6 +14,7 @@ export const storagePaths = {
   organizerLogo: (tenantId: string, organizerId: string) =>
     `tenants/${tenantId}/organizers/${organizerId}/logo/`,
   applicationLogo: (tenantId: string, uid: string) => `tenants/${tenantId}/applications/${uid}/`,
+  brandingLogo: (tenantId: string) => `tenants/${tenantId}/branding/`,
 };
 
 /**
