@@ -66,6 +66,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   // Skip static assets, Next internals and the liveness probe.
   matcher: [
-    '/((?!_next/static|_next/image|__nextjs|api/health$|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?)$).*)',
+    '/((?!_next/static|_next/image|__nextjs|api/health$|api/webhooks/|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?)$).*)',
   ],
 };

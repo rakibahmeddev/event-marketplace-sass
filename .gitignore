@@ -31,3 +31,6 @@ coverage/
 # os / editor
 .DS_Store
 *.zip
+
+# Cloud Functions local secrets (emulator)
+functions/.secret.local
