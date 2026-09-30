@@ -18,6 +18,14 @@ export const tenantDocSchema = z.object({
   supportEmail: z.email().optional(),
   footerTagline: z.string().default(''),
   socialLinks: socialLinksSchema.default({}),
+  /** Non-secret payment settings. Keys live in Secret Manager. */
+  paymentConfig: z
+    .object({
+      provider: z.enum(['stripe', 'test']).default('test'),
+      stripeAccountId: z.string().optional(),
+      chargesEnabled: z.boolean().default(false),
+    })
+    .default({ provider: 'test', chargesEnabled: false }),
 });
 
 export type TenantDoc = z.infer<typeof tenantDocSchema>;
