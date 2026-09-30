@@ -3,6 +3,8 @@ import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { claimsSchema } from '../auth/roleChange.js';
 import { requireTenantActor } from '../lib/actor.js';
 import { db, isEmulator, tenantAuth } from '../lib/admin.js';
+import { esc, sendEmail, siteUrl } from '../lib/email.js';
+import { EMAIL_FROM, RESEND_API_KEY } from '../lib/secrets.js';
 import { writeAudit } from '../lib/audit.js';
 import { canApprove, canSuspend, claimsAfterSuspend, organizerIdInput } from './decisions.js';
 
@@ -26,28 +28,57 @@ async function ownerClaims(authTenantId: string, uid: string) {
 }
 
 /** Tenant admin approves an organizer application: status + organizer role/claims + audit log. */
-export const approveOrganizer = onCall({ enforceAppCheck: !isEmulator }, async (request) => {
-  const input = organizerIdInput.safeParse(request.data);
-  if (!input.success) throw new HttpsError('invalid-argument', 'Invalid request.');
-  const actor = await requireTenantActor(request, 'approveOrganizer', ['tenant_admin']);
-  const { organizerId } = input.data;
-  const org = await loadOrganizer(actor.tenant.id, organizerId);
-  const claims = await ownerClaims(actor.tenant.authTenantId, org.ownerUid);
-  const decision = canApprove(org.status, claims, organizerId);
-  if (!decision.ok) throw new HttpsError(decision.code, decision.reason);
+export const approveOrganizer = onCall(
+  { enforceAppCheck: !isEmulator, secrets: [RESEND_API_KEY] },
+  async (request) => {
+    const input = organizerIdInput.safeParse(request.data);
+    if (!input.success) throw new HttpsError('invalid-argument', 'Invalid request.');
+    const actor = await requireTenantActor(request, 'approveOrganizer', ['tenant_admin']);
+    const { organizerId } = input.data;
+    const org = await loadOrganizer(actor.tenant.id, organizerId);
+    const claims = await ownerClaims(actor.tenant.authTenantId, org.ownerUid);
+    const decision = canApprove(org.status, claims, organizerId);
+    if (!decision.ok) throw new HttpsError(decision.code, decision.reason);
 
-  const auth = tenantAuth(actor.tenant.authTenantId);
-  await auth.setCustomUserClaims(org.ownerUid, { role: 'organizer', tenantId: actor.tenant.id, organizerId });
-  await auth.revokeRefreshTokens(org.ownerUid);
-  await org.ref.update({ status: 'approved', approvedAt: FieldValue.serverTimestamp() });
-  await writeAudit(actor.tenant.id, {
-    actorUid: actor.uid,
-    action: 'organizer.approve',
-    target: { organizerId, uid: org.ownerUid, from: org.status },
-  });
-  // Approval email is sent from Phase 4 (email provider).
-  return { ok: true };
-});
+    const auth = tenantAuth(actor.tenant.authTenantId);
+    await auth.setCustomUserClaims(org.ownerUid, {
+      role: 'organizer',
+      tenantId: actor.tenant.id,
+      organizerId,
+    });
+    await auth.revokeRefreshTokens(org.ownerUid);
+    await org.ref.update({ status: 'approved', approvedAt: FieldValue.serverTimestamp() });
+    await writeAudit(actor.tenant.id, {
+      actorUid: actor.uid,
+      action: 'organizer.approve',
+      target: { organizerId, uid: org.ownerUid, from: org.status },
+    });
+    // Approval email (best effort: approval stands even if the email fails).
+    try {
+      const owner = await auth.getUser(org.ownerUid);
+      const tenantDoc = await db.doc(`tenants/${actor.tenant.id}`).get();
+      const name = (tenantDoc.get('branding.name') as string) ?? 'the marketplace';
+      const base = siteUrl(tenantDoc.get('domains'));
+      const orgName = (await org.ref.get()).get('name') as string;
+      if (owner.email) {
+        await sendEmail(
+          {
+            tenantId: actor.tenant.id,
+            to: owner.email,
+            subject: `You're approved to sell tickets on ${name}`,
+            html: `<p style="font:15px/23px Arial">Good news — <b>${esc(orgName)}</b> is approved as an organizer on ${esc(name)}.</p><p style="font:15px/23px Arial">Log in again to open your organizer dashboard and create your first event.</p>${base ? `<p><a href="${base}/dashboard/events/new" style="font:600 15px Arial;color:#5B2EE0">Create an event</a></p>` : ''}`,
+            text: `${orgName} is approved as an organizer on ${name}. Log in again to open your dashboard: ${base}/dashboard/events/new`,
+          },
+          RESEND_API_KEY.value(),
+          EMAIL_FROM.value(),
+        );
+      }
+    } catch (err) {
+      console.error('approval email failed', err instanceof Error ? err.message : err);
+    }
+    return { ok: true };
+  },
+);
 
 /** Tenant admin suspends an organizer: status, demote owner, unpublish their events, audit log. */
 export const suspendOrganizer = onCall({ enforceAppCheck: !isEmulator }, async (request) => {

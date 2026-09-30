@@ -7,6 +7,8 @@ setGlobalOptions({ region: 'us-central1', maxInstances: 10 });
 export { onBeforeUserCreated } from './auth/beforeUserCreated.js';
 export { setUserRole } from './auth/setUserRole.js';
 export { approveOrganizer, suspendOrganizer } from './organizers/callables.js';
+export { onOrderPaid } from './orders/onOrderPaid.js';
+export { expireReservations } from './orders/expireReservations.js';
 
 // Liveness check for the emulator / deploys. Returns no data.
 export const health = onRequest((_req, res) => {

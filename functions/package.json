@@ -13,9 +13,11 @@
   "dependencies": {
     "firebase-admin": "^14.5.0",
     "firebase-functions": "^7.4.0",
+    "qrcode": "^1.5.4",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@types/qrcode": "^1.5.6",
     "typescript": "^5.9.3"
   }
 }
