@@ -1,39 +1,11 @@
 import type { NextConfig } from 'next';
+import { API_CSP } from './lib/security/csp';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-// Baseline CSP. Phase 7 tightens script-src to nonces.
-// Fonts are self-hosted by next/font and icons are bundled SVGs, so no third-party
-// style/font origins are needed.
-const csp = [
-  "default-src 'self'",
-  // apis.google.com: Firebase Auth popup helper. www.google.com / www.gstatic.com: reCAPTCHA Enterprise (App Check).
-  `script-src 'self' 'unsafe-inline' https://apis.google.com https://www.google.com https://www.gstatic.com${isDev ? " 'unsafe-eval'" : ''}`,
-  "style-src 'self' 'unsafe-inline'",
-  // Dev: upload previews load straight from the Storage emulator.
-  `img-src 'self' data: blob: https://firebasestorage.googleapis.com${isDev ? ' http://127.0.0.1:9199' : ''}`,
-  "font-src 'self'",
-  [
-    "connect-src 'self'",
-    'https://*.googleapis.com',
-    'https://*.firebaseio.com',
-    'https://firebaseappcheck.googleapis.com',
-    ...(isDev ? ['http://127.0.0.1:*', 'ws://127.0.0.1:*', 'http://localhost:*', 'ws://localhost:*'] : []),
-  ].join(' '),
-  // *.firebaseapp.com: Firebase Auth helper iframe / popup handler; google.com: reCAPTCHA.
-  [
-    "frame-src 'self' https://*.firebaseapp.com https://www.google.com https://recaptcha.google.com",
-    ...(isDev ? ['http://127.0.0.1:*', 'http://localhost:*'] : []),
-  ].join(' '),
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "object-src 'none'",
-  ...(isDev ? [] : ['upgrade-insecure-requests']),
-].join('; ');
-
+// The page CSP (with a per-request script nonce) is set in proxy.ts — see lib/security/csp.ts.
+// Responses the proxy doesn't handle (API routes, webhooks, health) get a deny-all policy here.
 const securityHeaders = [
-  { key: 'Content-Security-Policy', value: csp },
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -50,7 +22,12 @@ const nextConfig: NextConfig = {
     // Dev only: the Storage emulator serves images from 127.0.0.1. remotePatterns still pins the host.
     dangerouslyAllowLocalIP: isDev,
     remotePatterns: [
-      { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
+      // Only our own bucket — not any Firebase project's files through our image optimizer.
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        pathname: `/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ?? 'unset'}/o/**`,
+      },
       ...(isDev ? [{ protocol: 'http' as const, hostname: '127.0.0.1', port: '9199' }] : []),
     ],
   },
@@ -58,7 +35,10 @@ const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   poweredByHeader: false,
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      { source: '/api/:path*', headers: [{ key: 'Content-Security-Policy', value: API_CSP }] },
+    ];
   },
 };
 

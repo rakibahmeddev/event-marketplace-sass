@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { buildCsp, createNonce } from '@/lib/security/csp';
 import { normalizeHost } from '@/lib/tenant/host';
 import { getTenantById, tenantIdForHost } from '@/lib/tenant/repository';
 import { PATHNAME_HEADER, TENANT_HEADER } from '@/lib/tenant/headers';
@@ -26,6 +27,16 @@ export async function proxy(request: NextRequest) {
   requestHeaders.delete(TENANT_HEADER);
   requestHeaders.set(PATHNAME_HEADER, request.nextUrl.pathname);
 
+  // Per-request CSP nonce for HTML (Next.js reads it from the request header and adds it to its scripts).
+  // API routes get the strict API policy from next.config.ts instead.
+  const isApi = request.nextUrl.pathname.startsWith('/api/');
+  const csp = isApi ? null : buildCsp({ nonce: createNonce(), isDev: process.env.NODE_ENV !== 'production' });
+  if (csp) requestHeaders.set('content-security-policy', csp);
+  const withCsp = <T extends NextResponse>(res: T): T => {
+    if (csp) res.headers.set('content-security-policy', csp);
+    return res;
+  };
+
   const hostname = normalizeHost(request.headers.get('host'));
   let tenant;
   try {
@@ -43,24 +54,26 @@ export async function proxy(request: NextRequest) {
       process.env.NODE_ENV === 'production'
         ? 'Service temporarily unavailable'
         : 'Cannot reach Firestore. Start the local emulators: `npm run dev:all` (or `npm run emulators`).';
-    return new NextResponse(body, {
-      status: 503,
-      headers: { 'content-type': 'text/plain', 'retry-after': '30' },
-    });
+    return withCsp(
+      new NextResponse(body, {
+        status: 503,
+        headers: { 'content-type': 'text/plain', 'retry-after': '30' },
+      }),
+    );
   }
 
   if (!tenant || tenant.status !== 'active') {
     if (request.nextUrl.pathname === NOT_FOUND_PATH) {
-      return NextResponse.next({ request: { headers: requestHeaders } });
+      return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
     }
     const url = request.nextUrl.clone();
     url.pathname = NOT_FOUND_PATH;
     url.search = '';
-    return NextResponse.rewrite(url, { request: { headers: requestHeaders }, status: 404 });
+    return withCsp(NextResponse.rewrite(url, { request: { headers: requestHeaders }, status: 404 }));
   }
 
   requestHeaders.set(TENANT_HEADER, tenant.id);
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
 }
 
 export const config = {
