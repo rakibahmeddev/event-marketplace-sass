@@ -22,7 +22,7 @@ export default async function AdminSettingsPage({
         provider={tenant.paymentConfig.provider}
         stripeAccountId={tenant.paymentConfig.stripeAccountId}
         chargesEnabled={tenant.paymentConfig.chargesEnabled}
-        stripeAvailable={stripeConfigured()}
+        stripeAvailable={await stripeConfigured()}
         notice={notice}
       />
       <SettingsForm

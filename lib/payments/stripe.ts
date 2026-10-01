@@ -1,19 +1,25 @@
 import 'server-only';
 
 import Stripe from 'stripe';
+import { getSecret } from '@/lib/security/secrets';
 import type { CheckoutRequest, PaymentEvent, PaymentProvider } from './types';
 import { WebhookSignatureError } from './types';
 
-let client: Stripe | undefined;
-export function stripeClient(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
+let client: { key: string; stripe: Stripe } | undefined;
+/** Rebuilt when the key changes (Secret Manager rotation). */
+export async function stripeClient(): Promise<Stripe> {
+  const key = await getSecret('STRIPE_SECRET_KEY');
   if (!key) throw new Error('STRIPE_SECRET_KEY is not configured');
-  client ??= new Stripe(key);
-  return client;
+  if (client?.key !== key) client = { key, stripe: new Stripe(key) };
+  return client.stripe;
 }
 
-export function stripeConfigured(): boolean {
-  return !!process.env.STRIPE_SECRET_KEY && !!process.env.STRIPE_WEBHOOK_SECRET;
+export async function stripeConfigured(): Promise<boolean> {
+  const [key, webhook] = await Promise.all([
+    getSecret('STRIPE_SECRET_KEY'),
+    getSecret('STRIPE_WEBHOOK_SECRET'),
+  ]);
+  return !!key && !!webhook;
 }
 
 /** Stripe Connect: charges run on the tenant's own connected account (direct charges). */
@@ -27,7 +33,9 @@ export const stripeProvider: PaymentProvider = {
       Math.floor(req.expiresAt.getTime() / 1000),
       Math.floor(Date.now() / 1000) + 31 * 60,
     );
-    const session = await stripeClient().checkout.sessions.create(
+    const session = await (
+      await stripeClient()
+    ).checkout.sessions.create(
       {
         mode: 'payment',
         customer_email: req.customerEmail,
@@ -55,12 +63,12 @@ export const stripeProvider: PaymentProvider = {
   },
 
   async handleWebhook(rawBody, headers): Promise<PaymentEvent> {
-    const secret = process.env.STRIPE_WEBHOOK_SECRET;
+    const secret = await getSecret('STRIPE_WEBHOOK_SECRET');
     const signature = headers.get('stripe-signature');
     if (!secret || !signature) throw new WebhookSignatureError('Missing signature');
     let event: Stripe.Event;
     try {
-      event = stripeClient().webhooks.constructEvent(rawBody, signature, secret);
+      event = (await stripeClient()).webhooks.constructEvent(rawBody, signature, secret);
     } catch {
       throw new WebhookSignatureError('Invalid signature');
     }
@@ -93,10 +101,9 @@ export const stripeProvider: PaymentProvider = {
   },
 
   async refund({ paymentRef, amount, accountId, idempotencyKey }) {
-    const r = await stripeClient().refunds.create(
-      { payment_intent: paymentRef, amount },
-      { stripeAccount: accountId, idempotencyKey },
-    );
+    const r = await (
+      await stripeClient()
+    ).refunds.create({ payment_intent: paymentRef, amount }, { stripeAccount: accountId, idempotencyKey });
     return { refundRef: r.id };
   },
 };

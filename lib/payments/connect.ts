@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { fail, type ActionResult } from '@/lib/actions/result';
 import { getSessionUser } from '@/lib/auth/session';
 import { adminDb } from '@/lib/firebase/admin';
+import { rateLimit } from '@/lib/security/rateLimit';
 import { getCurrentTenant } from '@/lib/tenant/current';
 import { invalidateTenantCache } from '@/lib/tenant/repository';
 import { stripeClient, stripeConfigured } from './stripe';
@@ -17,8 +18,10 @@ export async function startStripeOnboarding(): Promise<ActionResult<{ url: strin
   const [user, tenant] = await Promise.all([getSessionUser(), getCurrentTenant()]);
   if (!user || !tenant || user.role !== 'tenant_admin')
     return fail('Only marketplace admins can connect payments.');
-  if (!stripeConfigured()) return fail('Stripe keys are not configured on the server yet.');
-  const stripe = stripeClient();
+  if (!(await rateLimit(`stripe-connect:${user.uid}`, { limit: 10, windowSeconds: 60 })))
+    return fail('Too many attempts. Wait a moment.');
+  if (!(await stripeConfigured())) return fail('Stripe keys are not configured on the server yet.');
+  const stripe = await stripeClient();
   let accountId = tenant.paymentConfig.stripeAccountId;
   if (!accountId) {
     const account = await stripe.accounts.create(

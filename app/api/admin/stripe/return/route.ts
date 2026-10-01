@@ -14,12 +14,12 @@ export async function GET(request: Request) {
     !user ||
     !tenant ||
     user.role !== 'tenant_admin' ||
-    !stripeConfigured() ||
+    !(await stripeConfigured()) ||
     !tenant.paymentConfig.stripeAccountId
   ) {
     return NextResponse.redirect(back);
   }
-  const account = await stripeClient().accounts.retrieve(tenant.paymentConfig.stripeAccountId);
+  const account = await (await stripeClient()).accounts.retrieve(tenant.paymentConfig.stripeAccountId);
   const chargesEnabled = !!account.charges_enabled;
   const ref = adminDb().doc(`tenants/${tenant.id}`);
   await ref.update({
