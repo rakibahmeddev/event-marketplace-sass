@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { headers } from 'next/headers';
@@ -13,14 +12,16 @@ import {
   faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons';
 import { RegisterForm } from '@/components/auth/RegisterForm';
+import { BecomeHero } from '@/components/sections/become';
+import { PreviewBanner } from '@/components/sections/PreviewBanner';
+import { StatsSection } from '@/components/sections/Stats';
 import { BecomeOrganizerFlow, type FlowState } from '@/components/organizers/BecomeOrganizerFlow';
-import { ButtonLink } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { getSessionUser } from '@/lib/auth/session';
 import { listCategories } from '@/lib/categories/repository';
 import { getOrganizerForOwner } from '@/lib/organizers/repository';
+import { getPublicSections } from '@/lib/pages/repository';
 import { storagePaths } from '@/lib/storage/server';
-import { STOCK } from '@/lib/images/stock';
 import { requireTenant } from '@/lib/tenant/current';
 
 export const metadata: Metadata = { title: 'Sell tickets' };
@@ -59,12 +60,17 @@ const benefits = [
   },
 ];
 
-export default async function BecomeOrganizerPage() {
+export default async function BecomeOrganizerPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ preview?: string }>;
+}) {
   const tenant = await requireTenant();
-  const [user, categories, host] = await Promise.all([
+  const [user, categories, host, { sections, preview }] = await Promise.all([
     getSessionUser(),
     listCategories(tenant.id),
     headers().then((h) => h.get('host') ?? ''),
+    searchParams.then((sp) => getPublicSections(tenant.id, 'become-organizer', sp.preview)),
   ]);
   const existing = user ? await getOrganizerForOwner(tenant.id, user.uid) : null;
   const commission = `${Math.round(tenant.commissionRate * 1000) / 10}%`;
@@ -105,36 +111,16 @@ export default async function BecomeOrganizerPage() {
 
   return (
     <>
-      <section className="bg-ink text-white">
-        <div className="page-container grid items-center gap-12 py-14 md:py-[88px] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-          <div className="flex flex-col gap-[22px]">
-            <span className="text-[13px] font-bold tracking-[0.1em] text-[#FF8E73] uppercase">
-              For event organizers
-            </span>
-            <h1 className="font-display text-[36px] leading-[44px] font-extrabold tracking-[-0.035em] text-pretty md:text-6xl md:leading-[66px]">
-              Sell out your next event. Keep the crowd coming back.
-            </h1>
-            <p className="max-w-[560px] text-base text-ink-muted md:text-[19px] md:leading-[30px]">
-              Create your event page, sell tickets and scan guests in with your phone — all from one
-              dashboard. Free to start.
-            </p>
-            <div className="mt-1.5 flex flex-wrap gap-3">
-              <ButtonLink href="#register" variant="accent" size="lg">
-                Start selling — it’s free
-              </ButtonLink>
-            </div>
-          </div>
-          <div className="relative hidden h-[440px] overflow-hidden rounded-sheet bg-primary lg:block">
-            <Image
-              src={STOCK.productOrganizer}
-              alt="The organizer dashboard with ticket sales, next to the phone scanner checking a ticket in"
-              fill
-              sizes="(min-width: 1280px) 600px, 50vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
+      {preview && <PreviewBanner editHref="/admin/pages/become-organizer" />}
+      {sections
+        .filter((x) => x.enabled)
+        .map((x) =>
+          x.type === 'become.hero' ? (
+            <BecomeHero key={x.type} section={x} marketplace={tenant.name} />
+          ) : x.type === 'stats' ? (
+            <StatsSection key={x.type} section={x} />
+          ) : null,
+        )}
 
       <section className="page-container flex flex-col gap-10 py-14 md:py-[88px]">
         <h2 className="type-h2 text-center">Everything you need to run the door</h2>
