@@ -2,13 +2,14 @@ import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 import { assertFails, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
 import { as, createEnv, ROLES, seed, tenantDoc } from './helpers';
 
-// Sales rollups are read by server code only — not even the marketplace's own admin or organizer reads
-// them from the browser, and nobody can write them.
+// Sales rollups and editable pages are read by server code only — not even the marketplace's own admin
+// reads them from the browser (the editor goes through server actions), and nobody can write them.
 let env: RulesTestEnvironment;
 
 const paths = [
   'tenants/tA/salesDaily/2026-10-01',
   'tenants/tA/organizerSalesDaily/org-u-organizer_2026-10-01',
+  'tenants/tA/pages/home',
 ];
 
 beforeAll(async () => {
@@ -23,10 +24,11 @@ beforeEach(async () => {
     'tenants/tA': tenantDoc('A'),
     [paths[0]!]: { date: '2026-10-01', gross: 1000 },
     [paths[1]!]: { date: '2026-10-01', organizerId: 'org-u-organizer', gross: 1000 },
+    [paths[2]!]: { draft: [], published: [] },
   });
 });
 
-describe('sales rollups (same tenant)', () => {
+describe('server-only tenant data (same tenant)', () => {
   for (const path of paths) {
     it(`${path} is closed to every role of the tenant`, async () => {
       await assertFails(env.unauthenticatedContext().firestore().doc(path).get());

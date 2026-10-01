@@ -17,6 +17,7 @@ const tenantBPaths = [
   'tenants/tB/eventStats/e1',
   'tenants/tB/salesDaily/2026-10-01',
   'tenants/tB/organizerSalesDaily/o1_2026-10-01',
+  'tenants/tB/pages/home',
   'users/userB',
 ];
 
@@ -41,6 +42,7 @@ beforeEach(async () => {
     'tenants/tB/eventStats/e1': { checkedIn: 1 },
     'tenants/tB/salesDaily/2026-10-01': { date: '2026-10-01', gross: 1000 },
     'tenants/tB/organizerSalesDaily/o1_2026-10-01': { date: '2026-10-01', organizerId: 'o1', gross: 1000 },
+    'tenants/tB/pages/home': { draft: [], published: [] },
     'users/userB': { tenantId: 'tB', displayName: 'B user' },
   });
 });
