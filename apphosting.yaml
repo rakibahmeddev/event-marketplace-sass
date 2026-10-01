@@ -1,0 +1,34 @@
+# Firebase App Hosting configuration (production). No project-specific values: the Firebase web config is
+# provided by App Hosting (FIREBASE_WEBAPP_CONFIG at build, FIREBASE_CONFIG at runtime) and every secret lives
+# in Google Secret Manager. `npm run setup:prod` creates the secrets and grants this backend access.
+# Docs: https://firebase.google.com/docs/app-hosting/configure
+
+runConfig:
+  minInstances: 0 # scale to zero when idle; set 1 to avoid cold starts before big on-sales
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 1024
+
+env:
+  # App Check (reCAPTCHA Enterprise) site key — public, but kept in Secret Manager so this file stays generic.
+  - variable: NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_SITE_KEY
+    secret: RECAPTCHA_SITE_KEY
+    availability: [BUILD, RUNTIME]
+
+  # Server-only secrets: runtime only, never available to the build or the browser bundle.
+  - variable: QR_SIGNING_SECRET
+    secret: QR_SIGNING_SECRET
+    availability: [RUNTIME]
+  - variable: STRIPE_SECRET_KEY # "unset" until Stripe is connected
+    secret: STRIPE_SECRET_KEY
+    availability: [RUNTIME]
+  - variable: STRIPE_WEBHOOK_SECRET
+    secret: STRIPE_WEBHOOK_SECRET
+    availability: [RUNTIME]
+
+  # Google's load balancer appends "<client>, <load balancer>" to X-Forwarded-For (see lib/security/rateLimit.ts).
+  # Verify after the first deploy: GET /api/health → "yourIp" must be your own public IP.
+  - variable: TRUSTED_PROXY_HOPS
+    value: '1'
+    availability: [RUNTIME]

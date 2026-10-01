@@ -9,7 +9,7 @@ export function register() {
   if (problems.length) throw new Error(`Unsafe deployment configuration:\n- ${problems.join('\n- ')}`);
 }
 
-/** Server errors → one structured log line (Vercel logs / log drains). No request bodies or personal data. */
+/** Server errors → one structured log line (Cloud Logging, via App Hosting). No request bodies or personal data. */
 export const onRequestError: Instrumentation.onRequestError = async (err, request, context) => {
   console.error(
     JSON.stringify({

@@ -32,19 +32,22 @@ export async function rateLimit(key: string, { limit, windowSeconds }: Limit): P
 }
 
 /**
- * Client IP for rate limiting.
- * - Vercel (production host): Vercel overwrites X-Forwarded-For / X-Real-IP with the connecting client's IP
- *   and drops client-supplied values, so `x-real-ip` is trustworthy.
- * - Elsewhere (local, other proxies): the LAST X-Forwarded-For entry — the one appended by the nearest
- *   proxy. Earlier entries are client-controlled and would let callers dodge the limit.
+ * Client IP for rate limiting, from X-Forwarded-For. Entries before the client's are client-controlled, so we
+ * count from the END: `trustedHops` = how many entries our own infrastructure appends after the client's IP.
+ * - local / one proxy: 0 → the last entry
+ * - Firebase App Hosting (Google load balancer appends "<client>, <load balancer>"): 1 → set TRUSTED_PROXY_HOPS=1
+ * Check on a deployment with GET /api/health (it shows the IP the server sees for you).
  */
-export function clientIp(headers: Headers, onVercel = !!process.env.VERCEL): string {
-  if (onVercel) return headers.get('x-real-ip') || headers.get('x-forwarded-for')?.trim() || 'unknown';
+export function clientIp(
+  headers: Headers,
+  trustedHops = Number(process.env.TRUSTED_PROXY_HOPS ?? 0),
+): string {
   const hops =
     headers
       .get('x-forwarded-for')
       ?.split(',')
       .map((h) => h.trim())
       .filter(Boolean) ?? [];
-  return hops.at(-1) || headers.get('x-real-ip') || 'unknown';
+  const skip = Number.isInteger(trustedHops) && trustedHops > 0 ? trustedHops : 0;
+  return hops.at(-1 - skip) || hops[0] || headers.get('x-real-ip') || 'unknown';
 }
