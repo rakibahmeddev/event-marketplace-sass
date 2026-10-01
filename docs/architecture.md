@@ -19,9 +19,9 @@
   recent orders), per-event sales on the event page, admin overview sales and `/admin/reports` with CSV export.
 - Section editor ("Elementor-lite", 2026-10-01): Admin → Pages edits Home, About and Become an organizer
   (show/hide, reorder, text, photos, stats, testimonials) with draft → preview → publish.
-- Phase 7 complete: security review (`docs/security-review.md`), nonce CSP, Vercel deployment with keyless
-  Workload Identity Federation and Secret Manager, deployment env check, client-bundle secret scan,
-  performance fixes, runbook (`docs/deploy.md`).
+- Phase 7 complete: security review (`docs/security-review.md`), nonce CSP, deployment on Firebase App Hosting
+  with secrets from Secret Manager, deployment env check, client-bundle secret scan, performance fixes,
+  one-command setup (`npm run setup:prod`, `docs/deploy.md`).
 
 ## Repository layout
 
@@ -88,12 +88,13 @@ docs/                   architecture.md, setup.md, deferred.md
   `default-src 'none'`. Every route is dynamic (the root layout reads the tenant), which nonces require.
 - `next.config.ts` also sets HSTS, X-Frame-Options DENY, X-Content-Type-Options, Referrer-Policy and
   Permissions-Policy (camera for the scanner only); `next/image` only optimizes images from our own bucket.
-- **Hosting**: Next.js on Vercel; Firebase for Auth (Identity Platform), Firestore, Storage, Functions.
-  The web app gets Google credentials through Workload Identity Federation (`lib/firebase/gcp-auth.ts`: Vercel's
-  per-request OIDC token → ADC `external_account`), and reads secrets from Secret Manager at runtime
-  (`lib/security/secrets.ts`, 10-min cache). No service-account keys exist.
-- **Startup check**: `instrumentation.ts` + `lib/env.ts` refuse to start a Vercel deployment with emulator
-  settings, secrets in env vars, a missing App Check key or secret-looking `NEXT_PUBLIC_*` values; server errors
+- **Hosting**: Firebase App Hosting (Cloud Run) builds the site from GitHub `main`. It runs as the backend's own
+  service account (Application Default Credentials; no keys). `apphosting.yaml` maps Secret Manager secrets to
+  runtime env vars (`lib/security/secrets.ts` reads them); the Firebase web config comes from App Hosting
+  (`FIREBASE_WEBAPP_CONFIG` at build → `next.config.ts`; `FIREBASE_CONFIG` at runtime → `lib/firebase/admin.ts`).
+  Rate limits find the client IP behind Google's load balancer with `TRUSTED_PROXY_HOPS` (`/api/health` shows it).
+- **Startup check**: `instrumentation.ts` + `lib/env.ts` refuse to start the deployed server with emulator
+  settings, a missing QR secret or App Check key, or secret-looking `NEXT_PUBLIC_*` values; server errors
   are logged as single JSON lines. `npm run check:bundle` scans the client build for secrets.
 - Firestore rules: see below. Storage rules: create-only image uploads into the caller's own folder (see above).
 - Emulator project id `demo-ticketing` cannot reach production.

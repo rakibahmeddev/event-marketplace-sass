@@ -13,7 +13,7 @@ Platform owner ──► Tenant (a marketplace, e.g. TicketExpert on ticketexper
 ```
 
 **Stack:** Next.js 16 (App Router, TypeScript) · Tailwind CSS · Firebase (Identity Platform auth, Firestore, Storage,
-Cloud Functions, App Check, Secret Manager) · Stripe Connect · Resend (email) · deployed on Vercel.
+Cloud Functions, App Check, Secret Manager, App Hosting) · Stripe Connect · Resend (email).
 
 ---
 
@@ -22,7 +22,7 @@ Cloud Functions, App Check, Secret Manager) · Stripe Connect · Resend (email) 
 1. [Run it locally in 5 minutes](#1-run-it-locally-in-5-minutes)
 2. [Use it: a walkthrough for every role](#2-use-it-a-walkthrough-for-every-role)
 3. [How the system works](#3-how-the-system-works)
-4. [Connect real services (Firebase, Stripe, email, Vercel, domains)](#4-connect-real-services)
+4. [Go live: deploy and connect services](#4-go-live-deploy-and-connect-services)
 5. [Project structure](#5-project-structure)
 6. [Commands and tests](#6-commands-and-tests)
 7. [Security in one page](#7-security-in-one-page)
@@ -142,7 +142,7 @@ provider** with "Pay (test)" / "Simulate a declined payment" buttons.
 
 ```mermaid
 flowchart LR
-  B[Browser<br/>attendee / organizer / admin / scanner] -->|HTTPS| V[Next.js on Vercel<br/>pages, server actions, API routes]
+  B[Browser<br/>attendee / organizer / admin / scanner] -->|HTTPS| V[Next.js on Firebase App Hosting<br/>pages, server actions, API routes]
   V -->|Admin SDK| FS[(Firestore)]
   V -->|Admin SDK| ST[(Storage<br/>images)]
   V -->|Admin SDK| IP[Identity Platform<br/>one user pool per marketplace]
@@ -264,35 +264,42 @@ Full detail: [docs/architecture.md](docs/architecture.md).
 
 ---
 
-## 4. Connect real services
+## 4. Go live: deploy and connect services
 
-The step-by-step runbook is **[docs/deploy.md](docs/deploy.md)**. In short:
+Everything runs on Firebase / Google Cloud; the website is built and served by **Firebase App Hosting** from
+GitHub `main`. One script does the setup. Full guide: **[docs/deploy.md](docs/deploy.md)**.
 
-| Service | What to set up | Where it is used |
-|---|---|---|
-| **Firebase project** (Blaze) | Identity Platform + multi-tenancy, Firestore, Storage, web app config | everything |
-| **Rules & indexes** | `firebase deploy --only firestore:rules,firestore:indexes,storage` | data security, queries |
-| **Secret Manager** | `QR_SIGNING_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY` | QR signing, payments, email |
-| **Cloud Functions** | `firebase deploy --only functions`; register the `beforeCreate` blocking function | roles, approvals, check-in, emails |
-| **Vercel** | import the repo; env vars from deploy.md §6; enable OIDC federation | the website |
-| **Google ↔ Vercel** | a service account + Workload Identity Federation (no key files) | the website reaching Firebase |
-| **App Check** | reCAPTCHA Enterprise key with all domains; then enforce | blocks scripted abuse |
-| **Stripe Connect** | platform account + webhook `https://<platform>/api/webhooks/stripe` (connected accounts) | payments, refunds |
-| **Resend** | verify the sending domain; `EMAIL_FROM` | ticket, approval and staff emails |
-| **Domains** | per marketplace: Vercel domain + DNS CNAME, Firebase authorized domain, reCAPTCHA domain | tenant routing |
+1. **Firebase console (clicks, ~5 min):** new project → Blaze plan → Authentication → *Upgrade to Identity
+   Platform* → create Firestore (pick the location) → Storage → Get started.
+2. **App Hosting → Get started:** connect this GitHub repo (branch `main`, root `/`), backend name `web`.
+3. **Terminal:**
 
-**Add a new marketplace:** create an Identity Platform tenant, the `tenants/{id}` document and its
-`tenantDomains/{hostname}` documents, add the domain in Vercel/DNS, then give the owner the `tenant_admin` role —
-exact steps and a copy-paste command are in [docs/deploy.md §10](docs/deploy.md#10-add-a-marketplace-tenant). The
-marketplace admin then connects their own Stripe account in **Admin → Settings → Payments**.
+```bash
+gcloud auth login && npx firebase login
+npm run setup:prod -- --project <your-project-id>
+```
 
-**Try real Stripe locally (test mode):** see [docs/setup.md → Trying real Stripe](docs/setup.md).
+The script turns on the APIs, deploys rules, indexes and Cloud Functions, creates the secrets and the App Check
+key, gives the site access, creates the **first marketplace** and its **admin** (prints a set-password link) and
+starts the website rollout. Safe to re-run.
+
+4. **Later, when needed:**
+
+| Need | Command |
+|---|---|
+| Take payments (Stripe Connect) | `npm run setup:prod -- stripe --project <id>`, then **Admin → Settings → Payments → Connect Stripe** |
+| Send real emails (Resend) | `npm run setup:prod -- email --project <id>` |
+| Own domain | `npm run setup:prod -- domain tickets.example.com --project <id>`, then add it in App Hosting → Domains |
+| Another marketplace | run `npm run setup:prod -- --project <id>` again with a new marketplace id |
+
+After that, **every `git push` to `main` deploys the website automatically.**
 
 ### Environment variables
 
-Local values live in `.env.local` (copied from [`.env.example`](.env.example)). Deployed, the app refuses to start if
-the configuration is unsafe — emulator settings, secrets in env vars, a missing App Check key or secret-looking
-`NEXT_PUBLIC_*` values ([`lib/env.ts`](lib/env.ts)).
+Local values live in `.env.local` (copied from [`.env.example`](.env.example)). In production nothing is typed in:
+the Firebase config comes from App Hosting and the secrets from Secret Manager via
+[`apphosting.yaml`](apphosting.yaml). The deployed server refuses to start if the configuration is unsafe
+([`lib/env.ts`](lib/env.ts)).
 
 ---
 
@@ -345,7 +352,7 @@ same ports). For a production build next to a running dev server use
 - **Tenant isolation** in rules and server code; tested for every role against another tenant's data.
 - **Deny by default** rules; the browser cannot write prices, orders, tickets, roles, sales or pages.
 - **Zod validation** on every server action, route and callable (unknown fields rejected).
-- **Secrets only in Secret Manager**; keyless Vercel→Google access; startup check; client-bundle scan.
+- **Secrets only in Secret Manager**; no service-account keys; startup check; client-bundle scan.
 - **App Check**, **rate limits** (sign-in, checkout, scanning, every admin/organizer change), **audit log**
   (roles, approvals, refunds, check-ins, settings and page publishes).
 - **Headers:** nonce-based CSP, HSTS, frame blocking, no-sniff, referrer and permissions policies.
@@ -375,7 +382,7 @@ Details, evidence and accepted risks: [docs/security-review.md](docs/security-re
 | Document | For |
 |---|---|
 | [docs/setup.md](docs/setup.md) | local development details, Stripe test mode |
-| [docs/deploy.md](docs/deploy.md) | production deployment runbook (Vercel + Firebase), adding a marketplace, operations |
+| [docs/deploy.md](docs/deploy.md) | going live (App Hosting + `npm run setup:prod`), adding a marketplace, operations |
 | [docs/architecture.md](docs/architecture.md) | data model, flows, rules, design decisions per phase |
 | [docs/security-review.md](docs/security-review.md) | security requirements, evidence, accepted risks |
 | [docs/deferred.md](docs/deferred.md) | design features not in the MVP yet |

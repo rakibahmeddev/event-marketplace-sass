@@ -1,6 +1,6 @@
 # Security review (Phase 7, 2026-10-01)
 
-Scope: the Next.js app (deployed on Vercel), Cloud Functions, Firestore / Storage rules and the deployment
+Scope: the Next.js app (deployed on Firebase App Hosting), Cloud Functions, Firestore / Storage rules and the deployment
 configuration. Each non-negotiable requirement from CLAUDE.md, how it is met, and the evidence.
 
 ## Requirements
@@ -11,7 +11,7 @@ configuration. Each non-negotiable requirement from CLAUDE.md, how it is met, an
 | 2 | Deny by default | `firestore.rules` / `storage.rules` end in deny-all; browsers read only `users/{self}` and `eventStats` (assigned scanners / owning organizer) and create images in their own Storage folder | `tests/rules/*` (125 tests), `tests/rules/server-only-tenant.test.ts` |
 | 3 | No trusted client writes | Prices, totals, order / ticket status, `sold`, roles, commission, rollups and pages are written only by server actions / route handlers / Functions with the Admin SDK; the client sends ids and quantities, the server reads prices | `lib/orders/reserve.ts`, `lib/orders/fulfil.ts`, rules tests for write denial |
 | 4 | Validate everything | Zod `.strict()` on every server action, route handler and callable; ids checked against `^[A-Za-z0-9]{1,40}$` before Firestore paths | table below; `functions/src/**/schema.ts` |
-| 5 | Secrets | Secret Manager only. Functions bind them with `defineSecret`; the web app reads them at runtime through `lib/security/secrets.ts` (Vercel → keyless Workload Identity Federation, no service-account key exists). `instrumentation.ts` refuses to start a deployment that has secrets in env vars or secret-looking `NEXT_PUBLIC_*` values; `npm run check:bundle` scans the client build | `lib/env.ts` + tests, `scripts/check-bundle.mjs`, `lib/firebase/gcp-auth.ts` + tests |
+| 5 | Secrets | Secret Manager only. Functions bind them with `defineSecret`; App Hosting injects them into the web app at runtime only (`apphosting.yaml`, never at build), read via `lib/security/secrets.ts`. The site runs as its own service account — no keys exist. `instrumentation.ts` refuses to start without the QR secret / App Check key or with secret-looking `NEXT_PUBLIC_*` values; `npm run check:bundle` scans the client build | `apphosting.yaml`, `lib/env.ts` + tests, `scripts/check-bundle.mjs` |
 | 6 | App Check | Enforced on all callables outside the emulator (`enforceAppCheck`); the site key is mandatory in deployments (`lib/env.ts`); Firestore / Storage enforcement is a console switch (deploy runbook step) | `functions/src/**`, `docs/deploy.md` §8 |
 | 7 | Rate limiting | Firestore fixed-window counters (hashed keys, TTL): sign-in sessions per IP, checkout, payment, scanning (120/min), staff creation, every admin / organizer mutation, slug checks per IP. Fails closed (a Firestore error rejects the request) | table below, `lib/security/rateLimit.ts` |
 | 8 | Audit log | `role.change`, `organizer.approve/suspend`, `refund`, `checkin`, `settings.change` (settings and page publishes), `scanner.create/update`; append-only, tenant admins read | `functions/src/lib/audit.ts`, integration tests assert entries |
@@ -49,12 +49,12 @@ Server actions are also protected by Next.js's built-in Origin check (CSRF); `/a
 3. CSP allowed `'unsafe-inline'` scripts → per-request nonces + `'strict-dynamic'`.
 4. `next/image` accepted any `firebasestorage.googleapis.com` path (anyone's bucket through our optimizer) →
    pinned to our bucket.
-5. Client IP on Vercel: uses `x-real-ip`, which Vercel overwrites with the connecting client (no spoofing via
-   client-supplied `X-Forwarded-For`).
+5. Client IP behind Google's load balancer: counted from the end of `X-Forwarded-For` with `TRUSTED_PROXY_HOPS`
+   (client-supplied entries can't spoof it); `/api/health` shows the detected IP for verification.
 6. `@grpc/grpc-js` (high, via the Firebase browser SDK's Node build) → pinned to the patched 1.14 line with an
    npm `overrides` entry.
-7. Deployments refuse to start when misconfigured (emulator hosts, missing App Check key, secrets in env vars,
-   demo project, secret-looking public variables).
+7. Deployments refuse to start when misconfigured (emulator hosts, missing App Check key or QR secret, demo
+   project, secret-looking public variables).
 8. Tailwind scanned binary folders (images, design exports, build output) → excluded with `@source not`.
 
 ## Accepted risks / notes
@@ -69,12 +69,12 @@ Server actions are also protected by Next.js's built-in Origin check (CSRF); `/a
   immediately.
 - **Rate limiter cost**: one Firestore transaction per limited call. Fine at MVP volumes; move hot limits to
   memory + Firestore if scanning traffic grows.
-- **Preview deployments** must use a separate Firebase project (see `docs/deploy.md` §5); the WIF attribute
-  condition only lets the production environment act as the production service account.
+- **Staging** should be a separate Firebase project with its own App Hosting backend (`docs/deploy.md`).
 
 ## Still to verify on real infrastructure
 
-- Vercel ↔ Google Workload Identity Federation end to end (unit-tested config; needs the real pool / provider).
+- `npm run setup:prod` against a real project (each step is idempotent; REST calls follow Google's documented
+  APIs but haven't run against a live project yet), and `TRUSTED_PROXY_HOPS` via `/api/health`.
 - Stripe Connect in test mode with real test keys (adapter typechecks; local flow uses the test provider).
 - Camera scanning on real phones (iOS Safari, Android Chrome) over HTTPS.
 - App Check enforcement in the console once the site key is live.

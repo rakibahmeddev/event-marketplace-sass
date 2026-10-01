@@ -83,7 +83,7 @@ Firebase project, and the seed script refuses to run against anything else.
 
 ## Production
 
-See **[deploy.md](deploy.md)** (Vercel + Firebase runbook) and **[security-review.md](security-review.md)**.
+See **[deploy.md](deploy.md)** (App Hosting + `npm run setup:prod`) and **[security-review.md](security-review.md)**.
 
 Production build locally (separate build folder, so it doesn't clash with `npm run dev`):
 
