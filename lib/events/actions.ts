@@ -263,7 +263,11 @@ export async function changeEventStatus(
 ): Promise<ActionResult> {
   const ctx = await organizerContext();
   if (!ctx) return fail('Only approved organizers can do this.');
-  if (!EVENT_ID.test(eventId)) return fail('Invalid event.');
+  // Runtime check: the TypeScript type alone doesn't stop other strings from a crafted request.
+  if (!EVENT_ID.test(eventId) || (action !== 'unpublish' && action !== 'cancel'))
+    return fail('Invalid request.');
+  if (!(await rateLimit(`event-status:${ctx.user.uid}`, { limit: 20, windowSeconds: 60 })))
+    return fail('Too many changes. Wait a moment.');
   const ref = adminDb().doc(`tenants/${ctx.tenant.id}/events/${eventId}`);
   const snap = await ref.get();
   if (!snap.exists || snap.get('organizerId') !== ctx.organizer.id) return fail('Event not found.');

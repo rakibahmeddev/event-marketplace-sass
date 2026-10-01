@@ -32,11 +32,14 @@ export async function rateLimit(key: string, { limit, windowSeconds }: Limit): P
 }
 
 /**
- * Client IP for rate limiting. Uses the LAST X-Forwarded-For entry — the one appended by
- * our hosting proxy. Earlier entries are client-controlled and would let callers dodge the limit.
- * Phase 7 re-checks this against the chosen host's proxy chain.
+ * Client IP for rate limiting.
+ * - Vercel (production host): Vercel overwrites X-Forwarded-For / X-Real-IP with the connecting client's IP
+ *   and drops client-supplied values, so `x-real-ip` is trustworthy.
+ * - Elsewhere (local, other proxies): the LAST X-Forwarded-For entry — the one appended by the nearest
+ *   proxy. Earlier entries are client-controlled and would let callers dodge the limit.
  */
-export function clientIp(headers: Headers): string {
+export function clientIp(headers: Headers, onVercel = !!process.env.VERCEL): string {
+  if (onVercel) return headers.get('x-real-ip') || headers.get('x-forwarded-for')?.trim() || 'unknown';
   const hops =
     headers
       .get('x-forwarded-for')

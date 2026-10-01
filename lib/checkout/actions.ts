@@ -134,7 +134,8 @@ export async function simulateTestPayment(
   orderId: string,
   outcome: 'succeeded' | 'failed',
 ): Promise<ActionResult> {
-  if (!testPaymentsAllowed()) return fail('Not available.');
+  if (!testPaymentsAllowed() || (outcome !== 'succeeded' && outcome !== 'failed'))
+    return fail('Not available.');
   const [user, tenant] = await Promise.all([getSessionUser(), getCurrentTenant()]);
   if (!user || !tenant || tenant.paymentConfig.provider !== 'test') return fail('Not available.');
   const order = await getOrder(tenant.id, orderId);

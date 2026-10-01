@@ -1,13 +1,14 @@
 'use server';
 
 import { FieldValue } from 'firebase-admin/firestore';
+import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { fail, zodFieldErrors, type ActionResult } from '@/lib/actions/result';
 import { getSessionUser } from '@/lib/auth/session';
 import { listCategories } from '@/lib/categories/repository';
 import { adminDb } from '@/lib/firebase/admin';
 import { searchWords } from '@/lib/format/text';
-import { rateLimit } from '@/lib/security/rateLimit';
+import { clientIp, rateLimit } from '@/lib/security/rateLimit';
 import { resolveImage, storagePaths } from '@/lib/storage/server';
 import { getCurrentTenant } from '@/lib/tenant/current';
 import { isOrganizerSlugTaken } from './repository';
@@ -15,6 +16,9 @@ import { organizerApplicationSchema, organizerProfileSchema, organizerSlugSchema
 
 /** Live "Available" check for the profile URL field. */
 export async function checkOrganizerSlug(raw: string): Promise<{ available: boolean; message?: string }> {
+  // Callable while signed out (sign-up form): limit per client IP.
+  if (!(await rateLimit(`slug:${clientIp(await headers())}`, { limit: 60, windowSeconds: 60 })))
+    return { available: false, message: 'Too many checks. Wait a moment.' };
   const tenant = await getCurrentTenant();
   const parsed = organizerSlugSchema.safeParse(raw);
   if (!tenant) return { available: false };
@@ -84,6 +88,8 @@ export async function updateOrganizerProfile(input: unknown): Promise<ActionResu
   const [user, tenant] = await Promise.all([getSessionUser(), getCurrentTenant()]);
   if (!user || !tenant || user.role !== 'organizer' || !user.organizerId)
     return fail('Only organizers can do this.');
+  if (!(await rateLimit(`org-profile:${user.uid}`, { limit: 20, windowSeconds: 60 })))
+    return fail('Too many saves. Wait a moment.');
 
   const parsed = organizerProfileSchema.safeParse(input);
   if (!parsed.success) return fail('Check the highlighted fields.', zodFieldErrors(parsed.error));

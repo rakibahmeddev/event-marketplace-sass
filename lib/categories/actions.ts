@@ -6,6 +6,7 @@ import { fail, zodFieldErrors, type ActionResult } from '@/lib/actions/result';
 import { getSessionUser } from '@/lib/auth/session';
 import { adminDb } from '@/lib/firebase/admin';
 import { slugify } from '@/lib/format/text';
+import { rateLimit } from '@/lib/security/rateLimit';
 import { getCurrentTenant } from '@/lib/tenant/current';
 import { categoryInputSchema } from './schema';
 
@@ -13,7 +14,10 @@ const idSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 
 async function adminContext() {
   const [user, tenant] = await Promise.all([getSessionUser(), getCurrentTenant()]);
-  return user && tenant && user.role === 'tenant_admin' ? { user, tenant } : null;
+  if (!user || !tenant || user.role !== 'tenant_admin') return null;
+  // Over the limit reads as "not allowed" — admins never get near 60 category edits a minute.
+  if (!(await rateLimit(`categories:${user.uid}`, { limit: 60, windowSeconds: 60 }))) return null;
+  return { user, tenant };
 }
 
 function done(): ActionResult {
