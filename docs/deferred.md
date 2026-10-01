@@ -46,8 +46,8 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Multi-select categories with counts                    | Browse filters                                             | Single category (a count per category = one query each)       |
 | Numbered pagination (1 2 3 … 28)                       | Browse results                                             | Prev / Next + total count (Firestore offsets are costly)      |
 | Relevance sort                                         | Browse results                                             | Soonest first                                                 |
-| Marketplace statistics ("12,400+ organizers", "$94M")  | Home, About, Become an organizer                           | Hidden; editable in the section editor (after Phase 6)        |
-| Testimonials ("Loved by fans")                         | Home                                                       | Hidden; editable in the section editor (after Phase 6)        |
+| Marketplace statistics ("12,400+ organizers", "$94M")  | Home, About, Become an organizer                           | Admin → Pages → Numbers (off until real figures are entered)   |
+| Testimonials ("Loved by fans")                         | Home                                                       | Admin → Pages → Testimonials (off until real quotes)          |
 | Organizer cover upload                                 | Organizer profile                                          | One shared stock cover for every organizer                    |
 | "Contact" / "Follow" on organizer profile & event page | Organizer profile, event page                              | Omitted                                                       |
 | Contact form sending                                   | Contact page                                               | Opens the visitor's email app until the email provider (Phase 4) |
@@ -65,3 +65,6 @@ The layout may show a placeholder; the feature itself is not built. Do not build
 | Traffic / conversion analytics, scheduled email reports  | Dashboards                                                 | Rollups cover sales only                                      |
 | Per-event sales for a date range                         | Admin reports                                              | "Top events" shows all-time totals (eventStats)               |
 | Search box and notifications bell in the dashboard header | Organizer dashboard                                        | Not built                                                     |
+| Free-form page builder (new pages, custom layouts, per-section colours/fonts) | Admin → Pages                     | Fixed sections per page; toggle, reorder, edit text and photos |
+| Page version history beyond draft / published           | Admin → Pages                                              | Reset to default is available                                 |
+| Newsletter block on Home                                | Home                                                       | Not built (no email list in the MVP)                          |

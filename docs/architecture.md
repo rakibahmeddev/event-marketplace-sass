@@ -17,6 +17,8 @@
   `checkInTicket` / `createScanner` / `updateScanner` functions, organizer Check-in staff and Attendees pages, CSV export.
 - Phase 6 complete: daily sales rollups, organizer dashboard (sales chart 7D/30D/90D, deltas vs previous period,
   recent orders), per-event sales on the event page, admin overview sales and `/admin/reports` with CSV export.
+- Section editor ("Elementor-lite", 2026-10-01): Admin → Pages edits Home, About and Become an organizer
+  (show/hide, reorder, text, photos, stats, testimonials) with draft → preview → publish.
 
 ## Repository layout
 
@@ -113,6 +115,7 @@ docs/                   architecture.md, setup.md, deferred.md
 | `tenants/{t}/salesDaily/{YYYY-MM-DD}` → `{ date, orders, tickets, gross, subtotal, fees, refundedOrders, refundedTickets, refunds, refundedSubtotal, refundedFees }` | marketplace sales per day (Phase 6), server only |
 | `tenants/{t}/organizerSalesDaily/{organizerId}_{YYYY-MM-DD}` → same + `organizerId` | per-organizer sales per day (Phase 6), server only; index `organizerId + date` |
 | `eventStats` sales fields (same counters, all-time) | per-event totals (Phase 6) |
+| `tenants/{t}/pages/{home\|about\|become-organizer}` → `{ draft: Section[], published: Section[], updatedAt, updatedBy, publishedAt }` | section editor, server only |
 | `orders.paidAt`, `.refundedAt` | now the server clock at the moment of the transaction (was serverTimestamp), so the rollup day and the order agree |
 
 Composite indexes for every browse filter live in `firestore.indexes.json` (Firestore merges them for
@@ -198,6 +201,25 @@ pages ── lib/reports/repository.ts (range queries by date) → summarize.ts 
 - Charts: `components/reports/SalesChart.tsx`, HTML/CSS bars rendered on the server (no chart library), with an
   equivalent screen-reader table.
 
+## Section editor (Admin → Pages)
+
+```
+/admin/pages/{page} (PageEditor, client) ── savePageDraft / publishPage / resetPageDraft (server actions, tenant_admin)
+   payload: sections with images as { path } only → resolveImage(path, tenants/{t}/branding/) builds the URL
+   → pageSectionsSchema(page): exactly this page's section types, once each, hero first and visible,
+     Zod .strict() per type (lib/pages/schema.ts), text length limits, links = site path | #anchor | https://
+   → tenants/{t}/pages/{page}.draft  (+ .published and audit log `settings.change` on publish)
+public page ── getPublicSections(): published, or the draft with ?preview=1 for this tenant's admins only
+            └─ normalizePage(): drops unknown/duplicate sections, appends new section types from defaults,
+               repairs invalid ones → components/sections/* render plain text ({marketplace} → tenant name)
+```
+
+- Built-in content lives in `lib/pages/defaults.ts` (what every marketplace shows until it publishes). Stats and
+  testimonials start hidden with placeholder text, so nothing made-up goes live.
+- Fixed by design: which sections exist per page, icons (by position), list sizes (3 steps / perks / values;
+  1–4 figures; 1–6 quotes), and the functional blocks (event lists, search, pricing, sign-up form).
+- No HTML is stored or rendered; React escapes all section text.
+
 ## Admin settings
 
 `/admin/settings` → `updateTenantSettings` server action (tenant_admin, Zod strict, rate limit). Colours must pass
@@ -274,14 +296,14 @@ Every hostname a tenant uses (custom domain or platform subdomain) is a `tenantD
 | `tenants/{t}` | tenant_admin of t | none |
 | `tenants/{t}/auditLogs/*` | tenant_admin of t | none (Functions only) |
 | `tenants/{t}/eventStats/{eventId}` | active scanner assigned to the event, or its organizer | none |
-| `tenants/{t}/salesDaily/*`, `organizerSalesDaily/*` | none (server-rendered) | none |
+| `tenants/{t}/salesDaily/*`, `organizerSalesDaily/*`, `pages/*` | none (server-rendered) | none |
 | `tenants/{t}/**` (events, ticketTypes, organizers, categories, …) | none (server-rendered) | none (server actions / Functions) |
 | `users/{uid}` | owner, same tenant | owner may change `displayName` only (string ≤ 80) |
 | `tenantDomains/*`, `rateLimits/*`, anything else | none | none |
 
 ## Tests
 
-- `tests/rules` — 119 tests, incl. every role × every tenant-B path (tenant isolation) and claim spoofing.
+- `tests/rules` — 125 tests, incl. every role × every tenant-B path (tenant isolation) and claim spoofing.
 - `tests/integration` — 33 tests against Auth + Functions + Firestore emulators (blocking function, `setUserRole`,
   organizer approval, orders/webhooks/refunds, check-in incl. concurrent scans, staff management).
 - `tests/e2e` — Playwright at 1280 and 375: layouts, guards, login/logout/register, roles, cross-tenant sessions, Google (desktop).
