@@ -53,7 +53,14 @@ export default async function OrganizerProfilePage({ params }: Props) {
     <>
       <div className="relative h-[140px] bg-ink md:h-[240px]">
         {/* Per-organizer covers are deferred (docs/deferred.md): one shared stock cover for now. */}
-        <Image src={STOCK.organizerCover} alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image
+          src={STOCK.organizerCover}
+          alt=""
+          fill
+          loading="eager"
+          sizes="100vw"
+          className="object-cover"
+        />
       </div>
       <div className="page-container">
         <div className="relative -mt-12 flex flex-col gap-5 md:-mt-16 md:flex-row md:items-end md:gap-6">

@@ -9,7 +9,15 @@ export function AuthSplitLayout({ tenantName, children }: { tenantName: string; 
   return (
     <div className="grid min-h-dvh bg-white lg:grid-cols-2">
       <div className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
-        <Image src={STOCK.aboutCrowd} alt="" fill sizes="50vw" className="object-cover" />
+        <Image
+          src={STOCK.aboutCrowd}
+          alt=""
+          fill
+          sizes="50vw"
+          loading="eager"
+          fetchPriority="high"
+          className="object-cover"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(26_26_46/0.55)_0%,rgb(26_26_46/0.1)_40%,rgb(26_26_46/0.85)_100%)]" />
         <TenantLogo name={tenantName} tone="light" className="relative" />
         <div className="relative flex flex-col gap-3">

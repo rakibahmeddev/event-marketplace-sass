@@ -51,7 +51,8 @@ export function HomeSection({
             src={s.image?.url ?? STOCK.hero}
             alt=""
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="100vw"
             className="object-cover object-[70%_center]"
           />

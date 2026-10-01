@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+/* Tailwind scans the project for class names; skip non-code folders (design exports, images, test output). */
+@source not '../design';
+@source not '../public';
+@source not '../scripts/seed-assets';
+@source not '../test-results';
+@source not '../playwright-report';
 /* Layered so Tailwind utilities (hidden, sizes…) can override Font Awesome defaults. */
 @import '@fortawesome/fontawesome-svg-core/styles.css' layer(base);
 

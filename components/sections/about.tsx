@@ -38,6 +38,7 @@ export function AboutSection({ section: s, marketplace }: { section: Section; ma
                 alt=""
                 fill
                 sizes="(min-width: 1280px) 1216px, 100vw"
+                loading="eager"
                 className="object-cover"
               />
             </div>

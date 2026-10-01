@@ -33,7 +33,14 @@ export function Logo({ name, href = '/', tone = 'dark', size = 'md', suffix, log
             tone === 'light' && 'rounded-lg bg-white px-2',
           )}
         >
-          <Image src={logoUrl} alt={name} fill sizes="150px" className="object-contain object-left" />
+          <Image
+            src={logoUrl}
+            alt={name}
+            fill
+            sizes="150px"
+            loading="eager"
+            className="object-contain object-left"
+          />
         </span>
       </Link>
     );

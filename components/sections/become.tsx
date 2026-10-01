@@ -45,6 +45,7 @@ export function BecomeHero({
             }
             fill
             sizes="(min-width: 1280px) 600px, 50vw"
+            loading="eager"
             className="object-cover"
           />
         </div>
