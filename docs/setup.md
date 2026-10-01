@@ -81,29 +81,20 @@ Firebase project, and the seed script refuses to run against anything else.
 
 - `/dev/style-guide` — every design-system component (mirrors `design/01 Style Guide.dc.html`). 404 in production.
 
-## Production setup checklist (Phase 2 items; full deployment docs in Phase 7)
+## Production
 
-1. **Blaze plan + Identity Platform**: upgrade Firebase Authentication to Identity Platform and enable
-   multi-tenancy (required for per-marketplace user pools and blocking functions).
-2. **Per marketplace**: create an Identity Platform tenant (email/password + Google enabled; add the
-   marketplace's domains to Google's authorized domains), then write `tenants/{id}` with its `authTenantId`
-   and one `tenantDomains/{hostname}` doc per hostname. Done with the Admin SDK — never from a client.
-3. **Blocking function**: after deploying, register `onBeforeUserCreated` under
-   Authentication → Settings → Blocking functions (beforeCreate).
-4. **App Check**: create a reCAPTCHA Enterprise key listing every marketplace domain, set
-   `NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_SITE_KEY`, register the app, then enforce App Check for Firestore,
-   Storage and Cloud Functions in the console. Callables already set `enforceAppCheck` outside the emulator.
-5. **TTL policy** on `rateLimits.expiresAt` (Firestore → TTL) so old counters are deleted.
-7. **Indexes & custom tokens**: deploy `firestore.indexes.json`; the server's service account needs
-   *Service Account Token Creator* so `createCustomToken` (image uploads, admin actions) can sign tokens.
-6. **Client IP**: rate limiting trusts the last `X-Forwarded-For` hop. Confirm this matches the hosting
-   provider's proxy chain before launch (Phase 7).
+See **[deploy.md](deploy.md)** (Vercel + Firebase runbook) and **[security-review.md](security-review.md)**.
+
+Production build locally (separate build folder, so it doesn't clash with `npm run dev`):
+
+```bash
+NEXT_DIST_DIR=.next-prod npx next build && NEXT_DIST_DIR=.next-prod npm run check:bundle
+```
 
 ## Secrets
 
-None yet. From Phase 4, payment keys, webhook secrets, the QR signing secret and the email API key live in
-Google Secret Manager and are read only by Cloud Functions. Never put them in `.env*` files the Next.js client
-can read, and never in `NEXT_PUBLIC_*` variables.
+Deployed: Google Secret Manager only (Functions via `defineSecret`, the web app via `lib/security/secrets.ts`).
+Locally: `.env.local` and `functions/.secret.local` (both gitignored). Never put secrets in `NEXT_PUBLIC_*`.
 
 ## Payments locally
 
@@ -121,7 +112,7 @@ Secrets for local use are random values in `.env.local` (`QR_SIGNING_SECRET`, `T
 2. Admin → Settings → Payments → **Connect Stripe**, finish onboarding with Stripe's test data.
 3. Buy a ticket and pay with card `4242 4242 4242 4242`.
 
-### Production (Phase 7 deployment docs will expand this)
+### Production
 - Secret Manager: `QR_SIGNING_SECRET` (same value for the web app and Functions), `RESEND_API_KEY`,
   `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`; Functions param `EMAIL_FROM` (verified sender domain).
 - Stripe: a **Connect** webhook endpoint → `https://<platform domain>/api/webhooks/stripe` with events
